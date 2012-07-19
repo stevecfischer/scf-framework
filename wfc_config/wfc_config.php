@@ -3,24 +3,24 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
- * @version 0.1
+ * @version 2.1
  */
 
 // WFC STANDARD FUNCTIONS //
 // ---------------------- //
 
-/*~~~~ REMOVE WORDPRESS VERSION */
-/*~~~~ HIDE LOGIN ERROR MESSAGES (WRONG PASSWORD, NO SUCH USER ETC.) */
-/*~~~~ REMOVE ADMIN NAME IN COMMENTS CLASS */
+
 /*~~~~ WFC LOGIN LOGO */
 /*~~~~ DISABLE RSS FEEDS */
 /*~~~~ CLOSE COMMENTS GLOBALLY */
 /*~~~~ REMOVE ITEMS FROM ADMIN BAR */
 /*~~~~ REMOVE FROM USER PROFILE */
 /*~~~~ ADD EDITOR STYLESHEET FOR ADMIN WYSIWYG */
+/*~~~~ REMOVE DASHBOARD WIDGETS */
 
 
 define( 'WFC_PT', get_template_directory() . '/' );
+define( 'WFC_CONFIG', get_template_directory() . '/wfc_config' );
 
 define( 'WFC_URI', get_template_directory_uri() );
 define( 'WFC_CSS_URI', get_template_directory_uri() . '/css' );
@@ -33,10 +33,34 @@ define( 'WFC_ADM_JS_URI', get_template_directory_uri() . '/admin/js' );
 
 /*
 ===============================
+FRAMEWORK JS INCLUDES
+===============================
+*/
+function wfc_load_js_scripts() {
+   wp_enqueue_script('jquery');
+   //wp_register_script('jquery.scf-framework', WFC_JS_URI.'/jquery.scf-framework.fn.js', array('jquery') );
+   //wp_enqueue_script('jquery.scf-framework');
+}
+add_action('wp_enqueue_scripts', 'wfc_load_js_scripts');
+
+/*
+===============================
+FRAMEWORK CSS INCLUDES
+===============================
+*/
+function wfc_load_css_styles() {
+   //wp_register_style('scf-framework-style.css', WFC_CSS_URI.'/scf-framework-style.css');
+   //wp_enqueue_style( 'scf-framework-style.css');
+}
+add_action('wp_print_styles', 'wfc_load_css_styles');
+/*
+===============================
 File Includes
 ===============================
 */
-require_once(WFC_ADM_URI.'/wfc_post_type_manager.php');
+require_once(WFC_ADM_URI.'/wfc_post_type_manager.php'); //CPT / Tax / Metabox Class
+require_once(WFC_CONFIG.'/wfc_default_theme_setup.php'); //Register default CPT's
+require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
 
 /*
 ===============================
@@ -48,32 +72,6 @@ require_once(WFC_PT.'widgets/wfc_custom_news/wfc_custom_news.php');
 require_once(WFC_PT.'widgets/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
 require_once(WFC_PT.'widgets/wfc_custom_tax_widget/wfc_custom_tax_widget.php');
 
-/*
-===============================
-REMOVE WORDPRESS VERSION
-===============================
-*/
-remove_action('wp_head', 'wp_generator');
-
-/*
-===============================
-HIDE LOGIN ERROR MESSAGES (WRONG PASSWORD, NO SUCH USER ETC.)
-===============================
-*/
-add_filter('login_errors',create_function('$a', "return null;"));
-
-/*
-===============================
-REMOVE ADMIN NAME IN COMMENTS CLASS
-===============================
-*/
-function wfc_remove_comment_author_class( $classes ) {
-    foreach( $classes as $key => $class ) {
-        if(strstr($class, "comment-author-")) unset( $classes[$key] );
-    }
-    return $classes;
-}
-add_filter( 'comment_class' , 'wfc_remove_comment_author_class' );
 
 /*
 ===============================
@@ -82,6 +80,7 @@ WFC LOGIN LOGO
 */
 function wfc_login_logo() {
    echo '<style type="text/css">
+      .login h1 a{background-size:250px 49px !important;}
    h1 a { background-image:url('.get_bloginfo('template_directory').'/images/wfc_logo.png) !important; }
    </style>';
 }
@@ -116,7 +115,9 @@ add_action('do_feed_atom', 'wfc_disable_feed', 1);
 CLOSE COMMENTS GLOBALLY
 ===============================
 */
-function wfc_close_comments($data) { return false; }
+function wfc_close_comments($data) {
+   return false;
+}
 add_filter('comments_number', 'wfc_close_comments');
 add_filter('comments_open', 'wfc_close_comments');
 
@@ -126,14 +127,14 @@ REMOVE ITEMS FROM ADMIN BAR
 ===============================
 */
 function wfc_remove_admin_bar_items() {
-    global $wp_admin_bar;
-    global $current_user;
-    if($current_user->user_login != 'wfc'){
-    $wp_admin_bar->remove_menu('wpseo-menu');
-    $wp_admin_bar->remove_menu('comments');
-    $wp_admin_bar->remove_menu('new-content');
-    $wp_admin_bar->remove_menu('ngg-menu');
-    }
+   global $wp_admin_bar;
+   global $current_user;
+   if($current_user->user_login != 'wfc'){
+      $wp_admin_bar->remove_menu('wpseo-menu');
+      $wp_admin_bar->remove_menu('comments');
+      $wp_admin_bar->remove_menu('new-content');
+      $wp_admin_bar->remove_menu('ngg-menu');
+   }
 }
 add_action( 'wp_before_admin_bar_render', 'wfc_remove_admin_bar_items' );
 
@@ -152,7 +153,33 @@ add_action( 'admin_print_scripts-profile.php', 'wfc_hide_admin_bar_prefs' );
 ADD EDITOR STYLESHEET FOR ADMIN WYSIWYG
 ===============================
 */
-add_editor_style('editor-style.css');
+add_editor_style('/editor-style.css');
 
+/*
+===============================
+REMOVE DASHBOARD WIDGETS
+===============================
+*/
+function wfc_custom_dashboard_widgets() {
+   global $wp_meta_boxes;
+   unset($wp_meta_boxes['dashboard']['normal']['core']['dashboard_right_now']);
+   unset($wp_meta_boxes['dashboard']['normal']['core']['dashboard_recent_comments']);
+   unset($wp_meta_boxes['dashboard']['normal']['core']['dashboard_incoming_links']);
+   unset($wp_meta_boxes['dashboard']['normal']['core']['dashboard_plugins']);
+   unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_primary']);
+   unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_secondary']);
+   unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_quick_press']);
+   unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_recent_drafts']);
+}
+add_action('wp_dashboard_setup', 'wfc_custom_dashboard_widgets');
 
+/*
+===============================
+SHOW FAVICON
+===============================
+*/
+function wfc_fw_favicon() {
+   echo '<link rel="shortcut icon" href="'.WFC_URI.'/favicon.ico"/>'."\n";
+}
+add_action('wp_head', 'wfc_fw_favicon');
 

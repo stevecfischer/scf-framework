@@ -3,13 +3,27 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
- * @version 0.1
+ * @version 2.1
  */
 get_header();
+?>
+	<?php
+		if( have_posts()) : 
+			while( have_posts() ) : the_post();
+				echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
+				echo '<p>'.get_the_content().'</p>';
+			endwhile;
+		else:
+			echo '404 error.';
+		endif;
+		wp_reset_query();
+	?>
 
-if(  have_posts() ) : while( have_posts() ) : the_post();
-   echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
-   echo '<div id="wfc-the-content">'.get_the_content().'</div>';
-endwhile;endif;wp_reset_query();
-
-get_footer();
+	<div id="sidebar" class="left_sidebar">
+		<?php if( !dynamic_sidebar('Left Sidebar')) :
+			echo 'no sidebar';
+			endif;
+		?>
+	</div><!-- //#sidebar.left_sidebar -->
+	
+<?php get_footer(); ?>

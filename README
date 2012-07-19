@@ -3,7 +3,7 @@ Contributors: stevecfischer
 Tags: content, developer
 Requires at least: 3.3
 Tested up to: 3.3
-Stable tag: 0.1
+Stable tag: 2.1
 
 == Description ==
 WFC WP Framework
@@ -22,5 +22,17 @@ Awnser number 1
 
 == Changelog ==
 
-= .01 =
+= 0.1 =
 * Intial Version.
+
+= 0.2 =
+* Added all default files a theme would need.
+
+= 0.4 = 
+* Set CPTs for campaign space and subpage image pool to be created by default
+
+= 1.0 =
+* Fixed bugs with post type manager
+
+= 2.1 =
+* moved security functions to its only file

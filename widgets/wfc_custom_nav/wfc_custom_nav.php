@@ -3,7 +3,9 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
+ * @version 2.1
  */
+ 
 class WFC_Custom_Nav_Widget extends WP_Widget {
 
    function WFC_Custom_Nav_Widget(){

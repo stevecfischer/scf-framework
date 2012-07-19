@@ -3,7 +3,9 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
+ * @version 2.1
  */
+
 class  wfc_meta_box_class{
    private $new_meta_boxes = array();
    public function __construct($obj){
@@ -14,10 +16,14 @@ class  wfc_meta_box_class{
    public function types_meta_box($var){
       global $post;
       wp_nonce_field( 'wfc_meta_box_nonce', 'meta_box_nonce' );
-      echo '<span id="error_message" style="color:#666;margin-left:100px;display:none;background: #ffd2d2;padding: 0 10px;width: 339px;">Invalid format(ie http, www).</span><table>';
          if( is_array($var['meta_box']['new_boxes']) ) {
             foreach ($var['meta_box']['new_boxes'] as $field) {
-               $meta = get_post_meta( get_the_ID(), $field['id'], true );
+
+               $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', $field['field_title']);
+               $field_id_cleaning = strtolower( str_replace(" ", "_", $field_id_cleaning ));
+               $field['id'] = $var['cpt'].'_'.$field_id_cleaning;
+
+               $meta = get_post_meta( $post->ID, $field['id'], true );
                echo '<tr id="row'.$field['id'].'">';
                echo '<th style="width:20%"><label>'. $field['field_title']. '</label></th><td>';
                switch ($field['type_of_box']) {
@@ -41,6 +47,7 @@ class  wfc_meta_box_class{
                   break;
                   case 'select':
                      echo '<select name="'. $field['id']. '" id="'. $field['id']. '">';
+					 echo '<option value="none" style="'. $option['style']. '>None</option>';
                      foreach ($field['options'] as $option) {
                         if( is_array($option) ) {
                            if( $meta == $option['value'] ) {
@@ -95,10 +102,10 @@ class  wfc_meta_box_class{
       $vars = $this->new_meta_boxes;
       foreach($vars as $var){
         add_meta_box(
-           $var['meta_box']['handler'],
+           $var['cpt'].'_metabox',
            $var['meta_box']['title'],
            array( &$this, 'display_meta_box_content' ),
-           $var['meta_box']['post_type'],
+           $var['cpt'],
            'advanced',
            'high'
         );
@@ -108,7 +115,7 @@ class  wfc_meta_box_class{
       $vars = $this->new_meta_boxes;
       $current_post_type = $post_obj->post_type;
       foreach($vars as $var){
-         if( $var['meta_box']['post_type'] == $current_post_type ){
+         if( strtolower($var['cpt']) == $current_post_type ){
              $meta_box = $var['meta_box']['new_boxes'];
              $this->types_meta_box($var);
           }
@@ -134,6 +141,11 @@ class  wfc_meta_box_class{
          return $post_id;
       }
       foreach ($meta_box['new_boxes'] as $field) {
+
+         $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', $field['field_title']);
+         $field_id_cleaning = strtolower( str_replace(" ", "_", $field_id_cleaning ));
+         $field['id'] = $var['cpt'].'_'.$field_id_cleaning;
+
          $old = get_post_meta($post_id, $field['id'], true);
          $trim_fields = preg_replace('/\[\]/', '', $field['id'] );
          $new = $_POST[$trim_fields];

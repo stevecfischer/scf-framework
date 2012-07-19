@@ -3,7 +3,9 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
+ * @version 2.1
  */
+ 
 class WFC_Widget_Recent_News extends WP_Widget {
 
    function __construct() {
