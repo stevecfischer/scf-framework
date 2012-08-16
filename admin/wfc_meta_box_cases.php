@@ -22,81 +22,74 @@ class  wfc_meta_box_class{
                $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', $field['field_title']);
                $field_id_cleaning = strtolower( str_replace(" ", "_", $field_id_cleaning ));
                $field['id'] = $var['cpt'].'_'.$field_id_cleaning;
-
+               $field['desc'] = empty($field['desc']) ? '' : $field['desc'];
                $meta = get_post_meta( $post->ID, $field['id'], true );
-               echo '<tr id="row'.$field['id'].'">';
-               echo '<th style="width:20%"><label>'. $field['field_title']. '</label></th><td>';
+
+               if( empty($meta) ){
+                  $field['options'] = empty($field['options']) ? array() : $field['options'];
+                  $meta = is_array($field['options']) ? array() : '';
+               }
+               echo '
+                  <div id="'.$field['id'].'" class="wfc-meta-control">
+                  <p>
+                     <strong>'. $field['field_title']. '</strong>
+                  </p>';
+
+               if( $field['desc'] != '' ) {
+                  echo '
+                     <div class="description-wrap">
+                     <a class="switch" href="#">[+] more info</a>
+                     <p class="description">'.$field['desc'].'</p>
+                     </div>';
+               }
+               echo '<p class="add_margin">';
                switch ($field['type_of_box']) {
                   case 'text':
-                     if( !is_array($meta) ) {
-                        echo '<input type="text" name="'. $field['id']. '" id="'. $field['id']. '"
-                           value="', $meta ? $meta : $field['std'], '" size="30" style="width:97%" />';
-                     echo '<br />'. $field['desc'];
-                     } else{
-                        foreach($meta as $meta_value){
-                           echo '<input type="text" name="'. $field['id']. '" id="'. $field['id']. '"
-                              value="'.$meta_value.'" size="30" style="width:97%" />';
-                        }
-                     echo '<br />'. $field['desc'];
-                     }
+                     echo '<input type="text" name="'.$field['id'].'" value="'.($meta ? $meta : '').'"  />';
                   break;
                   case 'textarea':
-                     echo '<textarea name="'. $field['id']. '" id="'. $field['id']. '" cols="60? rows="4? style="width:97%">
-                        ', $meta ? $meta : $field['std'], '</textarea>';
-                     echo '<br />'. $field['desc'];
+                     echo '<textarea cols="40" rows="2" name="'.$field['id'].'">'.($meta ? $meta : '').'</textarea>';
                   break;
                   case 'select':
-                     echo '<select name="'. $field['id']. '" id="'. $field['id']. '">';
-					 echo '<option value="none" style="'. $option['style']. '>None</option>';
-                     foreach ($field['options'] as $option) {
-                        if( is_array($option) ) {
-                           if( $meta == $option['value'] ) {
-                              echo '<option value="'. $option['value']. '" style="'. $option['style']. ' " selected="selected">'. $option['name']. '</option>';
-                           }else{
-                              echo '<option value="'. $option['value']. ' " style="'. $option['style']. ' ">'. $option['name']. '</option>';
+                     echo '
+                        <select name="'. $field['id']. '" id="'. $field['id']. '">
+                           <option value="none" >None</option>';
+                           foreach ($field['options'] as $option_k => $option_v) {
+                           $val = is_int($option_k) ? $option_v : $option_k;
+                           echo '<option value="'.$val.'" '.( $val == $meta ? ' selected="selected"' : '' ).' >'.$option_v.'</option>';
                            }
-                        }else{
-                           if( $meta == $option ) {
-                              echo '<option value="'. $option. '" selected="selected">'. $option. '</option>';
-                           }else{
-                              echo '<option value="'. $option. '">'. $option. '</option>';
-                           }
-                        }
-                     }
-                     echo '</select>&nbsp;&nbsp;&nbsp;<a id="preview_shortcut_link" style="display:none;" >Preview</a>';
+                        echo '</select>';
                   break;
                   case 'radio':
                      foreach ($field['options'] as $option) {
-                        echo '<input type="radio" name="', $field['id'], '" value="', $option['value'], '"', $meta == $option['value'] ? ' checked="checked"' : '', ' />', $option['name'];
+                     echo '
+                        <label>
+                           <input type="radio" name="'. $field['id']. '[]" value="'.$option.'" '.( in_array($option, $meta) ? ' checked="checked"' : '' ).' />&nbsp;'
+                              .$option.'
+                        </label><br />';
                      }
                   break;
                   case 'checkbox':
-                     if( is_array($field['options']) ) {
-                        foreach ($field['options'] as $option) {
-                           echo '<div class="wfc-meta-chkbox-block">';
-                           if( $meta == '' ) {
-                              echo '<div class="wfc-meta-chkbox"><input type="checkbox" name="'. $field['id']. '[]" value="'. $option. '" /></div><div>'. $option .'</div>';
-                           }elseif( in_array($option, $meta ) ){
-                              echo '<div class="wfc-meta-chkbox"><input type="checkbox" name="'. $field['id']. '[]" value="'. $option. '" checked="checked" /></div><div>'. $option .'</div>';
-                           }else{
-                              echo '<div class="wfc-meta-chkbox"><input type="checkbox" name="'. $field['id']. '[]" value="'. $option. '" /></div><div>'. $option .'</div>';
-                           }
-                           echo '</div>';
-                        }
-                     }else{
-                        if( $meta == $field['id'] ) {
-                          echo '<div class="wfc-meta-chkbox"><input type="checkbox" name="'. $field['id']. '" value="'. $field['id']. '" checked="checked"/></div><div>'.$field['field_title'].'</div>';
-                        }else{
-                          echo '<div class="wfc-meta-chkbox"><input type="checkbox" name="'. $field['id']. '" value="'. $field['id']. '" /></div><div>'.$field['field_title'].'</div>';
-                        }
+                     foreach ($field['options'] as $option) {
+                     echo '
+                        <label>
+                           <input type="checkbox" name="'. $field['id']. '[]" value="'.$option.'" '.( in_array($option, $meta) ? ' checked="checked"' : '' ).' />&nbsp;'
+                           .$option.'
+                        </label><br />';
                      }
+                  break;
+                  case 'uploader':
+                     echo '<input type="text" name="'.$field['id'].'[]" id="upload_image1" value="', $meta ? $meta : '', '" size="30" style="width:97%" />',
+                                '<br />', $field['desc'];
+                     echo '<input type="button" name="', $field['id'], '" id="upload_image_button1" value="Upload" />';
 
                   break;
                }
-               echo '<td></tr>';
+               echo '</p></div>';
+
             }
          }
-      echo '</table>';
+
    }//EOF
    public function register_meta_box(){
       $vars = $this->new_meta_boxes;
@@ -123,6 +116,7 @@ class  wfc_meta_box_class{
     }//EOF
    public function save_meta_box() {
       global $post;
+      if( !is_object($post) ) return;
       $post_id = $post->ID;
       $vars = $this->new_meta_boxes;
       foreach($vars as $var){
@@ -141,18 +135,17 @@ class  wfc_meta_box_class{
          return $post_id;
       }
       foreach ($meta_box['new_boxes'] as $field) {
-
          $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', $field['field_title']);
          $field_id_cleaning = strtolower( str_replace(" ", "_", $field_id_cleaning ));
          $field['id'] = $var['cpt'].'_'.$field_id_cleaning;
 
          $old = get_post_meta($post_id, $field['id'], true);
          $trim_fields = preg_replace('/\[\]/', '', $field['id'] );
+         $_POST[$trim_fields] = empty($_POST[$trim_fields]) ? array() : $_POST[$trim_fields];
          $new = $_POST[$trim_fields];
          if ($new && $new != $old && $field['type_of_box'] != 'checkbox') {
             update_post_meta($post_id, $field['id'], $new);
          } elseif ( $field['type_of_box'] == 'checkbox' ){
-
             update_post_meta( $post_id, $field['id'], $_POST[$field['id']] );
          } elseif ('' == $new && $old) {
             delete_post_meta($post_id, $field['id'], $old);

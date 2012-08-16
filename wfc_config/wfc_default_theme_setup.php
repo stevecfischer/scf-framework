@@ -54,13 +54,37 @@ $campaign_module_args = array(
       'thumbnail'
       ) /* specify which metaboxes you want displayed. See Codex for more info*/,
    'meta_box' => array(
-   'title'=>'Learn More Link',
+   'title'=>'Test all Meta Box Options',
    'new_boxes'=>array(
          array(
-         'field_title' => 'Link: ',
-         'type_of_box' => 'text',
-         'desc' => '', /* optional */
-         'std' => '' /* optional */
+            'field_title' => 'Text Test: ',
+            'type_of_box' => 'text',
+            'desc' => 'Testing Description Area', /* optional */
+         ),
+         array(
+            'field_title' => 'Textarea Test: ',
+            'type_of_box' => 'textarea',
+            'desc' => 'Testing Description Area', /* optional */
+         ),
+         array(
+            'field_title' => 'Radio Test: ',
+            'type_of_box' => 'radio',
+            'options' => array('one'=> "<img src='http://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=64' />",'two' => '222','three' => '333'), /* required */
+         ),
+         array(
+            'field_title' => 'Checkbox Test: ',
+            'type_of_box' => 'checkbox',
+            'options' => array('one'=> '111','two' => '222','three' => '333'), /* required */
+         ),
+         array(
+            'field_title' => 'Select Dropdown Test: ',
+            'type_of_box' => 'select',
+            'options' => array('one'=> '111','two' => '222','three' => '333'), /* required */
+         ),
+         array(
+            'field_title' => 'Uploader Test: ',
+            'type_of_box' => 'uploader',
+            'desc' => 'Upload Images and enter a caption.'
          ),
       )
    ),
