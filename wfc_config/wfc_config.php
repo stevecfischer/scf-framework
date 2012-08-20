@@ -4,6 +4,7 @@
  * @package scf-framework
  * @author Steve (6/11/2012)
  * @version 2.1
+ * @since 0.1
  */
 
 // WFC STANDARD FUNCTIONS //
@@ -140,19 +141,19 @@ WFC LOGIN LOGO
 */
 function wfc_login_logo() {
    echo '<style type="text/css">
-      .login h1 a{background-size:250px 49px !important;}
-   h1 a { background-image:url('.WFC_ADM_IMG_URI.'/wfc_logo.png) !important; }
+   .login h1 a{background-size:250px 49px !important;}
+   h1 a { background-image:url('.WFC_ADM_IMG_URI.'/wfc_logo.png) !important;}
    </style>';
 }
 add_action('login_head', 'wfc_login_logo');
 
 function wfc_login_url(){
-   return ('http://www.webfullcircle.com/');
+   return('http://www.webfullcircle.com/');
 }
 add_filter('login_headerurl', 'wfc_login_url');
 
 function wfc_login_title(){
-   return ('Web Full Circle');
+   return('Web Full Circle');
 }
 add_filter('login_headertitle', 'wfc_login_title');
 
@@ -189,7 +190,7 @@ REMOVE ITEMS FROM ADMIN BAR
 function wfc_remove_admin_bar_items() {
    global $wp_admin_bar;
    global $current_user;
-   if($current_user->user_login != 'wfc'){
+   if($current_user->user_login != 'wfc') {
       $wp_admin_bar->remove_menu('wpseo-menu');
       $wp_admin_bar->remove_menu('comments');
       $wp_admin_bar->remove_menu('new-content');
