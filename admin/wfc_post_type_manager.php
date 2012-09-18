@@ -3,9 +3,9 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
- * @version 2.1
- */ 
- 
+ * @version 2.2
+ */
+
 /*
 ** The Class
 */
@@ -92,4 +92,34 @@ class wfcfw
     }
 }/*EOC*/
 
+
+/*
+===============================
+DISPLAY FEATURED IMAGE IN ADMIN LIST VIEW FOR CPT'S
+
+ * @since 2.2
+===============================
+*/
+function wfc_add_post_thumbnail_column($cols){
+    $cols['wfc_post_thumb'] = __('Featured');
+    return $cols;
+}
+add_filter('manage_campaign_posts_columns', 'wfc_add_post_thumbnail_column', 5);
+add_filter('manage_news_posts_columns', 'wfc_add_post_thumbnail_column', 5);
+add_filter('manage_homeboxes_posts_columns', 'wfc_add_post_thumbnail_column', 5);
+add_filter('manage_subpagebanner_posts_columns', 'wfc_add_post_thumbnail_column', 5);
+
+function wfc_display_post_thumbnail_column($col, $id){
+    global $post;
+    $post_type = get_post_type( $id );
+    switch($col){
+        case 'wfc_post_thumb':
+            echo the_post_thumbnail();
+        break;
+    }
+}
+add_action('manage_campaign_posts_custom_column', 'wfc_display_post_thumbnail_column', 5, 2);
+add_action('manage_news_posts_custom_column', 'wfc_display_post_thumbnail_column', 5, 2);
+add_action('manage_homeboxes_posts_custom_column', 'wfc_display_post_thumbnail_column', 5, 2);
+add_action('manage_subpagebanner_posts_custom_column', 'wfc_display_post_thumbnail_column', 5, 2);
 

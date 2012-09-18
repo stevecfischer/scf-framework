@@ -3,7 +3,7 @@
  *
  * @package scf-framework
  * @author Steve (6/11/2012)
- * @version 2.1
+ * @version 2.2
  */
 
 /*~~~~ FRAMEWORK FRONTEND SETUP */
@@ -19,23 +19,23 @@ FRAMEWORK SETUP
 ===============================
 */
 if ( ! function_exists( 'wfc_framework_setup' ) ):
-   function wfc_framework_setup() {
-      /*
-      ===============================
-      ADD IMAGE SIZES
-      ===============================
-      */
-      add_theme_support( 'post-thumbnails' );
-      set_post_thumbnail_size(980,328,true);
-      add_image_size('subpage-banners', 980, 328,true);
-      add_image_size('campaign', 980, 497,true);
-      /*
-      ===============================
-      REGISTERING NAVIGATION MENUS
-      ===============================
-      */
-      register_nav_menu('Primary', 'Primary Navigation');
-   }
+    function wfc_framework_setup() {
+        /*
+        ===============================
+        ADD IMAGE SIZES
+        ===============================
+        */
+        add_theme_support( 'post-thumbnails' );
+        set_post_thumbnail_size(980,328,true);
+        add_image_size('subpage-banners', 980, 328,true);
+        add_image_size('campaign', 980, 497,true);
+        /*
+        ===============================
+        REGISTERING NAVIGATION MENUS
+        ===============================
+        */
+        register_nav_menu('Primary', 'Primary Navigation');
+    }
 endif; // wfc_framework_setup
 add_action( 'after_setup_theme', 'wfc_framework_setup' );
 
@@ -81,15 +81,17 @@ $campaign_module_args = array(
             'type_of_box' => 'select',
             'options' => array('one'=> '111','two' => '222','three' => '333'), /* required */
          ),
-         array(
+         /*array( BUGGY
             'field_title' => 'Uploader Test: ',
             'type_of_box' => 'uploader',
             'desc' => 'Upload Images and enter a caption.'
-         ),
+         ),*/
       )
    ),
    );
-$campaign_module = new wfcfw($campaign_module_args);
+if( CAMPAIGN_CPT ){
+    $campaign_module = new wfcfw($campaign_module_args);
+}
 
 /*
 ===============================
@@ -100,7 +102,53 @@ $subpage_banner_args = array(
    'cpt' => 'Subpage Banner', 'menu_name' => 'Subpage Img Pool',
    'supports' => array('title','thumbnail'),
    );
-$subpage_banner = new wfcfw($subpage_banner_args);
+if( SUBPAGE_BANNER_CPT ){
+    $subpage_banner = new wfcfw($subpage_banner_args);
+}
+
+/*
+===============================
+CREATE CPT FOR SUBPAGE BANNERS
+===============================
+*/
+$news_cpt_args = array(
+   'cpt' => 'News', 'menu_name' => 'News',
+   'tax' => array( array('tax_label' => 'topics', 'menu_name' => 'Topics' ), ),
+   'supports' => array('editor', 'title', 'page-attributes', 'thumbnail'),
+   );
+if( NEWS_CPT ){
+    $news_cpt = new wfcfw($news_cpt_args);
+}
+
+/*
+===============================
+CREATE CPT FOR HOME PAGE POSTS SPACE
+===============================
+*/
+$home_boxes_module_args = array(
+   'cpt' => 'homeboxes' /* CPT Name */,
+   'menu_name' => 'Home Posts' /* Overide the name above */,
+   'supports' => array(
+      'title',
+      'page-attributes',
+      'thumbnail',
+      'editor'
+      ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+   'meta_box' => array(
+   'title'=>'Learn More Link',
+   'new_boxes'=>array(
+         array(
+         'field_title' => 'Link: ',
+         'type_of_box' => 'text',
+         'desc' => '', /* optional */
+         'std' => '' /* optional */
+         ),
+      )
+   ),
+);
+if( HOME_BOXES_CPT ){
+    $home_boxes_module = new wfcfw($home_boxes_module_args);
+}
 
 /*
 ===============================

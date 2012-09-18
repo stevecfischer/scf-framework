@@ -48,8 +48,8 @@ lightbox = new Lightbox options
   LightboxOptions = (function() {
 
     function LightboxOptions() {
-      this.fileLoadingImage = '/cms-wfc/wp-content/themes/centurionstone/wfc-includes/images/loading.gif';
-      this.fileCloseImage = '/cms-wfc/wp-content/themes/centurionstone/wfc-includes/images/close.png';
+      this.fileLoadingImage = '/cms-wfc/wp-content/themes/THEME_NAME/admin/images/loading.gif';
+      this.fileCloseImage = '/cms-wfc/wp-content/themes/THEME_NAME/admin/images/close.png';
       this.resizeDuration = 700;
       this.fadeDuration = 500;
       this.labelImage = "Image";
