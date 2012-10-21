@@ -14,3 +14,10 @@ require_once('wfc_config/wfc_config.php');
 */
 
 
+function god(){
+   print_r(current_filter());
+   echo '<br />';
+}
+//add_action('all', 'god');
+
+

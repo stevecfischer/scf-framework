@@ -40,6 +40,7 @@ define('CAMPAIGN_CPT'       , 1);
 define('SUBPAGE_BANNER_CPT' , 1);
 define('HOME_BOXES_CPT'     , 1);
 define('NEWS_CPT'           , 1);
+define('TESTIMONIAL_CPT'    , 1);
 
 /*
 ===============================

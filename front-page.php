@@ -9,7 +9,9 @@ get_header();
 
    while( have_posts() ) : the_post();
       echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
-      echo '<div id="wfc-the-content">'.get_the_content().'</div>';
+      the_content();
    endwhile;wp_reset_query();
-
+    ?>
+<embed src="http://www.inorout.com/events">
+<?php
 get_footer();

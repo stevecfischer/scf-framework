@@ -19,9 +19,9 @@ class  wfc_meta_box_class{
          if( is_array($var['meta_box']['new_boxes']) ) {
             foreach ($var['meta_box']['new_boxes'] as $field) {
 
-               $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', $field['field_title']);
+               $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', trim( $field['field_title'] ) );
                $field_id_cleaning = strtolower( str_replace(" ", "_", $field_id_cleaning ));
-               $field['id'] = $var['cpt'].'_'.$field_id_cleaning;
+               $field['id'] = 'wfc_'.$var['cpt'].'_'.$field_id_cleaning;
                $field['desc'] = empty($field['desc']) ? '' : $field['desc'];
                $meta = get_post_meta( $post->ID, $field['id'], true );
 
@@ -78,11 +78,48 @@ class  wfc_meta_box_class{
                         </label><br />';
                      }
                   break;
-                  case 'uploader':
-                     echo '<input type="text" name="'.$field['id'].'[]" id="upload_image1" value="', $meta ? $meta : '', '" size="30" style="width:97%" />',
-                                '<br />', $field['desc'];
-                     echo '<input type="button" name="', $field['id'], '" id="upload_image_button1" value="Upload" />';
-
+                   case 'uploader':
+                       ?>
+                     <table id="form">
+                        <tbody class="wfc-image-gallery-table">
+                           <?php if( !empty($meta) ){
+                               $meta_caption = get_post_meta( $post->ID, $field['id'].'_captions', true );
+                               ?>
+                               <?php for( $i = 0; $i < count($meta); $i++ ) : ?>
+                                  <tr valign="top" class="wfc-sortable-rows" id="row_<?php echo $i+1; ?>">
+                                     <td scope="row">
+                                        <label for="image_<?php echo $i+1; ?>">Picture</label><br/>
+                                     </td>
+                                     <td>
+                                        <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID;?>" />
+                                        <input type="text" name="<?php echo $field['id'];?>[]"  id="image_<?php echo $i+1; ?>" size="70" value="<?php echo  $meta[$i]; ?>" />
+                                        <input id="image_<?php echo $i+1; ?>" type="button" value="Upload Image" class="wfc_upload_image" />
+                                        <input id="row_<?php echo $i+1; ?>" type="button" value="Remove picture"  class="wfc_remove_image"/><br/>
+                                        <label for="caption_<?php echo $i+1; ?>">Caption : </label>
+                                        <input type="text" name="<?php echo $field['id'];?>_captions[]"  id="caption_<?php echo $i+1; ?>" size="59" value="<?php echo  $meta_caption[$i]; ?>" />
+                                            <label class="levelonehandle">X</label>
+                                     </td>
+                                  </tr>
+                               <?php endfor; ?>
+                           <?php } else {?>
+                               <tr valign="top" id="row_1">
+                                     <td scope="row">
+                                        <label for="image_1">Picture</label><br/>
+                                     </td>
+                                     <td>
+                                        <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID;?>" />
+                                        <input type="text" name="<?php echo $field['id'];?>[]"  id="image_1" size="70" value="" />
+                                        <input id="image_1" type="button" value="Upload Image" class="wfc_upload_image" />
+                                        <input id="row_1" type="button" value="Remove picture"  class="wfc_remove_image"/><br/>
+                                        <label for="caption_1">Caption : </label>
+                                        <input type="text" name="<?php echo $field['id'];?>_captions[]"  id="caption_1" size="59" value="" />
+                                     </td>
+                                  </tr>
+                              <?php } ?>
+                            </tbody>
+                        </table>
+                        <br /><a id="add_field" href="">Add an other picture</a>
+                    <?php
                   break;
                }
                echo '</p></div>';
@@ -135,21 +172,24 @@ class  wfc_meta_box_class{
          return $post_id;
       }
       foreach ($meta_box['new_boxes'] as $field) {
-         $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', $field['field_title']);
-         $field_id_cleaning = strtolower( str_replace(" ", "_", $field_id_cleaning ));
-         $field['id'] = $var['cpt'].'_'.$field_id_cleaning;
+        $field_id_cleaning = preg_replace("/[^A-Za-z0-9 ]/", '', trim( $field['field_title'] ) );
+        $field_id_cleaning = strtolower( str_replace(" ", "_", $field_id_cleaning ));
+        $field['id'] = 'wfc_'.$var['cpt'].'_'.$field_id_cleaning;
 
-         $old = get_post_meta($post_id, $field['id'], true);
-         $trim_fields = preg_replace('/\[\]/', '', $field['id'] );
-         $_POST[$trim_fields] = empty($_POST[$trim_fields]) ? array() : $_POST[$trim_fields];
-         $new = $_POST[$trim_fields];
-         if ($new && $new != $old && $field['type_of_box'] != 'checkbox') {
+        $old = get_post_meta($post_id, $field['id'], true);
+        $trim_fields = preg_replace('/\[\]/', '', $field['id'] );
+        $_POST[$trim_fields] = empty($_POST[$trim_fields]) ? array() : $_POST[$trim_fields];
+        $new = $_POST[$trim_fields];
+        if ($new && $new != $old && $field['type_of_box'] != 'checkbox' && $field['type_of_box'] != 'uploader' ) {
             update_post_meta($post_id, $field['id'], $new);
-         } elseif ( $field['type_of_box'] == 'checkbox' ){
+        } elseif ( $field['type_of_box'] == 'checkbox' ){
             update_post_meta( $post_id, $field['id'], $_POST[$field['id']] );
-         } elseif ('' == $new && $old) {
+        } elseif( $field['type_of_box'] == 'uploader' ){
+            update_post_meta( $post_id, $field['id'], $_POST[$field['id']] );
+            update_post_meta( $post_id, $field['id'].'_captions', $_POST[$field['id'].'_captions'] );
+        } elseif ('' == $new && $old) {
             delete_post_meta($post_id, $field['id'], $old);
-         }
-      }
-   }
+        }
+    }
+}
 }//EOC

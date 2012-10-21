@@ -10,7 +10,7 @@ get_header();
    <?php
       while( have_posts() ) : the_post();
          echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
-         echo '<p>'.get_the_content().'</p>';
+         the_content();
       endwhile;wp_reset_query();
    ?>
 
