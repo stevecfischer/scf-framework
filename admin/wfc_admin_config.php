@@ -56,7 +56,7 @@ require_once(WFC_CONFIG.'/wfc_default_theme_setup.php'); //Register default CPT'
 require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
 require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
 require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
-//require_once(WFC_ADM_URI.'/wfc_new_user_pointers.php'); //Creates tour for new users **BETA**
+require_once(WFC_ADM.'/wfc_new_user_pointers.php'); //Creates tour for new users **BETA**
 
 /*
 ===============================
@@ -115,4 +115,25 @@ function wfc_login_title(){
 }
 add_filter('login_headertitle', 'wfc_login_title');
 
+
+/*
+===============================
+ADD AN UPDATE AND FINISH BUTTON
+    SO USERS CAN GO TO LIST VIEW INSTEAD OF EDITING THE POST
+
+ * @since 2.1
+===============================
+*/
+function wfc_add_update_and_finish_button($data) {
+    echo '<input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue" tabindex="5" accesskey="p" value="Update &amp; Done">';
+}
+add_action( 'post_submitbox_start', 'wfc_add_update_and_finish_button' );
+
+function wfc_continue_after_update_redirect($location, $status) {
+    if ( isset($_REQUEST['wfc_continue'])) {
+        $location = admin_url().'edit.php?post_type='.$_REQUEST['post_type'].'';
+    }
+    return $location;
+}
+add_filter('wp_redirect', 'wfc_continue_after_update_redirect', 10, 2);
 

@@ -81,11 +81,11 @@ $campaign_module_args = array(
             'type_of_box' => 'select',
             'options' => array('one'=> '111','two' => '222','three' => '333'), /* required */
          ),
-         /*array( BUGGY
+         array(
             'field_title' => 'Uploader Test: ',
             'type_of_box' => 'uploader',
             'desc' => 'Upload Images and enter a caption.'
-         ),*/
+         ),
       )
    ),
    );
@@ -150,6 +150,33 @@ if( HOME_BOXES_CPT ){
     $home_boxes_module = new wfcfw($home_boxes_module_args);
 }
 
+/*
+===============================
+CREATE CPT FOR TESTIMONIALS
+===============================
+*/
+$testimonial_args = array(
+    'cpt' => 'Testimonial', 'menu_name' => 'Testimonial',
+    'supports' => array('title','editor'),
+    'meta_box' => array(
+        'title'=>'Author Information',
+        'new_boxes'=>array(
+            array(
+                'field_title' => 'Name: ',
+                'type_of_box' => 'text',
+                'desc' => 'Ex. John Smith', /* optional */
+            ),
+            array(
+                'field_title' => 'Position: ',
+                'type_of_box' => 'text',
+                'desc' => 'Ex. Director, USA', /* optional */
+            ),
+        )
+    ),
+);
+if( TESTIMONIAL_CPT ){
+    $testimonial = new wfcfw($testimonial_args);
+}
 /*
 ===============================
 REGISTER LEFT SIDEBAR
