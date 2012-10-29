@@ -43,6 +43,7 @@ function Wfc_Core_Campaign_Loop(){
         </div>
         <a class="learn_more" href="<?php  echo get_post_meta( $post->ID, 'homeposts_link_', true ); ?>">Learn More</a>
     </div>
+        <?php
     endwhile;endif;
     wp_reset_query();
 }
@@ -85,4 +86,15 @@ function Wfc_Core_Testimonial_Loop(){
         }
     endwhile;endif;
     wp_reset_query();
+}
+
+function Wfc_Core_Page_Loop(){
+    while( have_posts() ) : the_post();
+        echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
+        the_content();
+    endwhile;wp_reset_query();
+}
+
+function Wfc_Core_Sidebar($handle=1){
+    if( !dynamic_sidebar(1)) echo 'no sidebar';
 }

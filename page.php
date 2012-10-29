@@ -8,16 +8,12 @@
 get_header();
 ?>
    <?php
-      while( have_posts() ) : the_post();
-         echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
-         the_content();
-      endwhile;wp_reset_query();
+    Wfc_Core_Page_Loop();
    ?>
 
    <div id="sidebar" class="left_sidebar">
-      <?php if( !dynamic_sidebar('Left Sidebar')) :
-         echo 'no sidebar';
-         endif;
+      <?php
+        Wfc_Core_Sidebar();
       ?>
    </div><!-- //#sidebar.left_sidebar -->
 
