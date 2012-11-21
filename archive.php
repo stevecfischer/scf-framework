@@ -18,6 +18,7 @@ get_header();
       endif;
       wp_reset_query();
    ?>
+   <?php Wfc_Pagination(); ?>
 
    <div id="sidebar" class="left_sidebar">
       <?php if( !dynamic_sidebar('Left Sidebar')) :

@@ -51,12 +51,16 @@ FILE INCLUDES
  * @since 1.0
 ===============================
 */
+
 require_once(WFC_ADM.'/wfc_post_type_manager.php'); //CPT / Tax / Metabox Class
 require_once(WFC_CONFIG.'/wfc_default_theme_setup.php'); //Register default CPT's
 require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
 require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
 require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
+require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
 require_once(WFC_ADM.'/wfc_new_user_pointers.php'); //Creates tour for new users **BETA**
+require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Creates tour for new users **BETA**
+//require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Trying new WP feature **BETA**
 
 /*
 ===============================
@@ -76,9 +80,9 @@ WIDGETS INCLUDE FILES
 */
 require_once(WFC_WIDGETS.'/wfc_custom_nav/wfc_custom_nav.php');
 //require_once(WFC_WIDGETS.'/wfc_custom_drag_menu/wfc_custom_drag_menu.php');
-require_once(WFC_WIDGETS.'/wfc_custom_news/wfc_custom_news.php');
 require_once(WFC_WIDGETS.'/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
 require_once(WFC_WIDGETS.'/wfc_custom_tax_widget/wfc_custom_tax_widget.php');
+require_once(WFC_WIDGETS.'/wfc_spotlight/wfc_spotlight.php');
 
 /*
 ===============================

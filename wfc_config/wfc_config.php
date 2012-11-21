@@ -11,8 +11,10 @@
 // ---------------------- //
 
 
+define( 'WFC_SITE_URL', get_bloginfo('url') . '/' );
 define( 'WFC_PT', get_template_directory() . '/' );
 define( 'WFC_CONFIG', WFC_PT . 'wfc_config' );
+define( 'WFC_THEME_FUNCTIONS', WFC_PT . 'theme_functions' );
 define( 'WFC_WIDGETS', WFC_PT . 'widgets' );
 define( 'WFC_SHORTCODE', WFC_PT . 'admin/shortcode' );
 define( 'WFC_GLOBAL', WFC_PT . 'admin/global' );
@@ -40,7 +42,7 @@ define('CAMPAIGN_CPT'       , 1);
 define('SUBPAGE_BANNER_CPT' , 1);
 define('HOME_BOXES_CPT'     , 1);
 define('NEWS_CPT'           , 1);
-define('TESTIMONIAL_CPT'    , 1);
+define('TESTIMONIAL_CPT'    , 0);
 
 /*
 ===============================
@@ -79,7 +81,7 @@ function wfc_remove_menu_items( ){
       remove_submenu_page( 'themes.php', 'themes.php' );
    }
 }
-add_action('admin_menu', 'wfc_remove_menu_items', 999);
+//add_action('admin_menu', 'wfc_remove_menu_items', 999);
 
 /* ~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~

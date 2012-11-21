@@ -28,7 +28,7 @@ Awnser number 1
 = 0.2 =
 * Added all default files a theme would need.
 
-= 0.4 = 
+= 0.4 =
 * Set CPTs for campaign space and subpage image pool to be created by default
 
 = 1.0 =
@@ -36,3 +36,7 @@ Awnser number 1
 
 = 2.1 =
 * moved security functions to its only file
+* enhanced admin UI
+    i. with hovering and click posts lists items
+    ii. update and finish button on post edit pages
+* refactored definitions, file includes, and admin/global functions

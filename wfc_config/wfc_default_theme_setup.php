@@ -39,6 +39,15 @@ if ( ! function_exists( 'wfc_framework_setup' ) ):
 endif; // wfc_framework_setup
 add_action( 'after_setup_theme', 'wfc_framework_setup' );
 
+/*
+===============================
+Filter excerpt 
+===============================
+*/
+function wfc_excerpt_length( $length ) {
+	return $length;
+}
+add_filter( 'excerpt_length', 'wfc_excerpt_length', 999 );
 
 /*
 ===============================
