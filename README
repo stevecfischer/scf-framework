@@ -40,3 +40,6 @@ Awnser number 1
     i. with hovering and click posts lists items
     ii. update and finish button on post edit pages
 * refactored definitions, file includes, and admin/global functions
+
+= 2.3 =
+* added wildcards to sidebars. so widgets will inherit their classes correctly

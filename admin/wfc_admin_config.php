@@ -129,7 +129,7 @@ ADD AN UPDATE AND FINISH BUTTON
 ===============================
 */
 function wfc_add_update_and_finish_button($data) {
-    echo '<input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue" tabindex="5" accesskey="p" value="Update &amp; Done">';
+    echo '<input name="original_publish" type="hidden" id="original_publish" value="Publish"><input type="hidden" name="publish" id="publish" class="button button-primary button-large" value="Publish" accesskey="p"><input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue" tabindex="5" accesskey="p" value="Update &amp; Done">';
 }
 add_action( 'post_submitbox_start', 'wfc_add_update_and_finish_button' );
 
@@ -140,4 +140,27 @@ function wfc_continue_after_update_redirect($location, $status) {
     return $location;
 }
 add_filter('wp_redirect', 'wfc_continue_after_update_redirect', 10, 2);
+
+/*
+===============================
+CUSTOMIZE ADMIN MENU ORDER
+===============================
+*/
+function wfc_custom_menu_order($menu_ord) {
+   if (!$menu_ord) return true;
+      return array(
+         'index.php',
+         'video-user-manuals/plugin.php',
+         'edit.php?post_type=page',
+         'edit.php?post_type=news',
+         'edit.php?post_type=teacher',
+         'edit.php?post_type=jobs',
+         'edit.php?post_type=campaign',
+         'edit.php?post_type=subpageimages',
+         'upload.php',
+         'admin.php?page=gf_edit_forms',
+      );
+}
+add_filter('custom_menu_order', 'wfc_custom_menu_order');
+add_filter('menu_order', 'wfc_custom_menu_order');
 

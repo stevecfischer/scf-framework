@@ -28,7 +28,7 @@
             $exclude_arr[] = get_the_ID();
         endwhile;
         else:
-            die('no pages');
+            //die('no pages');
         endif;
         wp_reset_query();
         return $exclude_arr;

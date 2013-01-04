@@ -186,7 +186,7 @@ class wfc_pointers_class {
                 align: '<?php echo $position_at_align; ?>'
             },
             buttons: function( event, t ) {
-                button = jQuery('<a id="pointer-close" class="button-secondary">'</a><a id="pointer-primary" class="button-primary">Close</a>');
+                button = jQuery('<a id="pointer-close" class="button-secondary"></a><a id="pointer-primary" class="button-primary">Close</a>');
                 button.bind( 'click.pointer', function() {
                     <?php echo $button2_function; ?>
                 });
@@ -220,6 +220,3 @@ class wfc_pointers_class {
    <?php
    }
 }
-
-$wfc_pointers_class = new wfc_pointers_class;
-

@@ -194,9 +194,9 @@ REGISTER LEFT SIDEBAR
 register_sidebar(array(
    'name' => 'Left Sidebar',
    'id' => 'sidebar-1',
-   'before_widget' => '<div>',
-   'after_widget' => '</div>',
-   'before_title' => '<div class="widgettitle"><h2>',
-   'after_title' => '</h2></div>',
+    'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+    'after_widget' => "</aside>",
+    'before_title' => '<h3 class="widget-title">',
+    'after_title' => '</h3>',
    'description' => ''
 ));
