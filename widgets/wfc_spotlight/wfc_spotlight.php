@@ -44,19 +44,19 @@
             query_posts( $queryArgs );
             if( have_posts() ) : while( have_posts() ) : the_post();
                 ?>
-                <li>
-                <div id="spotlight_slider_bg">
-                    <a href="<?php the_permalink(); ?>">
-                        <?php the_post_thumbnail( 'spotlight-thumb' ); ?>
-                    </a>
-					<span class="spotlight-mask"> </span>
-                </div>
-                <!-- / .spotlight slider-->
-                <h3 class="spotlight_title">
-                    <a href="<?php the_permalink(); ?>"><?php the_title();?></a>
-                </h3>
+            <li>
+            <div id="spotlight_slider_bg">
+                <a href="<?php the_permalink(); ?>">
+                    <?php the_post_thumbnail( 'spotlight-thumb' ); ?>
+                </a>
+                <span class="spotlight-mask"></span>
+            </div>
+            <!-- / .spotlight slider-->
+            <h3 class="spotlight_title">
+                <a href="<?php the_permalink(); ?>"><?php the_title();?></a>
+            </h3>
                 <?php the_content(); ?>
-                </li>
+            </li>
             <?php
             endwhile; endif;
             echo '</ul>';

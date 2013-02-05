@@ -14,11 +14,11 @@
     function get_shortcut_pages(){
         global $wpdb;
         $args        = array(
-            'post_type'  => 'page',
+            'post_type'      => 'page',
             'posts_per_page' => -1,
-            'meta_query' => array(
+            'meta_query'     => array(
                 array(
-                    'key'     => 'wfc_page_shortcut_url',
+                    'key' => 'wfc_page_shortcut_url',
                 )
             )
         );
@@ -26,8 +26,7 @@
         $exclude_arr = array();
         if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
             $exclude_arr[] = get_the_ID();
-        endwhile;
-        else:
+        endwhile; else:
             //die('no pages');
         endif;
         wp_reset_query();
@@ -42,7 +41,7 @@
         $exclude = get_shortcut_pages();
         global $wpdb;
         $args  = array(
-            'post__not_in'        => $exclude,
+            'post__not_in'   => $exclude,
             'post_type'      => 'page',
             'posts_per_page' => -1,
             'post_status'    => 'publish',
@@ -75,12 +74,12 @@
     ===============================
     */
     $page_shortcut_args = array(
-        'cpt' => 'page' /* CPT Name */,
+        'cpt'      => 'page' /* CPT Name */,
         'meta_box' => array(
-            'handler'  => '_additional_page_short_cut_options',
-            'title'    => 'Shortcut Page',
-            'cpt'=> 'page',
-            'new_boxes'=> array(
+            'handler'   => '_additional_page_short_cut_options',
+            'title'     => 'Shortcut Page',
+            'cpt'       => 'page',
+            'new_boxes' => array(
                 array(
                     'field_title' => 'Shortcut URL: ',
                     'type_of_box' => 'text',
@@ -95,20 +94,19 @@
                 array(
                     'field_title' => 'New Tab Option: ',
                     'type_of_box' => 'checkbox',
-                    'options' => array('new_tab'=> 'Open in a new tab'),
+                    'options'     => array('new_tab' => 'Open in a new tab'),
                     'desc'        => 'Check if you want the link to open in a new tab.'
                 ),
             ),
         ),
     );
-
-    $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
+    $page_shortcut                    = new wfc_meta_box_class($page_shortcut_args);
     $page_internal_linking_check_args = array(
         'meta_box' => array(
-            'handler'  => '_additional_page_internal_linking_check',
-            'title'    => 'WFC Internal Linking Check',
-            'post_type'=> 'page',
-            'new_boxes'=> array(
+            'handler'   => '_additional_page_internal_linking_check',
+            'title'     => 'WFC Internal Linking Check',
+            'post_type' => 'page',
+            'new_boxes' => array(
                 array(
                     'field_title' => 'Pages that link to this page:',
                     'id'          => '_page_toggle_internal_link_check',
@@ -122,7 +120,7 @@
     function scf_internal_link_checker(){
         $post_permalink = get_permalink( $_GET['post'] );
         global $wpdb;
-        $args = array(
+        $args           = array(
             'post_type'  => 'page',
             'meta_query' => array(
                 array(
@@ -160,6 +158,7 @@
             }
         }
     }
+
     add_action( 'admin_init', 'scf_intercept_add_new_page' );
     /*
     =========================================
@@ -175,6 +174,7 @@
         }
         return $link;
     }
+
     add_filter( 'get_edit_post_link', 'scf_page_link' );
     /*
     ===============================
@@ -184,37 +184,39 @@
     function scf_load_menu_manager_js(){
         global $post;
         global $pagenow;
-        if( $post->post_type == 'page' && ($pagenow == 'post-new.php' || $pagenow == 'edit.php' || $pagenow == 'post.php') ){
+        if( $post->post_type == 'page' &&
+            ($pagenow == 'post-new.php' || $pagenow == 'edit.php' || $pagenow == 'post.php')
+        ){
             wp_register_script( 'scf.jquery.menu.manager', WFC_ADM_JS_URI.'/scf.jquery.menu.manager.js' );
             wp_enqueue_script( 'scf.jquery.menu.manager' );
         }
     }
-    add_action( 'admin_enqueue_scripts', 'scf_load_menu_manager_js' );
 
+    add_action( 'admin_enqueue_scripts', 'scf_load_menu_manager_js' );
     /*
     ===============================
     ADDS THUMBNAIL IMAGES TO ADMIN LIST VIEW FOR
        -CAMPAIGN
     ===============================
     */
-    function scf_add_shortcut_column($cols){
-        $cols['scf_page_order'] = __('Order');
-        $cols['scf_shortcut_link'] = __('Shortcut Link');
+    function scf_add_shortcut_column( $cols ){
+        $cols['scf_page_order']    = __( 'Order' );
+        $cols['scf_shortcut_link'] = __( 'Shortcut Link' );
         return $cols;
     }
-    add_filter('manage_page_posts_columns', 'scf_add_shortcut_column', 5);
 
-    function scf_display_shortcut_column($col, $id){
+    add_filter( 'manage_page_posts_columns', 'scf_add_shortcut_column', 5 );
+    function scf_display_shortcut_column( $col, $id ){
         global $post;
         $post_type = get_post_type( $id );
-        switch($col){
+        switch( $col ){
             case 'scf_page_order':
                 echo $post->menu_order;
                 break;
-
             case 'scf_shortcut_link':
-                echo get_post_meta($post->ID,'wfc_page_shortcut_url',true);
+                echo get_post_meta( $post->ID, 'wfc_page_shortcut_url', true );
                 break;
         }
     }
-    add_action('manage_page_posts_custom_column', 'scf_display_shortcut_column', 5, 2);
+
+    add_action( 'manage_page_posts_custom_column', 'scf_display_shortcut_column', 5, 2 );

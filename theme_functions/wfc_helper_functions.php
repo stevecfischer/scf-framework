@@ -34,7 +34,11 @@
         $text    = strip_shortcodes( $text );
         $text    =
             strip_tags( $text, '<a>' ); // use ' $text = strip_tags($text,'<p><a>'); ' if you want to keep some tags
-        $text    = substr( $text, 0, $length );
+        if(strlen($text) > $length){
+            $text    = substr( $text, 0, $length ).'...';
+        }else{
+            $text    = substr( $text, 0, $length );
+        }
         $excerpt = Wfc_Reverse_Strrchr( $text, '.', 1 );
         if( $excerpt ){
             echo apply_filters( 'the_excerpt', $excerpt );
@@ -54,14 +58,16 @@
      */
     function Wfc_Limit_Excerpt( $content ){
         global $post;
-        if($post->post_type == 'spotlight') return $content;
-        if(strlen($content) >= 55 ){
+        if( $post->post_type == 'spotlight' ){
+            return $content;
+        }
+        if( strlen( $content ) >= 55 ){
             return substr( $content, 0, 55 ).'...';
         }
         return $content;
     }
-    add_filter( 'the_excerpt', 'Wfc_Limit_Excerpt' );
 
+    add_filter( 'the_excerpt', 'Wfc_Limit_Excerpt' );
     /**
      * @param $title
      *
@@ -69,26 +75,26 @@
      */
     function Wfc_Limit_Title( $title ){
         global $post;
-        if(strlen($title) >= 32 && $post->post_type == 'news'){
+        if( strlen( $title ) >= 32 && $post->post_type == 'news' ){
             return substr( $title, 0, 32 ).'...';
         }
-        if(strlen($title) >= 29 && $post->post_type == 'spotlight'){
+        if( strlen( $title ) >= 29 && $post->post_type == 'spotlight' ){
             return substr( $title, 0, 29 ).'...';
         }
         return $title;
     }
-    add_filter( 'the_title', 'Wfc_Limit_Title' );
 
-	
-	function your_dashboard_widget() {
-        echo 'Hello Wordpress user! Fill this with HTML or PHP';
+    add_filter( 'the_title', 'Wfc_Limit_Title' );
+    function Wfc_Client_News_Feed_Widget(){
+        echo '<iframe src="http://69.72.236.85/scf_framework_iframe.html" sandbox=" "></iframe>';
     }
-    function add_your_dashboard_widget() {
-        wp_add_dashboard_widget( "your_dashboard_widget", __( "Widget Title!" ), "your_dashboard_widget" );
+
+    function Add_Wfc_Client_News_Feed_Widget(){
+        wp_add_dashboard_widget( "Wfc_Client_News_Feed_Widget", __( "WFC Client News Feed!" ), "Wfc_Client_News_Feed_Widget" );
     }
-    add_action("wp_dashboard_setup", "add_your_dashboard_widget" );
-	
-	   /**
+
+    add_action( "wp_dashboard_setup", "Add_Wfc_Client_News_Feed_Widget" );
+    /**
      *
      * @package scf-framework
      * @author Steve (12/10/2012)
