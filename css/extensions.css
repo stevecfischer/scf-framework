@@ -1,0 +1,82 @@
+/*
+** Version: 2.3
+** Author: Steve Fischer
+** Notes: CSS for various extensions. Ex A to Z Index, Sitemap, Staff Directory
+*/
+
+/*A-Z Index*/
+
+#wfc-atoz{
+    width :100%;
+    float :left;
+}
+/*!
+** tab heading (letters)
+*/
+#az_tabs{
+    position   :absolute;
+    margin-top :1px;
+    padding    :0px;
+}
+ul#az_tabs li{
+    list-style :none;
+    background :url(../images/tab_flexible_off_left.gif) no-repeat scroll left top transparent;
+    float      :left;
+    font-size  :15px;
+    margin     :0;
+    padding    :14px 0 0;
+    position   :relative;
+    height     :34px;
+}
+ul#az_tabs li a{
+    background      :url(../images/tab_flexible_off_right.gif) no-repeat scroll right top transparent;
+    cursor          :pointer;
+    padding         :14px 11px 0;
+    text-decoration :none;
+}
+ul#az_tabs li.current{
+    background :url(../images/tab_flexible_on_left.gif) no-repeat scroll left top transparent;
+    padding    :14px 0 0;
+    cursor     :default;
+}
+ul#az_tabs li.current a{
+    background :url(../images/tab_flexible_on_right.gif) no-repeat scroll right top transparent;
+    padding    :14px 20px 0 23px;
+    cursor     :default;
+}
+
+/*!
+** result section (links)
+*/
+#atoz{
+    clear   :both;
+    padding :15px 0 0;
+    width   :100%;
+}
+#atoz ul{
+    padding :0px;
+    margin  :0;
+}
+#atoz li{
+    float  :left;
+    margin :0;
+    width  :430px;
+}
+#atoz li a{
+    text-decoration :none;
+}
+#atoz li a:hover{
+    text-decoration :underline;
+}
+ul.active{
+    display    :block;
+    visibility :visible;
+}
+ul.inactive{
+    display :none;
+}
+#az_tabs-wrapper{
+    /*border-bottom: 1px solid #EFEFEF;*/
+    clear   :both;
+    padding :0px 0 34px;
+}

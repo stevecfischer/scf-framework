@@ -18,12 +18,8 @@
         wp_register_script( 'jquery.easing.1.3', WFC_ADM_JS_URI.'/jquery.easing.1.3.js', array('jquery') );
         wp_register_script( 'jquery.lightbox', WFC_ADM_JS_URI.'/lightbox.js', array('jquery') );
         wp_register_script(
-            'jquery-idea-gallery', WFC_ADM_JS_URI.'/jquery.ideagallery.1.1.js', array(
-                                                                                     'jquery',
-                                                                                     'jquery.easing.1.3',
-                                                                                     'jquery.lightbox'
-                                                                                ) );
-        wp_enqueue_script( 'jquery.scf-framework' );
+            'jquery-idea-gallery', WFC_ADM_JS_URI.'/jquery.ideagallery.2.2.js',
+            array('jquery', 'jquery.easing.1.3', 'jquery.lightbox') );
         wp_enqueue_script( 'jquery.lightbox' );
         wp_enqueue_script( 'jquery-idea-gallery' );
     }
@@ -157,13 +153,13 @@
     */
     function wfc_imgurl_to_postid( $image_src ){
         global $wpdb;
-        $new_img_src = explode( 'uploads/', $image_src );
-        $query = "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value ='$new_img_src[1]'";
-        $id = $wpdb->get_var( $query );
-        $img_thumb = wp_get_attachment_image_src( $id, 'idea-gallery-thumb' );
-        $img_frame = wp_get_attachment_image_src( $id, 'idea-gallery-frame' );
+        $new_img_src  = explode( 'uploads/', $image_src );
+        $query        = "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value ='$new_img_src[1]'";
+        $id           = $wpdb->get_var( $query );
+        $img_thumb    = wp_get_attachment_image_src( $id, 'idea-gallery-thumb' );
+        $img_frame    = wp_get_attachment_image_src( $id, 'idea-gallery-frame' );
         $img_max_size = wp_get_attachment_image_src( $id, 'max-size-lightbox' );
-        $arr = array('thumb' => $img_thumb, 'frame' => $img_frame, 'max_size' => $img_max_size);
+        $arr          = array('thumb' => $img_thumb, 'frame' => $img_frame, 'max_size' => $img_max_size);
         return $arr;
     }
 

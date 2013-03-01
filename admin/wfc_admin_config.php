@@ -69,6 +69,7 @@
     ===============================
     */
     require_once(WFC_SHORTCODE.'/wfc_sitemap.php');
+    require_once(WFC_SHORTCODE.'/wfc_atoz.php');
     /*
     ===============================
     WIDGETS INCLUDE FILES
@@ -81,6 +82,60 @@
     require_once(WFC_WIDGETS.'/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
     require_once(WFC_WIDGETS.'/wfc_custom_tax_widget/wfc_custom_tax_widget.php');
     require_once(WFC_WIDGETS.'/wfc_spotlight/wfc_spotlight.php');
+    /*
+    ===============================
+    REMOVE ABILITY TO ADD NEW HOME POSTS
+     * @since 2.3
+    ===============================
+    */
+    function hide_add_new_custom_type(){
+        global $submenu;
+        unset($submenu['edit.php?post_type=homeboxes'][10]);
+    }
+
+    function hide_buttons(){
+        global $pagenow;
+        if( is_admin() ){
+            if( ($pagenow == 'edit.php') && $_GET['post_type'] == 'homeboxes' ){
+                echo "<style type=\"text/css\">.add-new-h2{display: none;}</style>";
+            }
+        }
+    }
+
+    function permissions_admin_redirect(){
+        $result = stripos( $_SERVER['REQUEST_URI'], 'post-new.php?post_type=homeboxes' );
+        if( $result !== false ){
+            wp_redirect( get_option( 'siteurl' ).'/wp-admin/index.php?permissions_error=true' );
+        }
+    }
+
+    function permissions_admin_notice(){
+        // use the class "error" for red notices, and "update" for yellow notices
+        echo"<div id='permissions-warning' class='error fade'><p><strong>".
+            __( 'You do not have permission to access that page.' )."</strong></p></div>";
+    }
+
+    function permissions_show_notice(){
+        if( $_GET['permissions_error'] ){
+            add_action( 'admin_notices', 'permissions_admin_notice' );
+        }
+    }
+
+    function dev_check_current_screen(){
+        if( !is_admin() ){
+            return;
+        }
+        global $current_screen;
+        if( $current_screen->post_type == "homeboxes" ){
+            echo "<style type=\"text/css\">.add-new-h2{display: none;}</style>";
+        }
+    }
+
+    add_action( 'admin_notices', 'dev_check_current_screen' );
+    add_action( 'admin_menu', 'hide_add_new_custom_type' );
+    add_action( 'admin_head', 'hide_buttons' );
+    add_action( 'admin_menu', 'permissions_admin_redirect' );
+    add_action( 'admin_init', 'permissions_show_notice' );
     /*
     ===============================
     WFC LOGIN LOGO
@@ -138,6 +193,13 @@
     add_filter( 'wp_redirect', 'wfc_continue_after_update_redirect', 10, 2 );
     /*
     ===============================
+    REMOVE PLUGIN UPDATE WARNINGS
+    * @since 2.3
+    */
+    remove_action( 'load-update-core.php', 'wp_update_plugins' );
+    add_filter( 'pre_site_transient_update_plugins', create_function( '$a', "return null;" ) );
+    /*
+    ===============================
     CUSTOMIZE ADMIN MENU ORDER
     ===============================
     */
@@ -157,53 +219,54 @@
             'admin.php?page=gf_edit_forms',
         );
     }
+
     add_filter( 'custom_menu_order', 'wfc_custom_menu_order' );
     add_filter( 'menu_order', 'wfc_custom_menu_order' );
-
-    function getActiveCPT($cpt){
-        $activeCPT = get_option('wfc_activate_cpt');
-        if(!is_array($activeCPT))
+    function getActiveCPT( $cpt ){
+        $activeCPT = get_option( 'wfc_activate_cpt' );
+        if( !is_array( $activeCPT ) ){
             return false;
-        elseif(in_array($cpt,$activeCPT))
+        } elseif( in_array( $cpt, $activeCPT ) ){
             return true;
-        else
+        } else{
             return false;
+        }
     }
 
     function applyMagentoTools(){
-        $args=array(
-            'public'   => true,
+        $args           = array(
+            'public' => true,
         );
-        $output = 'names'; // names or objects, note names is the default
-        $operator = 'and'; // 'and' or 'or'
-        $activeCPT = get_post_types($args,$output,$operator);
-        $jqueryElements ='';
-        foreach($activeCPT as $cpt){
+        $output         = 'names'; // names or objects, note names is the default
+        $operator       = 'and'; // 'and' or 'or'
+        $activeCPT      = get_post_types( $args, $output, $operator );
+        $jqueryElements = '';
+        foreach( $activeCPT as $cpt ){
             $jqueryElements .= '.type-'.$cpt.', ';
         }?>
-        <script type="text/javascript">
-            jQuery(function ($) {
-                $("<?php echo substr($jqueryElements,0,-2); ?>").wfc_AdminTools();
-            });
-      </script>
-    <?php }
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $("<?php echo substr( $jqueryElements, 0, -2 ); ?>").wfc_AdminTools();
+        });
+    </script>
+    <?php
+    }
+
     add_action( 'admin_footer', 'applyMagentoTools' );
+    function Wfc_contextual_help( $contextual_help, $screen_id, $screen ){
+        ob_start(); ?>
 
-function pippin_contextual_help($contextual_help, $screen_id, $screen) {
+    <h3>Help Section Title</h3>
+    <p>This is text that provides helpful information</p>
+    <h3>Help Section Title</h3>
+    <p>This is text that provides helpful information</p>
+    <h3>Help Section Title</h3>
+    <p>This is text that provides helpful information</p>
 
-    ob_start(); ?>
+    <?php
+        return ob_get_clean();
+    }
 
-<h3>Help Section Title</h3>
-<p>This is text that provides helpful information</p>
-<h3>Help Section Title</h3>
-<p>This is text that provides helpful information</p>
-<h3>Help Section Title</h3>
-<p>This is text that provides helpful information</p>
-
-<?php
-    return ob_get_clean();
-}
-if (isset($_GET['post_type']) && $_GET['post_type'] == 'homeboxes')
-{
-    add_action('contextual_help', 'pippin_contextual_help', 10, 3);
-}
+    if( isset($_GET['post_type']) && $_GET['post_type'] == 'homeboxes' ){
+        add_action( 'contextual_help', 'Wfc_contextual_help', 10, 3 );
+    }

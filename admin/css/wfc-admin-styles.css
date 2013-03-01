@@ -37,7 +37,7 @@
 }
 
 #Wfc_Client_News_Feed_Widget{
-    height :300px;
+    height :450px;
 }
 #Wfc_Client_News_Feed_Widget iframe{
     width    :100%;
@@ -169,11 +169,11 @@
     border-color :#888;
 }
 .wfc-plugin-warning{
-    width: 400px;
-    margin:0px auto;
-    min-height:200px;
-    border: 2px solid #000;
-    background-color:#ff8573;
-    font-size:18px;
-    text-align:center;
+    width            :400px;
+    margin           :0px auto;
+    min-height       :200px;
+    border           :2px solid #000;
+    background-color :#ff8573;
+    font-size        :18px;
+    text-align       :center;
 }

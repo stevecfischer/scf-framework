@@ -48,7 +48,7 @@
                      'depth'    => $thedepth,
                      'child_of' => $top_page,
                      'exclude'  => $exclude_list,
-                     'walker'   => new Description_Walker
+                     'walker'   => new Wfc_Custom_Nav_Walker
                 ) );
             echo '</ul>';
         }
@@ -74,7 +74,7 @@
 
     //EOC
     add_action( 'widgets_init', create_function( '', 'return register_widget("WFC_Custom_Nav_Widget");' ) );
-    class Description_Walker
+    class Wfc_Custom_Nav_Walker
         extends Walker_page
     {
         function start_el( &$output, $page, $depth, $args, $current_page ){
@@ -99,7 +99,7 @@
             } elseif( $page->ID == get_option( 'page_for_posts' ) ){
                 $css_class[] = 'current_page_parent';
             }
-            $css_class =
+            $css_class     =
                 implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
             $short_cut     = get_post_meta( $page->ID, '_page_shortcut_link', true );
             $short_new_tab = get_post_meta( $page->ID, '_page_new_tab_link', true );

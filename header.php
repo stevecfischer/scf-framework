@@ -36,18 +36,21 @@
 <body <?php body_class(); ?>>
 <!-- Primary Page Layout -->
 <div id="container">
-    <div id="nav-menu">
-        <nav>
-            <?php
-            wp_nav_menu(
-                array(
-                     'theme_location' => 'Primary',
-                     'menu_id'        => 'menu-custom',
-                     'menu_class'     => 'menu',
-                     'depth'          => 0
-                )
-            );
-            ?>
-        </nav>
+    <div id="header">
+        <div id="nav-menu">
+            <nav>
+                <?php
+                wp_nav_menu(
+                    array(
+                         'theme_location' => 'Primary',
+                         'menu_id'        => 'menu-custom',
+                         'menu_class'     => 'menu',
+                         'depth'          => 0
+                    )
+                );
+                ?>
+            </nav>
+        </div>
+        <!--//#nav-menu-->
     </div>
-    <!--//#nav-menu-->
+    <div id="wrapper">

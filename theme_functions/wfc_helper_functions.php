@@ -31,13 +31,13 @@
             $text = apply_filters( 'the_content', $text );
             $text = str_replace( ']]>', ']]>', $text );
         }
-        $text    = strip_shortcodes( $text );
-        $text    =
+        $text = strip_shortcodes( $text );
+        $text =
             strip_tags( $text, '<a>' ); // use ' $text = strip_tags($text,'<p><a>'); ' if you want to keep some tags
-        if(strlen($text) > $length){
-            $text    = substr( $text, 0, $length ).'...';
-        }else{
-            $text    = substr( $text, 0, $length );
+        if( strlen( $text ) > $length ){
+            $text = substr( $text, 0, $length ).'...';
+        } else{
+            $text = substr( $text, 0, $length );
         }
         $excerpt = Wfc_Reverse_Strrchr( $text, '.', 1 );
         if( $excerpt ){
@@ -86,7 +86,7 @@
 
     add_filter( 'the_title', 'Wfc_Limit_Title' );
     function Wfc_Client_News_Feed_Widget(){
-        echo '<iframe src="http://69.72.236.85/scf_framework_iframe.html" sandbox=" "></iframe>';
+        echo '<iframe style="height:400px" src="http://69.72.236.85/scf_framework_iframe.html" sandbox=" "></iframe>';
     }
 
     function Add_Wfc_Client_News_Feed_Widget(){

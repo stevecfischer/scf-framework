@@ -7,14 +7,10 @@
      */
     get_header();
 ?>
-<?php
-    Wfc_Core_Page_Loop();
-?>
-
-<div id="sidebar" class="left_sidebar">
+<div id="navigation" class="left_sidebar">
     <?php
     Wfc_Core_Sidebar();
     ?>
-</div><!-- //#sidebar.left_sidebar -->
-
+</div><!-- //#navigation.left_sidebar -->
+<?php Wfc_Core_Page_Loop(); ?>
 <?php get_footer(); ?>

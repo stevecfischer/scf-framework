@@ -15,14 +15,19 @@
     register_nav_menu( 'Quick Links', 'Quick Links' );
     function wfc_js_scripts(){
         wp_register_script( 'wfc.plugins', WFC_JS_URI.'/plugins.js', array('jquery') );
+        wp_register_script( 'wfc.extensions', WFC_JS_URI.'/extensions.js', array('jquery') );
+        wp_enqueue_script( 'wfc.extensions' );
         wp_enqueue_script( 'wfc.plugins' );
         wp_enqueue_script( 'jquery' );
     }
 
     add_action( 'wp_enqueue_scripts', 'wfc_js_scripts' );
     function wfc_css_styles(){
-        wp_register_style( 'wfc.fonts', WFC_CSS_URI.'/fonts.css' );
-        wp_enqueue_style( 'wfc.fonts' );
+        wp_register_style( 'wfc-bootstrap', WFC_CSS_URI.'/bootstrap.min.css' );
+        wp_register_style( 'wfc-fontawesome', WFC_CSS_URI.'/font-awesome.min.css' );
+        wp_register_style( 'wfc-extensions', WFC_CSS_URI.'/extensions.css' );
+        wp_enqueue_style( 'wfc-extensions' );
+        //wp_enqueue_style( 'wfc-fontawesome' );
     }
 
     add_action( 'wp_enqueue_scripts', 'wfc_css_styles' );
@@ -104,11 +109,13 @@
     }
 
     function Wfc_Core_Page_Loop(){
+        echo '<div id="content">';
         while( have_posts() ) : the_post();
             echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
             the_content();
         endwhile;
         wp_reset_query();
+        echo '</div><!-- //#content -->';
     }
 
     function Wfc_Core_Subbanner_Loop(){
