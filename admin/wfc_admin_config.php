@@ -8,6 +8,23 @@
      */
     /*
     ===============================
+    FILE INCLUDES
+
+     * @since 1.0
+    ===============================
+    */
+    require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
+    require_once(WFC_ADM.'/wfc_post_type_manager.php'); //CPT / Tax / Metabox Class
+    require_once(WFC_CONFIG.'/wfc_default_theme_setup.php'); //Register default CPT's
+    require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
+    require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
+    require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
+    require_once(WFC_ADM.'/wfc_new_user_pointers.php'); //Creates tour for new users **BETA**
+    require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Creates tour for new users **BETA**
+    require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Trying new WP feature **BETA**
+    require_once(WFC_ADM.'/wfc_plugin_disclaimer.php'); //Trying new WP feature **BETA**
+    /*
+    ===============================
     ADMIN JS INCLUDES
 
      * @since 1.0
@@ -18,13 +35,9 @@
         wp_enqueue_script( 'jquery-ui-core' );
         wp_enqueue_script( 'jquery-ui-dialog' );
         wp_register_script( 'jquery.wfc.fn', WFC_ADM_JS_URI.'/wfc.admin.fn.js', array('jquery') );
-        wp_register_script( 'jquery.media-up', WFC_ADM_JS_URI.'/media-up.js', array('jquery') );
-        //wp_register_script( 'jquery.order-images', WFC_ADM_JS_URI.'/jquery.tablednd.0.7.min.js', array('jquery') );
         wp_enqueue_script( 'media-upload' );
         wp_enqueue_script( 'thickbox' );
         wp_enqueue_script( 'jquery.wfc.fn' );
-        wp_enqueue_script( 'jquery.media-up' );
-        //wp_enqueue_script( 'jquery.order-images' );
     }
 
     add_action( 'admin_enqueue_scripts', 'wfc_admin_js_scripts' );
@@ -44,23 +57,6 @@
     }
 
     add_action( 'admin_enqueue_scripts', 'wfc_admin_css_styles' );
-    /*
-    ===============================
-    FILE INCLUDES
-
-     * @since 1.0
-    ===============================
-    */
-    require_once(WFC_ADM.'/wfc_post_type_manager.php'); //CPT / Tax / Metabox Class
-    require_once(WFC_CONFIG.'/wfc_default_theme_setup.php'); //Register default CPT's
-    require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
-    require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
-    require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
-    require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
-    require_once(WFC_ADM.'/wfc_new_user_pointers.php'); //Creates tour for new users **BETA**
-    require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Creates tour for new users **BETA**
-    require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Trying new WP feature **BETA**
-    require_once(WFC_ADM.'/wfc_plugin_disclaimer.php'); //Trying new WP feature **BETA**
     /*
     ===============================
     SHORTCODE INCLUDE FILES
@@ -102,40 +98,47 @@
         }
     }
 
-    function permissions_admin_redirect(){
-        $result = stripos( $_SERVER['REQUEST_URI'], 'post-new.php?post_type=homeboxes' );
-        if( $result !== false ){
-            wp_redirect( get_option( 'siteurl' ).'/wp-admin/index.php?permissions_error=true' );
+    /*
+     * Removes ability to add new Home Content Posts
+     *
+     * @since 2.3
+     */
+    if( !wfc_is_dev() ){
+        add_action( 'admin_menu', 'Wfc_homecontentposts_admin_redirect' );
+        add_action( 'admin_init', 'Wfc_homecontentposts_show_notice' );
+        function Wfc_homecontentposts_admin_redirect(){
+            $result = stripos( $_SERVER['REQUEST_URI'], 'post-new.php?post_type=homeboxes' );
+            if( $result !== false ){
+                wp_redirect( get_option( 'siteurl' ).'/wp-admin/index.php?permissions_error=true' );
+            }
         }
-    }
 
-    function permissions_admin_notice(){
-        // use the class "error" for red notices, and "update" for yellow notices
-        echo"<div id='permissions-warning' class='error fade'><p><strong>".
-            __( 'You do not have permission to access that page.' )."</strong></p></div>";
-    }
-
-    function permissions_show_notice(){
-        if( $_GET['permissions_error'] ){
-            add_action( 'admin_notices', 'permissions_admin_notice' );
+        function Wfc_homecontentposts_admin_notice(){
+            // use the class "error" for red notices, and "update" for yellow notices
+            echo"<div id='permissions-warning' class='error fade'><p><strong>".
+                __( 'You do not have permission to access that page.' )."</strong></p></div>";
         }
-    }
 
-    function dev_check_current_screen(){
-        if( !is_admin() ){
-            return;
+        function Wfc_homecontentposts_show_notice(){
+            if( $_GET['permissions_error'] ){
+                add_action( 'admin_notices', 'Wfc_homecontentposts_admin_notice' );
+            }
         }
-        global $current_screen;
-        if( $current_screen->post_type == "homeboxes" ){
-            echo "<style type=\"text/css\">.add-new-h2{display: none;}</style>";
-        }
-    }
 
-    add_action( 'admin_notices', 'dev_check_current_screen' );
-    add_action( 'admin_menu', 'hide_add_new_custom_type' );
-    add_action( 'admin_head', 'hide_buttons' );
-    add_action( 'admin_menu', 'permissions_admin_redirect' );
-    add_action( 'admin_init', 'permissions_show_notice' );
+        function Wfc_check_current_screen(){
+            if( !is_admin() ){
+                return;
+            }
+            global $current_screen;
+            if( $current_screen->post_type == "homeboxes" ){
+                echo "<style type=\"text/css\">.add-new-h2{display: none;}</style>";
+            }
+        }
+
+        add_action( 'admin_notices', 'Wfc_check_current_screen' );
+        add_action( 'admin_menu', 'hide_add_new_custom_type' );
+        add_action( 'admin_head', 'hide_buttons' );
+    }
     /*
     ===============================
     WFC LOGIN LOGO
@@ -178,11 +181,26 @@
      * @since 2.1
     ===============================
     */
+    add_action( 'post_submitbox_start', 'wfc_add_update_and_finish_button' );
     function wfc_add_update_and_finish_button( $data ){
-        echo '<div id="wfc_publish_block"><input name="original_publish" type="hidden" id="original_publish" value="Publish"><input type="hidden" name="publish" id="publish" class="button button-primary button-large" value="Publish" accesskey="p"><input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue"  accesskey="p" value="Update &amp; Done"></div>';
+        global $current_screen;
+        global $post;
+        /*
+         * auto-draft
+         * draft
+         * pending
+         * publish
+         */
+        if( $post->post_status == 'auto-draft' ){
+            echo '<div id="wfc_publish_block"><input name="original_publish" type="hidden" id="original_publish" value="Publish"><input type="hidden" name="publish" id="publish" class="button button-primary button-large" value="Publish" accesskey="p"><input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue"  accesskey="p" value="Publish &amp; Done"></div>';
+        } else {
+            if( $post->post_status == 'publish' ){
+                echo '<div id="wfc_publish_block"><input name="original_publish" type="hidden" id="original_publish" value="Update"><input type="hidden" name="save" id="publish" class="button button-primary button-large" value="Update" accesskey="p"><input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue"  accesskey="p" value="Update &amp; Done"></div>';
+            }
+        }
     }
 
-    add_action( 'post_submitbox_start', 'wfc_add_update_and_finish_button' );
+    add_filter( 'wp_redirect', 'wfc_continue_after_update_redirect', 10, 2 );
     function wfc_continue_after_update_redirect( $location, $status ){
         if( isset($_REQUEST['wfc_continue']) ){
             $location = admin_url().'edit.php?post_type='.$_REQUEST['post_type'].'';
@@ -190,7 +208,6 @@
         return $location;
     }
 
-    add_filter( 'wp_redirect', 'wfc_continue_after_update_redirect', 10, 2 );
     /*
     ===============================
     REMOVE PLUGIN UPDATE WARNINGS
@@ -233,7 +250,7 @@
         }
     }
 
-    function applyMagentoTools(){
+    function Wfc_post_list_highlighting(){
         $args           = array(
             'public' => true,
         );
@@ -252,21 +269,29 @@
     <?php
     }
 
-    add_action( 'admin_footer', 'applyMagentoTools' );
+    add_action( 'admin_footer', 'Wfc_post_list_highlighting' );
     function Wfc_contextual_help( $contextual_help, $screen_id, $screen ){
+        add_filter( 'gettext', 'theme_change_comment_field_names', 20, 3 );
         ob_start(); ?>
-
-    <h3>Help Section Title</h3>
-    <p>This is text that provides helpful information</p>
-    <h3>Help Section Title</h3>
-    <p>This is text that provides helpful information</p>
-    <h3>Help Section Title</h3>
-    <p>This is text that provides helpful information</p>
-
+    <h3>Help for Home Content Posts</h3>
+    <p>The ability to add new posts has been removed. The website home page has been programmed to handle only a certain amount. Adding more could result in `breaking` the website. </p>
     <?php
         return ob_get_clean();
     }
 
     if( isset($_GET['post_type']) && $_GET['post_type'] == 'homeboxes' ){
         add_action( 'contextual_help', 'Wfc_contextual_help', 10, 3 );
+    }
+    /**
+     * Change comment form default field names.
+     *
+     * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/gettext
+     */
+    function theme_change_comment_field_names( $translated_text, $text, $domain ){
+        switch( $translated_text ){
+            case 'Help' :
+                $translated_text = "WFC Help";
+                break;
+        }
+        return $translated_text;
     }

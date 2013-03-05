@@ -6,8 +6,8 @@
      * @date 1/5/13
      * @version 2.2
      */
-    $themename = get_bloginfo('name');
-    $shortname = "wfc_";
+    $themename  = get_bloginfo( 'name' );
+    $shortname  = "wfc_";
     $categories = get_categories( 'hide_empty=0&orderby=name' );
     $wp_cats    = array();
     foreach( $categories as $category_list ){
@@ -29,20 +29,20 @@
             "desc"    => "Select the CPT you want to activate",
             "id"      => $shortname."activate_cpt",
             "type"    => "checkbox",
-            "options" => array("CAMPAIGN_CPT", "SUBPAGE_BANNER_CPT", "HOME_BOXES_CPT","NEWS_CPT","TESTIMONIAL_CPT"),
+            "options" => array("CAMPAIGN_CPT", "SUBPAGE_BANNER_CPT", "HOME_BOXES_CPT", "NEWS_CPT", "TESTIMONIAL_CPT"),
             "std"     => "CAMPAIGN_CPT"
         ),
-        array(
+        /*array(
             "name" => "Logo URL",
             "desc" => "Enter the link to your logo image",
-            "id"   => $shortname."_logo",
+            "id"   => $shortname."logo",
             "type" => "text",
             "std"  => ""
-        ),
+        ),*/
         array(
             "name" => "Custom CSS",
             "desc" => "Want to add any custom CSS code? Put in here, and the rest is taken care of. This overrides any other stylesheets. eg: a.button{color:green}",
-            "id"   => $shortname."_custom_css",
+            "id"   => $shortname."custom_css",
             "type" => "textarea",
             "std"  => ""
         ),
@@ -103,7 +103,7 @@
         ),
         array("type" => "close")*/
     );
-    function mytheme_add_admin(){
+    function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
         if( $_GET['page'] == basename( __FILE__ ) ){
             if( 'save' == $_REQUEST['action'] ){
@@ -121,7 +121,7 @@
                 }
                 header( "Location: admin.php?page=wfc_theme_customizer.php&saved=true" );
                 die;
-            } else {
+            } else{
                 if( 'reset' == $_REQUEST['action'] ){
                     foreach( $options as $value ){
                         delete_option( $value['id'] );
@@ -131,10 +131,10 @@
                 }
             }
         }
-        add_menu_page( $themename, $themename, 'administrator', basename( __FILE__ ), 'mytheme_admin' );
+        add_menu_page( $themename, $themename, 'administrator', basename( __FILE__ ), 'Wfc_Panel' );
     }
 
-    function mytheme_admin(){
+    function Wfc_Panel(){
         global $themename, $shortname, $options;
         $i = 0;
         if( $_REQUEST['saved'] ){
@@ -216,22 +216,20 @@
                 case "checkbox":
                     ?>
                 <div class="rm_input rm_checkbox">
-
-
                     <?php foreach( $value['options'] as $option ){ ?>
                     <label>
                         <?php //print_r(get_option( $value['id'] )); ?>
-                    <?php if(is_array(get_option( $value['id'] ))){ ?>
-                        <?php if( in_array($option,get_option( $value['id']) ) ){
-                        $checked = "checked=\"checked\"";
-                    } else{
-                        $checked = "";
-                    } ?>
+                        <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
+                        <?php if( in_array( $option, get_option( $value['id'] ) ) ){
+                            $checked = "checked=\"checked\"";
+                        } else{
+                            $checked = "";
+                        } ?>
                         <?php } ?>
-                    <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $option; ?>" <?php echo $checked; ?> />
+                        <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $option; ?>" <?php echo $checked; ?> />
                         <?php echo $option; ?>
                     </label>
-                        <br />
+                    <br/>
                     <?php } ?>
 
 
@@ -266,7 +264,23 @@
  </div>
 <?php
     }
+
 ?>
 <?php
-    add_action( 'admin_menu', 'mytheme_add_admin' );
+    if( wfc_is_dev() ){
+        add_action( 'admin_menu', 'Wfc_Add_Panel' );
+    }
+    /*
+     * add custom css from site options
+     */
+    add_action( 'wp_head', 'wfc_inject_custom_css' );
+    function wfc_inject_custom_css(){
+        $wfc_option = get_option( 'wfc_custom_css' );
+        if( $wfc_option != '' && !empty( $wfc_option ) ){
+            echo '<style>';
+                echo $wfc_option;
+            echo '</style>';
+        }
+    }
+
 ?>

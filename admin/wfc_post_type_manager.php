@@ -112,8 +112,6 @@
     add_filter( 'manage_homeboxes_posts_columns', 'wfc_add_post_thumbnail_column', 5 );
     add_filter( 'manage_subpagebanner_posts_columns', 'wfc_add_post_thumbnail_column', 5 );
     function wfc_display_post_thumbnail_column( $col, $id ){
-        global $post;
-        $post_type = get_post_type( $id );
         switch( $col ){
             case 'wfc_post_thumb':
                 echo the_post_thumbnail('thumbnail');

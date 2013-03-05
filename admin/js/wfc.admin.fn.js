@@ -56,7 +56,7 @@
  *
  * Used in Site Options Panel
  */
-jQuery(document).ready(function () {
+jQuery(function ($) {
     jQuery('.rm_options').slideUp();
     jQuery('.rm_section h3').click(function () {
         if (jQuery(this).parent().next('.rm_options').css('display') == 'none') {
@@ -71,5 +71,11 @@ jQuery(document).ready(function () {
             jQuery(this).children('img').addClass('inactive');
         }
         jQuery(this).parent().next('.rm_options').slideToggle('slow');
+    });
+
+    $('.wfc-meta-block .description').hide();
+    $('.wfc-meta-block .switch').on('click', function () {
+        $(this).next('.description').toggle();
+        return false;
     });
 });

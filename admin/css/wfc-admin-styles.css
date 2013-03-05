@@ -177,3 +177,16 @@
     font-size        :18px;
     text-align       :center;
 }
+.wfc-page-shortcut_url{
+    width:50%;
+}
+.wfc-meta-label{
+    float:left;
+}
+.description-wrap{
+    float:left;
+    margin:1em 0 1em 5px;
+}
+.add_margin{
+    clear:both;
+}

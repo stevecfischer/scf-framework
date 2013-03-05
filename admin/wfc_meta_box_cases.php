@@ -23,6 +23,7 @@
                     $field_id_cleaning = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $field['field_title'] ) );
                     $field_id_cleaning = strtolower( str_replace( " ", "_", $field_id_cleaning ) );
                     $field['id']       = 'wfc_'.$var['cpt'].'_'.$field_id_cleaning;
+                    $field['class']    = 'wfc-'.$var['cpt'].'-'.$field_id_cleaning;
                     $field['desc']     = empty($field['desc']) ? '' : $field['desc'];
                     $meta              = get_post_meta( $post->ID, $field['id'], true );
                     if( empty($meta) ){
@@ -30,8 +31,8 @@
                         $meta             = is_array( $field['options'] ) ? array() : '';
                     }
                     echo '
-                  <div id="'.$field['id'].'" class="wfc-meta-control">
-                  <p>
+                  <div id="'.$field['id'].'" class="wfc-meta-block">
+                  <p class="wfc-meta-label">
                      <strong>'.$field['field_title'].'</strong>
                   </p>';
                     if( $field['desc'] != '' ){
@@ -44,7 +45,8 @@
                     echo '<p class="add_margin">';
                     switch( $field['type_of_box'] ){
                         case 'text':
-                            echo '<input type="text" name="'.$field['id'].'" value="'.($meta ? $meta : '').'"  />';
+                            echo'<input class="'.$field['class'].'" type="text" name="'.$field['id'].'" value="'.($meta ? $meta : '').
+                                '"  />';
                             break;
                         case 'textarea':
                             echo'<textarea cols="40" rows="2" name="'.$field['id'].'">'.($meta ? $meta : '').
@@ -187,9 +189,9 @@
                 return $post_id;
             }
             foreach( $meta_box['new_boxes'] as $field ){
-                $field_id_cleaning = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $field['field_title'] ) );
-                $field_id_cleaning = strtolower( str_replace( " ", "_", $field_id_cleaning ) );
-                $field['id']       = 'wfc_'.$var['cpt'].'_'.$field_id_cleaning;
+                $field_id_cleaning   = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $field['field_title'] ) );
+                $field_id_cleaning   = strtolower( str_replace( " ", "_", $field_id_cleaning ) );
+                $field['id']         = 'wfc_'.$var['cpt'].'_'.$field_id_cleaning;
                 $old                 = get_post_meta( $post_id, $field['id'], true );
                 $trim_fields         = preg_replace( '/\[\]/', '', $field['id'] );
                 $_POST[$trim_fields] = empty($_POST[$trim_fields]) ? array() : $_POST[$trim_fields];
