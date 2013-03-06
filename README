@@ -43,3 +43,14 @@ Awnser number 1
 
 = 2.3 =
 * added wildcards to sidebars. so widgets will inherit their classes correctly
+
+= 3.0 =
+* beta enhancements:
+	i. Plugin Disclaimer
+	ii. WFC Client News Feed
+	iii. Site options
+		- Ability to enable/disable our core CPT’s.
+		- Custom CSS ( added for Ken )
+		- WFC Dashboard Widget
+		- MUST be logged in as developer.
+		- Currently it displays all pages that have no content. 

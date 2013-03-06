@@ -19,8 +19,10 @@
     require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
     require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
+    require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Small Helper Functions
+
     require_once(WFC_ADM.'/wfc_new_user_pointers.php'); //Creates tour for new users **BETA**
-    require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Creates tour for new users **BETA**
+    require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers **BETA**
     require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Trying new WP feature **BETA**
     require_once(WFC_ADM.'/wfc_plugin_disclaimer.php'); //Trying new WP feature **BETA**
     /*
@@ -215,6 +217,40 @@
     */
     remove_action( 'load-update-core.php', 'wp_update_plugins' );
     add_filter( 'pre_site_transient_update_plugins', create_function( '$a', "return null;" ) );
+    /*
+    ===============================
+    REMOVE MENU ITEMS FOR OTHER USERS
+     * @since 2.1
+    */
+    function wfc_remove_menu_items(){
+        global $current_user;
+        if( $current_user->user_login != 'wfc' ){
+            remove_menu_page( 'wpseo_dashboard' );
+                remove_submenu_page('index.php', 'update-core.php');
+                /*
+                    Hides ThreeWP Activity Monitor Plugin
+                 */
+                remove_submenu_page( 'index.php', 'ThreeWP_Activity_Monitor' );
+            remove_menu_page( 'tools.php' );
+            remove_menu_page( 'options-general.php' );
+            remove_menu_page( 'plugins.php' );
+            remove_menu_page( 'link-manager.php' );
+            remove_menu_page( 'edit-comments.php' );
+            remove_menu_page( 'edit.php' );
+            remove_menu_page( 'edit.php?post_type=acf' );
+            remove_menu_page( 'woocommerce' );
+                /*remove_submenu_page( 'edit.php?post_type=product', 'post-new.php?post_type=product' );
+                remove_submenu_page( 'edit.php?post_type=product', 'edit-tags.php' );*/
+            remove_menu_page( 'themes.php' );
+            /* remove_submenu_page( 'themes.php', 'nav-menus.php' );
+            remove_submenu_page( 'themes.php', 'all-in-one-event-calendar-themes' ); 
+            remove_submenu_page( 'themes.php', 'widgets.php' );
+            remove_submenu_page( 'themes.php', 'customsidebars' );
+            remove_submenu_page( 'themes.php', 'themes.php' );
+            remove_submenu_page( 'themes.php', 'theme-editor.php' );*/
+        }
+    }
+    add_action( 'admin_menu', 'wfc_remove_menu_items', 999 );
     /*
     ===============================
     CUSTOMIZE ADMIN MENU ORDER

@@ -80,7 +80,7 @@
                 add_filter( 'admin_body_class', 'Wfc_Developer_Body_Class' );
                 add_action( 'contextual_help', 'Wfc_Developer_Screen_Help', 10, 3 );
                 //add_action('all', 'god');
-                //$wfc_pointers_class = new wfc_pointers_class;
+                $wfc_pointers_class = new wfc_pointers_class;
         }
     }
 

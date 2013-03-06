@@ -199,13 +199,13 @@
                 }
 
                 ?>
-                //$('#titlewrap #title').pointer('open');
-                /*
+                $('#titlewrap #title').pointer('open');
+
                 jQuery('#wp-pointer-<?php echo $counter;?> #pointer-primary')
          .bind( 'click.pointer', function(event, t) {
              $.pointer('close');
       });
-      */
+
             });
             //]]>
         </script>

@@ -85,3 +85,11 @@ ul.inactive{
     float :left;
     width :40%;
 }
+
+/*
+**  STYLE OLD BROWSER GROWL
+*/
+#wfc-old-browser{
+    width: 100%;
+    background-color: #c1c1c1;
+}
