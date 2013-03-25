@@ -10,7 +10,7 @@
     ===============================
     FILE INCLUDES
 
-     * @since 1.0
+     * @since 2.0
     ===============================
     */
     require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
@@ -243,7 +243,7 @@
                 remove_submenu_page( 'edit.php?post_type=product', 'edit-tags.php' );*/
             remove_menu_page( 'themes.php' );
             /* remove_submenu_page( 'themes.php', 'nav-menus.php' );
-            remove_submenu_page( 'themes.php', 'all-in-one-event-calendar-themes' ); 
+            remove_submenu_page( 'themes.php', 'all-in-one-event-calendar-themes' );
             remove_submenu_page( 'themes.php', 'widgets.php' );
             remove_submenu_page( 'themes.php', 'customsidebars' );
             remove_submenu_page( 'themes.php', 'themes.php' );
