@@ -10,7 +10,7 @@
     ===============================
     FILE INCLUDES
 
-     * @since 2.0
+     * @since 1.0
     ===============================
     */
     require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
