@@ -20,11 +20,7 @@
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
     require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
     require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Small Helper Functions
-
-    require_once(WFC_ADM.'/wfc_new_user_pointers.php'); //Creates tour for new users **BETA**
     require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers **BETA**
-    require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Trying new WP feature **BETA**
-    require_once(WFC_ADM.'/wfc_plugin_disclaimer.php'); //Trying new WP feature **BETA**
     /*
     ===============================
     ADMIN JS INCLUDES
