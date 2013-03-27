@@ -1,8 +1,6 @@
 <?php
     function Wfc_Pagination(){
-        ?>
-    <div class="pagination">
-        <?php
+        echo '<div class="pagination">';
         global $wp_query;
         $big = 999999999; // need an unlikely integer
         echo paginate_links(
@@ -12,10 +10,7 @@
                  'current' => max( 1, get_query_var( 'paged' ) ),
                  'total'   => $wp_query->max_num_pages
             ) );
-        ?>
-        <div style="clear:both;"></div>
-    </div>
-    <?php
+        echo '<div class="clear-both"></div></div>';
     }
 
     /*
@@ -56,23 +51,21 @@
      *
      * @return string
      */
+    add_filter( 'the_excerpt', 'Wfc_Limit_Excerpt' );
     function Wfc_Limit_Excerpt( $content ){
         global $post;
-        if( $post->post_type == 'spotlight' ){
-            return $content;
-        }
         if( strlen( $content ) >= 55 ){
             return substr( $content, 0, 55 ).'...';
         }
         return $content;
     }
 
-    add_filter( 'the_excerpt', 'Wfc_Limit_Excerpt' );
     /**
      * @param $title
      *
      * @return string
      */
+    add_filter( 'the_title', 'Wfc_Limit_Title' );
     function Wfc_Limit_Title( $title ){
         global $post;
         if( strlen( $title ) >= 32 && $post->post_type == 'news' ){
@@ -84,16 +77,6 @@
         return $title;
     }
 
-    add_filter( 'the_title', 'Wfc_Limit_Title' );
-    function Wfc_Client_News_Feed_Widget(){
-        echo '<iframe style="height:400px" src="http://69.72.236.85/scf_framework_iframe.html" sandbox=" "></iframe>';
-    }
-
-    function Add_Wfc_Client_News_Feed_Widget(){
-        wp_add_dashboard_widget( "Wfc_Client_News_Feed_Widget", __( "WFC Client News Feed!" ), "Wfc_Client_News_Feed_Widget" );
-    }
-
-    add_action( "wp_dashboard_setup", "Add_Wfc_Client_News_Feed_Widget" );
     /**
      *
      * @package scf-framework
@@ -101,6 +84,7 @@
      * @version 2.3
      * @description: content will be displayed if a page has not content entered.
      */
+    add_filter( 'the_content', 'Wfc_Auto_Content' );
     function Wfc_Auto_Content( $content ){
         if( is_page() ){
             if( $content == "" ){
@@ -121,5 +105,3 @@
         }
         return $content;
     }
-
-    add_filter( 'the_content', 'Wfc_Auto_Content' );

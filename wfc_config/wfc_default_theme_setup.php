@@ -16,6 +16,7 @@
     FRAMEWORK SETUP
     ===============================
     */
+    add_action( 'after_setup_theme', 'wfc_framework_setup' );
     if( !function_exists( 'wfc_framework_setup' ) ):
         function wfc_framework_setup(){
             /*
@@ -35,17 +36,16 @@
             register_nav_menu( 'Primary', 'Primary Navigation' );
         }
     endif; // wfc_framework_setup
-    add_action( 'after_setup_theme', 'wfc_framework_setup' );
     /*
     ===============================
     Filter excerpt
     ===============================
     */
+    add_filter( 'excerpt_length', 'wfc_excerpt_length', 999 );
     function wfc_excerpt_length( $length ){
         return $length;
     }
 
-    add_filter( 'excerpt_length', 'wfc_excerpt_length', 999 );
     /*
     ===============================
     CREATE CPT FOR CAMPAIGN SPACE
@@ -75,9 +75,10 @@
                 array(
                     'field_title' => 'Radio Test: ',
                     'type_of_box' => 'radio',
-                    'options'     => array('one'   => "<img src='http://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=64' />",
-                                           'two'   => '222',
-                                           'three' => '333'
+                    'options'     => array(
+                        'one'   => "<img src='http://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=64' />",
+                        'two'   => '222',
+                        'three' => '333'
                     ), /* required */
                 ),
                 array(
@@ -98,7 +99,7 @@
             )
         ),
     );
-    if( getActiveCPT("CAMPAIGN_CPT") ){
+    if( getActiveCPT( "CAMPAIGN_CPT" ) ){
         $campaign_module = new wfcfw($campaign_module_args);
     }
     /*
@@ -111,7 +112,7 @@
         'menu_name' => 'Subpage Img Pool',
         'supports'  => array('title', 'thumbnail'),
     );
-    if( getActiveCPT("SUBPAGE_BANNER_CPT") ){
+    if( getActiveCPT( "SUBPAGE_BANNER_CPT" ) ){
         $subpage_banner = new wfcfw($subpage_banner_args);
     }
     /*
@@ -125,7 +126,7 @@
         'tax'       => array(array('tax_label' => 'topics', 'menu_name' => 'Topics'),),
         'supports'  => array('editor', 'title', 'page-attributes', 'thumbnail'),
     );
-    if( getActiveCPT("NEWS_CPT" )){
+    if( getActiveCPT( "NEWS_CPT" ) ){
         $news_cpt = new wfcfw($news_cpt_args);
     }
     /*
@@ -154,7 +155,7 @@
             )
         ),
     );
-    if( getActiveCPT("HOME_BOXES_CPT") ){
+    if( getActiveCPT( "HOME_BOXES_CPT" ) ){
         $home_boxes_module = new wfcfw($home_boxes_module_args);
     }
     /*
@@ -182,7 +183,7 @@
             )
         ),
     );
-    if( getActiveCPT("TESTIMONIAL_CPT")){
+    if( getActiveCPT( "TESTIMONIAL_CPT" ) ){
         $testimonial = new wfcfw($testimonial_args);
     }
     /*

@@ -1,18 +1,19 @@
 /*
 ** Version: 2.3
 ** Author: Steve Fischer
-** Notes: CSS for various extensions. Ex A to Z Index, Sitemap, Staff Directory
+** Notes: CSS for General purposes and various extensions. Ex A to Z Index, Sitemap, Staff Directory
 */
 
-/*A-Z Index*/
+/* GENERAL */
+clear-both{
+    clear :both;
+}
 
+/*A-Z Index*/
 #wfc-atoz{
     width :100%;
     float :left;
 }
-/*!
-** tab heading (letters)
-*/
 #az_tabs{
     position   :absolute;
     margin-top :1px;
@@ -44,10 +45,6 @@ ul#az_tabs li.current a{
     padding    :14px 20px 0 23px;
     cursor     :default;
 }
-
-/*!
-** result section (links)
-*/
 #atoz{
     clear   :both;
     padding :15px 0 0;
@@ -77,7 +74,6 @@ ul.inactive{
     display :none;
 }
 #az_tabs-wrapper{
-    /*border-bottom: 1px solid #EFEFEF;*/
     clear   :both;
     padding :0px 0 34px;
 }
@@ -87,9 +83,9 @@ ul.inactive{
 }
 
 /*
-**  STYLE OLD BROWSER GROWL
+**  OLD BROWSER GROWL
 */
 #wfc-old-browser{
-    width: 100%;
-    background-color: #c1c1c1;
+    width            :100%;
+    background-color :#c1c1c1;
 }

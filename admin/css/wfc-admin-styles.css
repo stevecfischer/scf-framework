@@ -23,25 +23,8 @@
 .wfc-admin-footer{
     background-color :#e6db55;
 }
-
-#wpadminbar{
-    /*display:none;*/
-}
 .wfc_developer_logged_in{
     background :url('../images/FOOTER-ICONS-wfc.png') no-repeat center center;
-}
-
-.wfc_developer_logged_in #adminmenuback, .wfc_developer_logged_in #adminmenuwrap{
-    background-color :#C1CE2F;
-    border-color     :#D32D2D;
-}
-
-#Wfc_Client_News_Feed_Widget{
-    height :450px;
-}
-#Wfc_Client_News_Feed_Widget iframe{
-    width    :100%;
-    overflow :hidden;
 }
 .wfc-continue-button.button-primary{
     width       :63px;
@@ -49,21 +32,17 @@
     height      :49px;
     margin-left :10px;
 }
-
 #sortable{ list-style-type :none; margin :0; padding :0; width :60%; }
 #sortable li{ margin :0 3px 3px 3px; padding :0.4em; padding-left :1.5em; font-size :1.4em; height :18px; }
 #sortable li span{ position :absolute; margin-left :-1.3em; }
-
 .rm_wrap{
     width :740px;
 }
-
 .rm_section{
     border        :1px solid #ddd;
     border-bottom :0;
     background    :#f9f9f9;
 }
-
 .rm_opts label{
     font-size   :12px;
     font-weight :700;
@@ -113,14 +92,12 @@
     width          :80%;
     padding        :14px 4px;
 }
-
 .rm_title{
     cursor        :pointer;
     border-bottom :1px solid #ddd;
     background    :#eee;
     padding       :0;
 }
-
 .rm_title h3 img.inactive{
     margin             :-8px 10px 0 2px;
     width              :32px;
@@ -130,7 +107,6 @@
     -moz-border-radius :6px;
     border             :1px solid #ccc;
 }
-
 .rm_title h3 img.active{
     margin                :-8px 10px 0 2px;
     width                 :32px;
@@ -141,11 +117,9 @@
     -webkit-border-radius :6px;
     border                :1px solid #ccc;
 }
-
 .rm_title h3:hover img{
     border :1px solid #999;
 }
-
 .rm_title span.submit{
     display :block;
     float   :right;
@@ -154,17 +128,14 @@
     width   :15%;
     padding :14px 0;
 }
-
 .clearfix{
     clear :both;
 }
-
 .rm_table th, .rm_table td{
     border     :1px solid #bbb;
     padding    :10px;
     text-align :center;
 }
-
 .rm_table th, .rm_table td.feature{
     border-color :#888;
 }
@@ -178,15 +149,15 @@
     text-align       :center;
 }
 .wfc-page-shortcut_url{
-    width:50%;
+    width :50%;
 }
 .wfc-meta-label{
-    float:left;
+    float :left;
 }
 .description-wrap{
-    float:left;
-    margin:1em 0 1em 5px;
+    float  :left;
+    margin :1em 0 1em 5px;
 }
 .add_margin{
-    clear:both;
+    clear :both;
 }
