@@ -8,11 +8,19 @@
     class  wfc_meta_box_class
     {
         private $new_meta_boxes = array();
+        private $_cpt = "";
 
         public function __construct( $obj ){
-            $this->new_meta_boxes[] = $obj;
+            $this->_cpt                                                              = strtolower( $obj['cpt'] );
+            $this->new_meta_boxes[$this->clean_handles( $obj['meta_box']['title'] )] = $obj;
             add_action( 'add_meta_boxes', array(&$this, 'register_meta_box') );
             add_action( 'save_post', array(&$this, 'save_meta_box'), 10, 2 );
+        }
+
+        public function clean_handles( $term ){
+            $field_id_cleaning = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $term ) );
+            $field_id_cleaning = strtolower( str_replace( " ", "_", $field_id_cleaning ) );
+            return 'wfc_'.$this->_cpt.'_'.$field_id_cleaning;
         }
 
         public function types_meta_box( $var ){
@@ -45,7 +53,8 @@
                     echo '<p class="add_margin">';
                     switch( $field['type_of_box'] ){
                         case 'text':
-                            echo'<input class="'.$field['class'].'" type="text" name="'.$field['id'].'" value="'.($meta ? $meta : '').
+                            echo'<input class="'.$field['class'].'" type="text" name="'.$field['id'].'" value="'.
+                                ($meta ? $meta : '').
                                 '"  />';
                             break;
                         case 'textarea':
@@ -85,51 +94,52 @@
                             break;
                         case 'uploader':
                             ?>
-                        <table id="form">
-                            <tbody class="wfc-image-gallery-table">
+                            <table id="form">
+                                <tbody class="wfc-image-gallery-table">
                                 <?php if( !empty($meta) ){
-                                $meta_caption = get_post_meta( $post->ID, $field['id'].'_captions', true );
-                                ?>
-                                <?php for( $i = 0; $i < count( $meta ); $i++ ) : ?>
-                                <tr valign="top" class="wfc-sortable-rows" id="row_<?php echo $i + 1; ?>">
-                                    <td scope="row">
-                                        <label for="image_<?php echo $i + 1; ?>">Picture</label><br/>
-                                    </td>
-                                    <td>
-                                        <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID;?>"/>
-                                        <input type="text" name="<?php echo $field['id'];?>[]" id="image_<?php echo
-                                            $i + 1; ?>" size="70" value="<?php echo  $meta[$i]; ?>"/>
-                                        <input id="image_<?php echo
-                                            $i + 1; ?>" type="button" value="Upload Image" class="wfc_upload_image"/>
-                                        <input id="row_<?php echo$i +
-                                            1; ?>" type="button" value="Remove picture" class="wfc_remove_image"/><br/>
-                                        <label for="caption_<?php echo $i + 1; ?>">Caption : </label>
-                                        <input type="text" name="<?php echo $field['id'];?>_captions[]" id="caption_<?php echo
-                                            $i + 1; ?>" size="59" value="<?php echo  $meta_caption[$i]; ?>"/>
-                                        <label class="levelonehandle">X</label>
-                                    </td>
-                                </tr>
+                                    $meta_caption = get_post_meta( $post->ID, $field['id'].'_captions', true );
+                                    ?>
+                                    <?php for( $i = 0; $i < count( $meta ); $i++ ) : ?>
+                                        <tr valign="top" class="wfc-sortable-rows" id="row_<?php echo $i + 1; ?>">
+                                            <td scope="row">
+                                                <label for="image_<?php echo $i + 1; ?>">Picture</label><br/>
+                                            </td>
+                                            <td>
+                                                <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID; ?>"/>
+                                                <input type="text" name="<?php echo $field['id']; ?>[]" id="image_<?php echo
+                                                    $i + 1; ?>" size="70" value="<?php echo  $meta[$i]; ?>"/>
+                                                <input id="image_<?php echo
+                                                    $i +
+                                                    1; ?>" type="button" value="Upload Image" class="wfc_upload_image"/>
+                                                <input id="row_<?php echo$i +
+                                                    1; ?>" type="button" value="Remove picture" class="wfc_remove_image"/><br/>
+                                                <label for="caption_<?php echo $i + 1; ?>">Caption : </label>
+                                                <input type="text" name="<?php echo $field['id']; ?>_captions[]" id="caption_<?php echo
+                                                    $i + 1; ?>" size="59" value="<?php echo  $meta_caption[$i]; ?>"/>
+                                                <label class="levelonehandle">X</label>
+                                            </td>
+                                        </tr>
                                     <?php endfor; ?>
                                 <?php } else{ ?>
-                            <tr valign="top" id="row_1">
-                                <td scope="row">
-                                    <label for="image_1">Picture</label><br/>
-                                </td>
-                                <td>
-                                    <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID;?>"/>
-                                    <input type="text" name="<?php echo $field['id'];?>[]" id="image_1" size="70" value=""/>
-                                    <input id="image_1" type="button" value="Upload Image" class="wfc_upload_image"/>
-                                    <input id="row_1" type="button" value="Remove picture" class="wfc_remove_image"/><br/>
-                                    <label for="caption_1">Caption : </label>
-                                    <input type="text" name="<?php echo $field['id'];?>_captions[]" id="caption_1" size="59" value=""/>
-                                </td>
-                            </tr>
+                                    <tr valign="top" id="row_1">
+                                        <td scope="row">
+                                            <label for="image_1">Picture</label><br/>
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID; ?>"/>
+                                            <input type="text" name="<?php echo $field['id']; ?>[]" id="image_1" size="70" value=""/>
+                                            <input id="image_1" type="button" value="Upload Image" class="wfc_upload_image"/>
+                                            <input id="row_1" type="button" value="Remove picture" class="wfc_remove_image"/><br/>
+                                            <label for="caption_1">Caption : </label>
+                                            <input type="text" name="<?php echo $field['id']; ?>_captions[]" id="caption_1" size="59" value=""/>
+                                        </td>
+                                    </tr>
                                 <?php } ?>
-                            </tbody>
-                        </table>
-                        <br/>
-                        <a id="add_field" href="">Add an other picture</a>
-                        <?php
+                                </tbody>
+                            </table>
+                            <br/>
+                            <a id="add_field" href="">Add an other picture</a>
+                            <?php
                             break;
                     }
                     echo '</p></div>';
@@ -141,8 +151,9 @@
         public function register_meta_box(){
             $vars = $this->new_meta_boxes;
             foreach( $vars as $var ){
+                $filtered_handle = $this->clean_handles( $var['meta_box']['title'] );
                 add_meta_box(
-                    $var['cpt'].'_metabox',
+                    $filtered_handle.'_metabox',
                     $var['meta_box']['title'],
                     array(&$this, 'display_meta_box_content'),
                     $var['cpt'],
@@ -196,15 +207,11 @@
                 $trim_fields         = preg_replace( '/\[\]/', '', $field['id'] );
                 $_POST[$trim_fields] = empty($_POST[$trim_fields]) ? array() : $_POST[$trim_fields];
                 $new                 = $_POST[$trim_fields];
-                if( $new && $new != $old && $field['type_of_box'] != 'checkbox' && $field['type_of_box'] != 'uploader'
-                ){
+                if( $new && $new != $old && $field['type_of_box'] != 'checkbox' ){
                     update_post_meta( $post_id, $field['id'], $new );
                 } elseif( $field['type_of_box'] == 'checkbox' ){
                     update_post_meta( $post_id, $field['id'], $_POST[$field['id']] );
-                } elseif( $field['type_of_box'] == 'uploader' ){
-                    update_post_meta( $post_id, $field['id'], $_POST[$field['id']] );
-                    update_post_meta( $post_id, $field['id'].'_captions', $_POST[$field['id'].'_captions'] );
-                } elseif( '' == $new && $old ){
+                } elseif( ('' == $new || empty($new)) && $old ){
                     delete_post_meta( $post_id, $field['id'], $old );
                 }
             }
