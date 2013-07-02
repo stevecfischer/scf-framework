@@ -81,7 +81,6 @@
      *
      * @package scf-framework
      * @author Steve (12/10/2012)
-     * @version 2.3
      * @description: content will be displayed if a page has not content entered.
      */
     add_filter( 'the_content', 'Wfc_Auto_Content' );

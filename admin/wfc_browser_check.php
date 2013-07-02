@@ -4,7 +4,6 @@
      * @package scf-framework
      * @author Steve
      * @date 3/12/13
-     * @version 2.3
      */
     define('WFC_MINUTE_IN_SECONDS', 60);
     define('WFC_HOUR_IN_SECONDS', 60 * WFC_MINUTE_IN_SECONDS);

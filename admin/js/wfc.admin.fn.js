@@ -52,7 +52,7 @@
  *
  * @package scf-framework
  * @author Steve (3/4/13)
- * @version 2.3
+
  *
  * Used in Site Options Panel
  */
@@ -72,7 +72,6 @@ jQuery(function ($) {
         }
         jQuery(this).parent().next('.rm_options').slideToggle('slow');
     });
-
     $('.wfc-meta-block .description').hide();
     $('.wfc-meta-block .switch').on('click', function () {
         $(this).next('.description').toggle();

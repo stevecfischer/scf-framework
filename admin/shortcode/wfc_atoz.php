@@ -4,21 +4,16 @@
      * @package scf-framework
      * @author Steve (08/16/2012)
      * @added since 2.3
-     * @version 2.3
+     *
+     * @description A TO Z INDEX shortcode
      */
-    /*
-    ===============================
-    A TO Z INDEX TABS
-    ===============================
-    */
     function Wfc_a_to_z_tabs(){
         global $wpdb;
-        $get_id         =
+        $get_id      =
             $wpdb->get_results( "SELECT DISTINCT post_title,post_name,ID FROM $wpdb->posts WHERE post_status = 'publish' and post_type='page' order by trim(post_title) ASC" );
-
-        $log_letters    = array();
-        $log_num        = array();
-        $return_tabs    = '';
+        $log_letters = array();
+        $log_num     = array();
+        $return_tabs = '';
         $return_tabs .= '<div id="az_tabs-wrapper">';
         $return_tabs .= '<ul id="az_tabs">';
         foreach( $get_id as $this_post ){
@@ -42,7 +37,7 @@
             $return_tabs .= '<li><a href="#" id="list_'.$log_letter.'">'.$log_letter.'</a></li>';
         }
         $return_tabs .= '</ul></div>';
-        $return_pages = Wfc_a_to_z_pages($log_letters,$log_num,$get_id);
+        $return_pages = Wfc_a_to_z_pages( $log_letters, $log_num, $get_id );
         return $return_tabs.$return_pages;
     }
 
@@ -51,7 +46,14 @@
     A TO Z INDEX PAGES
     ===============================
     */
-    function Wfc_a_to_z_pages($lettersArr,$numsArr,$allPosts){
+    /**
+     * @param $lettersArr
+     * @param $numsArr
+     * @param $allPosts
+     *
+     * @return string
+     */
+    function Wfc_a_to_z_pages( $lettersArr, $numsArr, $allPosts ){
         global $wpdb;
         $log_letters    = array();
         $current_letter = '';
@@ -61,7 +63,6 @@
         $counter        = 0;
         $return_pages   = '';
         $return_pages .= '<div id="atoz">';
-
         $get_page_titles = $wpdb->get_results(
             "SELECT post_title, post_name, ID
             FROM $wpdb->posts
@@ -69,7 +70,6 @@
             AND post_type = 'page'
             GROUP BY trim(post_title)
             ORDER BY trim(post_title) ASC" );
-
         if( !empty($numsArr) ){
             $return_pages .= '<ul id="list_0" class="inactive">';
             foreach( $allPosts as $this_post ){
@@ -81,10 +81,9 @@
             $return_pages .= '</ul><!-- //.list_0 -->';
         }
         foreach( $get_page_titles as $this_post ){
-            $current_letter        = ucfirst(substr( trim( $this_post->post_title ), 0, 1 ));
+            $current_letter        = ucfirst( substr( trim( $this_post->post_title ), 0, 1 ) );
             $get_page_letter_tally =
                 $wpdb->get_results( "SELECT count(*) as tally FROM $wpdb->posts WHERE post_title LIKE '$current_letter%' AND post_status = 'publish' and post_type='page' order by trim(post_title) ASC" );
-
             $column_flag           = ceil( $get_page_letter_tally[0]->tally / 2 );
             if( !is_numeric( $current_letter ) ){
                 if( !in_array( $current_letter, $log_letters ) ){

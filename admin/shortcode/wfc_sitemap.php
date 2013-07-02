@@ -4,7 +4,6 @@
      * @package scf-framework
      * @author Steve (08/16/2012)
      * @added since 2.3
-     * @version 2.3
      */
     function Wfc_fix_sitemap_url( $ancestor_id ){
         $shortCutUrl = get_post_meta( $ancestor_id, 'wfc_page_shortcut_url', true );
@@ -38,14 +37,14 @@
             $return .= '<ul>';
             foreach( $result as $res ){
                 $ancestor_id = $res->ID;
-                $args = array(
+                $args        = array(
                     'child_of' => $ancestor_id,
                     'exclude'  => $exclude_pages,
                     'title_li' => '',
                     'echo'     => 0,
                     'walker'   => new Wfc_Sitemap_Walker
                 );
-                $children = wp_list_pages( $args );
+                $children    = wp_list_pages( $args );
                 if( !$children ){
                     if( !in_array( $res->ID, $exclude_pages_Arr ) ){
                         //$link = get_permalink( $ancestor_id );
