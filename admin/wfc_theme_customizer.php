@@ -67,32 +67,27 @@
     );
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
-        if( !isset($_GET['page']) ){
-            return;
-        }
         if( $_GET['page'] == basename( __FILE__ ) ){
-            if( isset($_REQUEST['action']) ){
-                if( 'save' == $_REQUEST['action'] ){
-                    foreach( $options as $value ){
+            if( 'save' == $_REQUEST['action'] ){
+                foreach( $options as $value ){
+                    update_option( $value['id'], $_REQUEST[$value['id']] );
+                }
+                foreach( $options as $value ){
+                    if( isset($_REQUEST[$value['id']]) ){
                         update_option( $value['id'], $_REQUEST[$value['id']] );
+                    } else{
+                        delete_option( $value['id'] );
                     }
+                }
+                header( "Location: admin.php?page=wfc_theme_customizer.php&saved=true" );
+                die;
+            } else{
+                if( 'reset' == $_REQUEST['action'] ){
                     foreach( $options as $value ){
-                        if( isset($_REQUEST[$value['id']]) ){
-                            update_option( $value['id'], $_REQUEST[$value['id']] );
-                        } else{
-                            delete_option( $value['id'] );
-                        }
+                        delete_option( $value['id'] );
                     }
-                    header( "Location: admin.php?page=wfc_theme_customizer.php&saved=true" );
+                    header( "Location: admin.php?page=wfc_theme_customizer.php&reset=true" );
                     die;
-                } else{
-                    if( 'reset' == $_REQUEST['action'] ){
-                        foreach( $options as $value ){
-                            delete_option( $value['id'] );
-                        }
-                        header( "Location: admin.php?page=wfc_theme_customizer.php&reset=true" );
-                        die;
-                    }
                 }
             }
         }
@@ -102,11 +97,11 @@
     function Wfc_Panel(){
         global $themename, $shortname, $options;
         $i = 0;
-        if( isset($_REQUEST['saved']) && $_REQUEST['saved'] ){
+        if( $_REQUEST['saved'] ){
             echo'<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings saved.</strong></p></div>';
         }
-        if( isset($_REQUEST['reset']) && $_REQUEST['reset'] ){
+        if( $_REQUEST['reset'] ){
             echo'<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings reset.</strong></p></div>';
         }
@@ -205,7 +200,7 @@
                     ?>
                     <div class="rm_section">
                     <div class="rm_title"><h3>
-                            <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="""><?php echo $value['name']; ?>
+                            <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt=""><?php echo $value['name']; ?>
                         </h3>
                         <span class="submit"><input name="save<?php echo $i; ?>" type="submit" value="Save changes"/>
                         </span>
