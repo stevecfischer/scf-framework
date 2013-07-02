@@ -18,6 +18,7 @@
         function widget( $argsw, $instance ){
             extract( $argsw );
             global $post;
+            $exclude_list   = '';
             $post_ancestors = (isset($post->ancestors)) ? $post->ancestors :
                 get_post_ancestors( $post ); //get the current page's ancestors either from existing value or by executing function
             $top_page       = $post_ancestors ? end( $post_ancestors ) : $post->ID; //get the top page id
@@ -63,11 +64,11 @@
         function form( $instance ){
             $instance = wp_parse_args( (array)$instance, array('side' => false) );
             ?>
-        <p>
-            <label for="<?php echo $this->get_field_id( 'side' ); ?>">
-                <?php _e( 'Menu Orientation:' ); ?>
-            </label>
-        </p>
+            <p>
+                <label for="<?php echo $this->get_field_id( 'side' ); ?>">
+                    <?php _e( 'Menu Orientation:' ); ?>
+                </label>
+            </p>
         <?php
         }
     }

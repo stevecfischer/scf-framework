@@ -38,13 +38,17 @@
  options = new LightboxOptions
  lightbox = new Lightbox options
  */
+jQuery(function ($) {
+    wfcDefines = $('body').wfc_fw_variables();
+    console.log(wfcDefines);
+});
 (function () {
     var $, Lightbox, LightboxOptions;
     $ = jQuery;
     LightboxOptions = (function () {
         function LightboxOptions() {
-            this.fileLoadingImage = '/cms-wfc/wp-content/themes/THEME_NAME/admin/images/loading.gif';
-            this.fileCloseImage = '/cms-wfc/wp-content/themes/THEME_NAME/admin/images/close.png';
+            this.fileLoadingImage = wfcDefines.define('wfc_site_url') + 'wp-content/themes/' + wfcDefines.define('wfc_theme_name') + '/admin/images/loading.gif';
+            this.fileCloseImage = wfcDefines.define('wfc_site_url') + 'wp-content/themes/' + wfcDefines.define('wfc_theme_name') + '/admin/images/close.png';
             this.resizeDuration = 700;
             this.fadeDuration = 500;
             this.labelImage = "Image";
@@ -76,44 +80,44 @@
             var $lightbox,
                 _this = this;
             $("<div>", {
-                id:'lightboxOverlay'
+                id: 'lightboxOverlay'
             }).after($('<div/>', {
-                id:'lightbox'
-            }).append($('<div/>', {
-                "class":'lb-outerContainer'
-            }).append($('<div/>', {
-                "class":'lb-container'
-            }).append($('<img/>', {
-                "class":'lb-image'
-            }), $('<div/>', {
-                "class":'lb-nav'
-            }).append($('<a/>', {
-                "class":'lb-prev'
-            }), $('<a/>', {
-                "class":'lb-next'
-            })), $('<div/>', {
-                "class":'lb-loader'
-            }).append($('<a/>', {
-                "class":'lb-cancel'
-            }).append($('<img/>', {
-                src:this.options.fileLoadingImage
-            }))))), $('<div/>', {
-                "class":'lb-dataContainer'
-            }).append($('<div/>', {
-                "class":'lb-data'
-            }).append($('<div/>', {
-                "class":'lb-details'
-            }).append($('<span/>', {
-                "class":'lb-caption'
-            }), $('<span/>', {
-                "class":'lb-number'
-            })), $('<div/>', {
-                "class":'lb-closeContainer'
-            }).append($('<a/>', {
-                "class":'lb-close'
-            }).append($('<img/>', {
-                src:this.options.fileCloseImage
-            }))))))).appendTo($('body'));
+                    id: 'lightbox'
+                }).append($('<div/>', {
+                        "class": 'lb-outerContainer'
+                    }).append($('<div/>', {
+                            "class": 'lb-container'
+                        }).append($('<img/>', {
+                                "class": 'lb-image'
+                            }), $('<div/>', {
+                                "class": 'lb-nav'
+                            }).append($('<a/>', {
+                                    "class": 'lb-prev'
+                                }), $('<a/>', {
+                                    "class": 'lb-next'
+                                })), $('<div/>', {
+                                "class": 'lb-loader'
+                            }).append($('<a/>', {
+                                    "class": 'lb-cancel'
+                                }).append($('<img/>', {
+                                        src: this.options.fileLoadingImage
+                                    }))))), $('<div/>', {
+                        "class": 'lb-dataContainer'
+                    }).append($('<div/>', {
+                            "class": 'lb-data'
+                        }).append($('<div/>', {
+                                "class": 'lb-details'
+                            }).append($('<span/>', {
+                                    "class": 'lb-caption'
+                                }), $('<span/>', {
+                                    "class": 'lb-number'
+                                })), $('<div/>', {
+                                "class": 'lb-closeContainer'
+                            }).append($('<a/>', {
+                                    "class": 'lb-close'
+                                }).append($('<img/>', {
+                                        src: this.options.fileCloseImage
+                                    }))))))).appendTo($('body'));
             $('#lightboxOverlay').hide().on('click', function (e) {
                 _this.end();
                 return false;
@@ -148,23 +152,23 @@
             var $lightbox, $window, a, i, imageNumber, left, top, _len, _ref;
             $(window).on("resize", this.sizeOverlay);
             $('select, object, embed').css({
-                visibility:"hidden"
+                visibility: "hidden"
             });
             $('#lightboxOverlay').width($(document).width()).height($(document).height()).fadeIn(this.options.fadeDuration);
             this.album = [];
             imageNumber = 0;
             if ($link.attr('rel') === 'lightbox') {
                 this.album.push({
-                    link :$link.attr('href'),
-                    title:$link.attr('title')
+                    link : $link.attr('href'),
+                    title: $link.attr('title')
                 });
             } else {
                 _ref = $($link.prop("tagName") + '[rel="' + $link.attr('rel') + '"]');
                 for (i = 0, _len = _ref.length; i < _len; i++) {
                     a = _ref[i];
                     this.album.push({
-                        link :$(a).attr('href'),
-                        title:$(a).attr('title')
+                        link : $(a).attr('href'),
+                        title: $(a).attr('title')
                     });
                     if ($(a).attr('href') === $link.attr('href')) {
                         imageNumber = i;
@@ -176,8 +180,8 @@
             left = $window.scrollLeft();
             $lightbox = $('#lightbox');
             $lightbox.css({
-                top :top + 'px',
-                left:left + 'px'
+                top : top + 'px',
+                left: left + 'px'
             }).fadeIn(this.options.fadeDuration);
             this.changeImage(imageNumber);
         };
@@ -221,16 +225,16 @@
             newHeight = imageHeight + containerTopPadding + containerBottomPadding;
             if (newWidth !== oldWidth && newHeight !== oldHeight) {
                 $outerContainer.animate({
-                    width :newWidth,
-                    height:newHeight
+                    width : newWidth,
+                    height: newHeight
                 }, this.options.resizeDuration, 'swing');
             } else if (newWidth !== oldWidth) {
                 $outerContainer.animate({
-                    width:newWidth
+                    width: newWidth
                 }, this.options.resizeDuration, 'swing');
             } else if (newHeight !== oldHeight) {
                 $outerContainer.animate({
-                    height:newHeight
+                    height: newHeight
                 }, this.options.resizeDuration, 'swing');
             }
             setTimeout(function () {
@@ -320,7 +324,7 @@
             $('#lightbox').fadeOut(this.options.fadeDuration);
             $('#lightboxOverlay').fadeOut(this.options.fadeDuration);
             return $('select, object, embed').css({
-                visibility:"visible"
+                visibility: "visible"
             });
         };
         return Lightbox;

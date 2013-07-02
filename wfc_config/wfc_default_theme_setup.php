@@ -90,12 +90,7 @@
                     'field_title' => 'Select Dropdown Test: ',
                     'type_of_box' => 'select',
                     'options'     => array('one' => '111', 'two' => '222', 'three' => '333'), /* required */
-                ),
-                array(
-                    'field_title' => 'Uploader Test: ',
-                    'type_of_box' => 'uploader',
-                    'desc'        => 'Upload Images and enter a caption.'
-                ),
+                )
             )
         ),
     );

@@ -13,18 +13,18 @@
      * @since 1.0
     ===============================
     */
+    add_action( 'wp_enqueue_scripts', 'wfc_load_js_scripts' );
     function wfc_load_js_scripts(){
         wp_enqueue_script( 'jquery' );
-        wp_register_script( 'jquery.easing.1.3', WFC_ADM_JS_URI.'/jquery.easing.1.3.js', array('jquery') );
-        wp_register_script( 'jquery.lightbox', WFC_ADM_JS_URI.'/lightbox.js', array('jquery') );
+        wp_register_script( 'jquery.easing.1.3', WFC_ADM_JS_URI.'/jquery.easing.1.3.js', array('jquery'), '', true );
+        wp_register_script( 'jquery.lightbox', WFC_ADM_JS_URI.'/lightbox.js', array('wfc.extensions'), '', true );
         wp_register_script(
             'jquery-idea-gallery', WFC_ADM_JS_URI.'/jquery.ideagallery.2.2.js',
-            array('jquery', 'jquery.easing.1.3', 'jquery.lightbox') );
+            array('jquery', 'jquery.easing.1.3', 'jquery.lightbox'), '', true );
         wp_enqueue_script( 'jquery.lightbox' );
         wp_enqueue_script( 'jquery-idea-gallery' );
     }
 
-    add_action( 'wp_enqueue_scripts', 'wfc_load_js_scripts' );
     /*
     ===============================
     FRAMEWORK CSS INCLUDES
@@ -32,6 +32,7 @@
      * @since 1.0
     ===============================
     */
+    add_action( 'wp_print_styles', 'wfc_load_css_styles' );
     function wfc_load_css_styles(){
         wp_register_style( 'ideagallery-style', WFC_ADM_CSS_URI.'/style.css' );
         wp_register_style( 'lightbox-style', WFC_ADM_CSS_URI.'/lightbox.css' );
@@ -39,7 +40,6 @@
         wp_enqueue_style( 'lightbox-style' );
     }
 
-    add_action( 'wp_print_styles', 'wfc_load_css_styles' );
     /*
     ===============================
     DISABLE RSS FEEDS

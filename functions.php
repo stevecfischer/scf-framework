@@ -13,40 +13,31 @@
     */
     add_image_size( 'spotlight-thumb', 255, 131, true );
     register_nav_menu( 'Quick Links', 'Quick Links' );
-    function wfc_js_scripts(){
-        wp_register_script( 'wfc.plugins', WFC_JS_URI.'/plugins.js', array('jquery') );
-        wp_register_script( 'wfc.extensions', WFC_JS_URI.'/extensions.js', array('jquery') );
-        wp_enqueue_script( 'wfc.extensions' );
-        wp_enqueue_script( 'wfc.plugins' );
-        wp_enqueue_script( 'jquery' );
-    }
-
     add_action( 'wp_enqueue_scripts', 'wfc_js_scripts' );
-    function wfc_css_styles(){
-        wp_register_style( 'wfc-bootstrap', WFC_CSS_URI.'/bootstrap.min.css' );
-        wp_register_style( 'wfc-fontawesome', WFC_CSS_URI.'/font-awesome.min.css' );
-        wp_register_style( 'wfc-extensions', WFC_CSS_URI.'/extensions.css' );
-        wp_enqueue_style( 'wfc-extensions' );
-        //wp_enqueue_style( 'wfc-fontawesome' );
+    function wfc_js_scripts(){
+        wp_register_script( 'wfc.extensions', WFC_JS_URI.'/extensions.js', '', '', true );
+        wp_register_script( 'wfc.plugins', WFC_JS_URI.'/plugins.js', '', '', true );
+        wp_enqueue_script( 'wfc.plugins' );
+        wp_enqueue_script( 'wfc.extensions' );
     }
 
     add_action( 'wp_enqueue_scripts', 'wfc_css_styles' );
+    function wfc_css_styles(){
+        wp_register_style( 'wfc-extensions', WFC_CSS_URI.'/extensions.css' );
+        wp_enqueue_style( 'wfc-extensions' );
+    }
+
     function Wfc_Core_Homecontent_Loop(){
         global $wpdb;
         $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC'));
-        $i     = 1;
-        if( $query->have_posts() ) : while( $query->have_posts() && $i <= 3 ) : $query->the_post(); ?>
-        <div class="col_<?php echo $i++;?>">
+        if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">
                 <h2><?php echo get_the_title(); ?></h2>
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php  echo get_post_meta( $post->ID, 'homeposts_link_', true ); ?>">Learn More</a>
-        </div><!--/ col_1-->
-        <?php if( $i <= 3 ){
-                echo '<div id="vert_div">&nbsp;</div>';
-            }
+            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_homeboxes_link', true ); ?>">Learn More</a>
+        <?php
         endwhile;endif;
         wp_reset_query();
     }
@@ -54,15 +45,13 @@
     function Wfc_Core_Campaign_Loop(){
         global $wpdb;
         $query = new WP_Query(array('post_type' => 'campaign', 'order' => 'ASC'));
-        if( $query->have_posts() ) : while( $query->have_posts() && $i <= 3 ) : $query->the_post(); ?>
-        <div class="col_<?php echo $i++;?>">
+        if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">
                 <h2><?php echo get_the_title(); ?></h2>
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php  echo get_post_meta( $post->ID, 'homeposts_link_', true ); ?>">Learn More</a>
-        </div>
+            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_Campaign_read_more', true ); ?>">Read More</a>
         <?php
         endwhile;endif;
         wp_reset_query();
@@ -71,19 +60,14 @@
     function Wfc_Core_News_Loop(){
         global $wpdb;
         $query = new WP_Query(array('post_type' => 'news', 'order' => 'ASC'));
-        $i     = 1;
-        if( $query->have_posts() ) : while( $query->have_posts() && $i <= 3 ) : $query->the_post(); ?>
-        <div class="col_<?php echo $i++;?>">
+        if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">
                 <h2><?php echo get_the_title(); ?></h2>
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php  echo get_post_meta( $post->ID, 'homeposts_link_', true ); ?>">Learn More</a>
-        </div><!--/ col_1-->
-        <?php if( $i <= 3 ){
-                echo '<div id="vert_div">&nbsp;</div>';
-            }
+            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_News_read_more', true ); ?>">Learn More</a>
+        <?php
         endwhile;endif;
         wp_reset_query();
     }
@@ -91,24 +75,21 @@
     function Wfc_Core_Testimonial_Loop(){
         global $wpdb;
         $query = new WP_Query(array('post_type' => 'testimonial', 'order' => 'ASC'));
-        $i     = 1;
-        if( $query->have_posts() ) : while( $query->have_posts() && $i <= 3 ) : $query->the_post(); ?>
-        <div class="col_<?php echo $i++;?>">
+        if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">
                 <h2><?php echo get_the_title(); ?></h2>
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php  echo get_post_meta( $post->ID, 'homeposts_link_', true ); ?>">Learn More</a>
-        </div><!--/ col_1-->
-        <?php if( $i <= 3 ){
-                echo '<div id="vert_div">&nbsp;</div>';
-            }
+            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_testimonial_read_more', true ); ?>">Learn More</a>
+        <?php
         endwhile;endif;
         wp_reset_query();
     }
 
     function Wfc_Core_Page_Loop(){
+        global $wpdb;
+        global $post;
         echo '<div id="content">';
         while( have_posts() ) : the_post();
             echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
@@ -134,16 +115,8 @@
     }
 
     function Wfc_Core_Sidebar( $handle = 1 ){
-        if( is_page( 'home' ) ){
-            echo '<div id="sidebar-wrapper">';
-            if( !dynamic_sidebar( $handle ) ){
-                echo 'no sidebar';
-            }
-            echo '</div><!-- //#sidebar-wrapper-->';
-        } else{
-            if( !dynamic_sidebar( $handle ) ){
-                echo 'no sidebar';
-            }
+        if( !dynamic_sidebar( $handle ) ){
+            echo 'no sidebar';
         }
     }
 

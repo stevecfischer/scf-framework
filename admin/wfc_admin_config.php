@@ -20,7 +20,8 @@
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
     require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
     require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Small Helper Functions
-    require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers **BETA**
+    require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers
+    require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Site Options Panel
     /*
     ===============================
     ADMIN JS INCLUDES
@@ -28,6 +29,7 @@
      * @since 1.0
     ===============================
     */
+    add_action( 'admin_enqueue_scripts', 'wfc_admin_js_scripts' );
     function wfc_admin_js_scripts(){
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'jquery-ui-core' );
@@ -38,7 +40,6 @@
         wp_enqueue_script( 'jquery.wfc.fn' );
     }
 
-    add_action( 'admin_enqueue_scripts', 'wfc_admin_js_scripts' );
     /*
     ===============================
     ADMIN CSS INCLUDES
@@ -46,6 +47,7 @@
      * @since 1.0
     ===============================
     */
+    add_action( 'admin_enqueue_scripts', 'wfc_admin_css_styles' );
     function wfc_admin_css_styles(){
         wp_register_style( 'wfc-admin-style', WFC_ADM_CSS_URI.'/wfc-admin-styles.css' );
         wp_register_style( 'wfc-jquery-ui', 'http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' );
@@ -54,7 +56,6 @@
         wp_enqueue_style( 'thickbox' );
     }
 
-    add_action( 'admin_enqueue_scripts', 'wfc_admin_css_styles' );
     /*
     ===============================
     SHORTCODE INCLUDE FILES
@@ -145,10 +146,8 @@
     ===============================
     */
     function wfc_login_logo(){
-        echo '<style type="text/css">
-   .login h1 a{background-size:250px 49px !important;}
-   h1 a { background-image:url('.WFC_ADM_IMG_URI.'/wfc_logo.png) !important;}
-   </style>';
+        echo'<style type="text/css">.login h1 a{background-size:250px 49px !important;}h1 a { background-image:url('.
+            WFC_ADM_IMG_URI.'/wfc_logo.png) !important;}</style>';
         echo '<script type="text/javascript">
       jQuery(function($){
          $("a:first").addClass("external").attr({ target: "_blank" });
@@ -191,7 +190,7 @@
          */
         if( $post->post_status == 'auto-draft' ){
             echo '<div id="wfc_publish_block"><input name="original_publish" type="hidden" id="original_publish" value="Publish"><input type="hidden" name="publish" id="publish" class="button button-primary button-large" value="Publish" accesskey="p"><input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue"  accesskey="p" value="Publish &amp; Done"></div>';
-        } else {
+        } else{
             if( $post->post_status == 'publish' ){
                 echo '<div id="wfc_publish_block"><input name="original_publish" type="hidden" id="original_publish" value="Update"><input type="hidden" name="save" id="publish" class="button button-primary button-large" value="Update" accesskey="p"><input name="wfc_continue" type="submit" class="wfc-continue-button button-primary" id="wfc_continue"  accesskey="p" value="Update &amp; Done"></div>';
             }
@@ -211,47 +210,61 @@
     REMOVE PLUGIN UPDATE WARNINGS
     * @since 2.3
     */
-    remove_action( 'load-update-core.php', 'wp_update_plugins' );
-    add_filter( 'pre_site_transient_update_plugins', create_function( '$a', "return null;" ) );
+    if( !wfc_is_dev() ){
+        remove_action( 'load-update-core.php', 'wp_update_plugins' );
+        add_filter( 'pre_site_transient_update_plugins', create_function( '$a', "return null;" ) );
+    }
     /*
     ===============================
     REMOVE MENU ITEMS FOR OTHER USERS
      * @since 2.1
     */
+    add_action( 'admin_menu', 'wfc_remove_menu_items', 999 );
     function wfc_remove_menu_items(){
         global $current_user;
         if( $current_user->user_login != 'wfc' ){
-            remove_menu_page( 'wpseo_dashboard' );
-                remove_submenu_page('index.php', 'update-core.php');
-                /*
-                    Hides ThreeWP Activity Monitor Plugin
-                 */
-                remove_submenu_page( 'index.php', 'ThreeWP_Activity_Monitor' );
+            /*
+                Hides ThreeWP Activity Monitor Plugin
+             */
+            remove_submenu_page( 'index.php', 'ThreeWP_Activity_Monitor' );
+            remove_submenu_page( 'index.php', 'update-core.php' );
             remove_menu_page( 'tools.php' );
             remove_menu_page( 'options-general.php' );
-            remove_menu_page( 'plugins.php' );
-            remove_menu_page( 'link-manager.php' );
             remove_menu_page( 'edit-comments.php' );
-            remove_menu_page( 'edit.php' );
-            remove_menu_page( 'edit.php?post_type=acf' );
-            remove_menu_page( 'woocommerce' );
-                /*remove_submenu_page( 'edit.php?post_type=product', 'post-new.php?post_type=product' );
-                remove_submenu_page( 'edit.php?post_type=product', 'edit-tags.php' );*/
-            remove_menu_page( 'themes.php' );
-            /* remove_submenu_page( 'themes.php', 'nav-menus.php' );
-            remove_submenu_page( 'themes.php', 'all-in-one-event-calendar-themes' );
-            remove_submenu_page( 'themes.php', 'widgets.php' );
-            remove_submenu_page( 'themes.php', 'customsidebars' );
-            remove_submenu_page( 'themes.php', 'themes.php' );
-            remove_submenu_page( 'themes.php', 'theme-editor.php' );*/
+            if( getAdminMenu( "Plugins" ) ){
+                remove_menu_page( 'plugins.php' );
+            }
+            if( getAdminMenu( "Yoast SEO" ) ){
+                remove_menu_page( 'wpseo_dashboard' );
+            }
+            if( getAdminMenu( "Posts" ) ){
+                remove_menu_page( 'edit.php' );
+            }
+            if( getAdminMenu( "Appearance" ) ){
+                remove_menu_page( 'themes.php' );
+            }
+            if( getAdminMenu( "Theme Editor" ) ){
+                remove_submenu_page( 'themes.php', 'theme-editor.php' );
+            }
+            if( getAdminMenu( "Widgets" ) ){
+                remove_submenu_page( 'themes.php', 'widgets.php' );
+            }
+            if( getAdminMenu( "Menus" ) ){
+                remove_submenu_page( 'themes.php', 'nav-menus.php' );
+            }
+            if( getAdminMenu( "ai1ec Themes" ) ){
+                remove_submenu_page( 'themes.php', 'all-in-one-event-calendar-themes' );
+            }
         }
     }
-    add_action( 'admin_menu', 'wfc_remove_menu_items', 999 );
+
     /*
     ===============================
     CUSTOMIZE ADMIN MENU ORDER
     ===============================
     */
+    add_filter( 'custom_menu_order', 'wfc_custom_menu_order' );
+    add_filter( 'menu_order', 'wfc_custom_menu_order' );
     function wfc_custom_menu_order( $menu_ord ){
         if( !$menu_ord ){
             return true;
@@ -269,8 +282,11 @@
         );
     }
 
-    add_filter( 'custom_menu_order', 'wfc_custom_menu_order' );
-    add_filter( 'menu_order', 'wfc_custom_menu_order' );
+    /*
+    ===============================
+    GET USER SELECTED CPT'S
+    * @since 2.3
+    */
     function getActiveCPT( $cpt ){
         $activeCPT = get_option( 'wfc_activate_cpt' );
         if( !is_array( $activeCPT ) ){
@@ -282,6 +298,7 @@
         }
     }
 
+    add_action( 'admin_footer', 'Wfc_post_list_highlighting' );
     function Wfc_post_list_highlighting(){
         $args           = array(
             'public' => true,
@@ -293,37 +310,54 @@
         foreach( $activeCPT as $cpt ){
             $jqueryElements .= '.type-'.$cpt.', ';
         }?>
+        <script type="text/javascript">
+            jQuery(function ($) {
+                $("<?php echo substr( $jqueryElements, 0, -2 ); ?>").wfc_AdminTools();
+            });
+        </script>
+    <?php
+    }
+
+    add_action( 'admin_head', 'Wfc_framework_variables' );
+    add_action( 'wp_head', 'Wfc_framework_variables' );
+function Wfc_framework_variables(){
+    ?>
     <script type="text/javascript">
-        jQuery(function ($) {
-            $("<?php echo substr( $jqueryElements, 0, -2 ); ?>").wfc_AdminTools();
-        });
+        /**
+         * @name Framework Variables
+         *      this plugin allows js to use php definitions.
+         *      I created it to help with ajax, image, and file paths.
+         *      Issues almost always arise when working in between local, dev, and live
+         *      enviroments.
+         *
+         *      Example:
+         *      jQuery(function($){
+             *          var wfcDefines = $('body').wfc_fw_variables();
+             *          console.log(wfcDefines.define('wfc_theme_name'));
+             *      });
+         *
+         * @version 0.1
+         *
+         */
+        (function ($) {
+            $.fn.wfc_fw_variables = function () {
+                var phpDefs = { <?php
+                                echo ' "wfc_site_url" : "'.addslashes(WFC_SITE_URL).'",
+                                "wfc_admin_url" : "'.WFC_ADMIN_URL.'",
+                                "wfc_pt" : "'.addslashes(WFC_PT).'",
+                                "wfc_config" : "'.addslashes(WFC_CONFIG).'",
+                                "wfc_uri" : "'.addslashes(WFC_URI).'",
+                                "wfc_theme_name" : "'.get_option('template').'",
+                                "wfc_adm" : "'.addslashes(WFC_ADM).'" ';
+                            ?> }
+                return {
+                    phpDefs: phpDefs,
+                    define : function (val) {
+                        return this.phpDefs[val];
+                    }
+                };
+            };
+        }(jQuery));
     </script>
-    <?php
-    }
-
-    add_action( 'admin_footer', 'Wfc_post_list_highlighting' );
-    function Wfc_contextual_help( $contextual_help, $screen_id, $screen ){
-        add_filter( 'gettext', 'theme_change_comment_field_names', 20, 3 );
-        ob_start(); ?>
-    <h3>Help for Home Content Posts</h3>
-    <p>The ability to add new posts has been removed. The website home page has been programmed to handle only a certain amount. Adding more could result in `breaking` the website. </p>
-    <?php
-        return ob_get_clean();
-    }
-
-    if( isset($_GET['post_type']) && $_GET['post_type'] == 'homeboxes' ){
-        add_action( 'contextual_help', 'Wfc_contextual_help', 10, 3 );
-    }
-    /**
-     * Change comment form default field names.
-     *
-     * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/gettext
-     */
-    function theme_change_comment_field_names( $translated_text, $text, $domain ){
-        switch( $translated_text ){
-            case 'Help' :
-                $translated_text = "WFC Help";
-                break;
-        }
-        return $translated_text;
-    }
+<?php
+}

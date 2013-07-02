@@ -100,24 +100,11 @@
             ),
         ),
     );
-    $page_shortcut                    = new wfc_meta_box_class($page_shortcut_args);
-    $page_internal_linking_check_args = array(
-        'meta_box' => array(
-            'handler'   => '_additional_page_internal_linking_check',
-            'title'     => 'WFC Internal Linking Check',
-            'post_type' => 'page',
-            'new_boxes' => array(
-                array(
-                    'field_title' => 'Pages that link to this page:',
-                    'id'          => '_page_toggle_internal_link_check',
-                    'type_of_box' => 'content',
-                    'desc'        => scf_internal_link_checker()
-                ),
-            ),
-        ),
-    );
-    //$page_internal_linking_check = new wfc_meta_box_class($page_internal_linking_check_args);
+    $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
     function scf_internal_link_checker(){
+        if( !isset($_GET['post']) ){
+            return;
+        }
         $post_permalink = get_permalink( $_GET['post'] );
         global $wpdb;
         $args           = array(
@@ -138,7 +125,6 @@
             $str_permalinks .= get_permalink( get_the_ID() ).'<br />';
         endwhile;endif;
         wp_reset_query();
-        //echo $str_permalinks
         return $str_permalinks.' '.$i;
     }
 
@@ -148,7 +134,7 @@
     ===============================
     */
     function scf_intercept_add_new_page(){
-        if( !$_GET ){
+        if( !isset($_GET['post_type']) || !isset($_GET['shortcut']) ){
             return;
         }
         if( $_GET['post_type'] == 'page' && $_GET['shortcut'] == 'true' ){
@@ -184,6 +170,9 @@
     function scf_load_menu_manager_js(){
         global $post;
         global $pagenow;
+        if( !is_object( $post ) ){
+            return;
+        }
         if( $post->post_type == 'page' &&
             ($pagenow == 'post-new.php' || $pagenow == 'edit.php' || $pagenow == 'post.php')
         ){
