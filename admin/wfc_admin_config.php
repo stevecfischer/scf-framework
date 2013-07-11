@@ -114,7 +114,7 @@
 
         function Wfc_homecontentposts_admin_notice(){
             // use the class "error" for red notices, and "update" for yellow notices
-            echo"<div id='permissions-warning' class='error fade'><p><strong>".
+            echo "<div id='permissions-warning' class='error fade'><p><strong>".
                 __( 'You do not have permission to access that page.' )."</strong></p></div>";
         }
 
@@ -146,7 +146,7 @@
     ===============================
     */
     function wfc_login_logo(){
-        echo'<style type="text/css">.login h1 a{background-size:250px 49px !important;}h1 a { background-image:url('.
+        echo '<style type="text/css">.login h1 a{background-size:250px 49px !important;}h1 a { background-image:url('.
             WFC_ADM_IMG_URI.'/wfc_logo.png) !important;}</style>';
         echo '<script type="text/javascript">
       jQuery(function($){
@@ -260,6 +260,22 @@
 
     /*
     ===============================
+    Toggle Admin Menu by Site Options
+    ===============================
+    */
+    function getAdminMenu( $menu_item ){
+        $menu_items = get_option( 'wfc_admin_menu' );
+        if( !is_array( $menu_items ) ){
+            return false;
+        } elseif( in_array( $menu_item, $menu_items ) ){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    /*
+    ===============================
     CUSTOMIZE ADMIN MENU ORDER
     ===============================
     */
@@ -320,28 +336,28 @@
 
     add_action( 'admin_head', 'Wfc_framework_variables' );
     add_action( 'wp_head', 'Wfc_framework_variables' );
-function Wfc_framework_variables(){
-    ?>
-    <script type="text/javascript">
-        /**
-         * @name Framework Variables
-         *      this plugin allows js to use php definitions.
-         *      I created it to help with ajax, image, and file paths.
-         *      Issues almost always arise when working in between local, dev, and live
-         *      enviroments.
-         *
-         *      Example:
-         *      jQuery(function($){
+    function Wfc_framework_variables(){
+        ?>
+        <script type="text/javascript">
+            /**
+             * @name Framework Variables
+             *      this plugin allows js to use php definitions.
+             *      I created it to help with ajax, image, and file paths.
+             *      Issues almost always arise when working in between local, dev, and live
+             *      enviroments.
+             *
+             *      Example:
+             *      jQuery(function($){
              *          var wfcDefines = $('body').wfc_fw_variables();
              *          console.log(wfcDefines.define('wfc_theme_name'));
              *      });
-         *
-         * @version 0.1
-         *
-         */
-        (function ($) {
-            $.fn.wfc_fw_variables = function () {
-                var phpDefs = { <?php
+             *
+             * @version 0.1
+             *
+             */
+            (function ($) {
+                $.fn.wfc_fw_variables = function () {
+                    var phpDefs = { <?php
                                 echo ' "wfc_site_url" : "'.addslashes(WFC_SITE_URL).'",
                                 "wfc_admin_url" : "'.WFC_ADMIN_URL.'",
                                 "wfc_pt" : "'.addslashes(WFC_PT).'",
@@ -350,14 +366,14 @@ function Wfc_framework_variables(){
                                 "wfc_theme_name" : "'.get_option('template').'",
                                 "wfc_adm" : "'.addslashes(WFC_ADM).'" ';
                             ?> }
-                return {
-                    phpDefs: phpDefs,
-                    define : function (val) {
-                        return this.phpDefs[val];
-                    }
+                    return {
+                        phpDefs: phpDefs,
+                        define : function (val) {
+                            return this.phpDefs[val];
+                        }
+                    };
                 };
-            };
-        }(jQuery));
-    </script>
-<?php
-}
+            }(jQuery));
+        </script>
+    <?php
+    }
