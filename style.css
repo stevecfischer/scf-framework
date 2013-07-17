@@ -1,6 +1,6 @@
 /*
 ** Theme Name: wfc-framework
-** Version: 2.1
+** Version: 4.0
 ** Author: Steve Fischer
 */
 
@@ -10,49 +10,49 @@ Update the above lines with the projects information
 
 /* ----- BODY ----- */
 body{
-    width      :750px;
-    margin     :0 auto;
-    margin-top :30px;
+    width      : 750px;
+    margin     : 0 auto;
+    margin-top : 30px;
 }
 
 /* ----- HEADER ----- */
 #header{
-    width            :750px;
-    height           :150px;
-    background-color :#e3e3e3;
+    width            : 750px;
+    height           : 150px;
+    background-color : #E3E3E3;
 }
 
 /* ----- WRAPPER ----- */
 #wrapper{
-    width      :750px;
-    overflow   :auto;
-    margin-top :10px;
+    width      : 750px;
+    overflow   : auto;
+    margin-top : 10px;
 }
 
 /* ----- NAVIGATION ----- */
 #navigation{
-    width            :200px;
-    min-height       :500px; /* for modern browsers */
-    height           :auto !important; /* for modern browsers */
-    height           :500px; /* for IE5.x and IE6 */
-    background-color :#e3e3e3;
-    float            :right;
+    width            : 200px;
+    min-height       : 500px; /* for modern browsers */
+    height           : auto !important; /* for modern browsers */
+    height           : 500px; /* for IE5.x and IE6 */
+    background-color : #E3E3E3;
+    float            : right;
 }
 
 /* ----- MAIN CONTENT ----- */
 #content{
-    width            :540px;
-    min-height       :500px; /* for modern browsers */
-    height           :auto !important; /* for modern browsers */
-    height           :500px; /* for IE5.x and IE6 */
-    background-color :#e3e3e3;
-    margin-top       :10px;
+    width            : 540px;
+    min-height       : 500px; /* for modern browsers */
+    height           : auto !important; /* for modern browsers */
+    height           : 500px; /* for IE5.x and IE6 */
+    background-color : #E3E3E3;
+    margin-top       : 10px;
 }
 
 /* ----- FOOTER ----- */
 #footer{
-    width            :750px;
-    height           :100px;
-    background-color :#e3e3e3;
-    margin-top       :10px;
+    width            : 750px;
+    height           : 100px;
+    background-color : #E3E3E3;
+    margin-top       : 10px;
 }

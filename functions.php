@@ -2,8 +2,8 @@
     /**
      *
      * @package scf-framework
-     * @author Steve (6/11/2012)
-     * @version 2.2
+     * @author Steve (7/17/2013)
+     * @version 4.0
      */
     require_once('wfc_config/wfc_config.php');
     /***********************/
