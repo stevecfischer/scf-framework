@@ -3,7 +3,6 @@
      *
      * @package scf-framework
      * @author Steve (6/11/2012)
-     * @version 2.2
      * @since 0.1
      */
     // WFC STANDARD FUNCTIONS //
