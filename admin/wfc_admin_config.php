@@ -260,7 +260,8 @@
 
     /*
     ===============================
-    Toggle Admin Menu by Site Options
+    TOGGLE ADMIN MENU BY SITE OPTIONS
+    @Since 4.0
     ===============================
     */
     function getAdminMenu( $menu_item ){
@@ -337,24 +338,24 @@
     add_action( 'admin_head', 'Wfc_framework_variables' );
     add_action( 'wp_head', 'Wfc_framework_variables' );
     function Wfc_framework_variables(){
+        /**
+         * Framework Variables
+         *      this plugin allows js to use php definitions.
+         *      I created it to help with ajax, image, and file paths.
+         *      Issues almost always arise when working in between local, dev, and live
+         *      enviroments.
+         *
+         *      Example:
+         *      jQuery(function($){
+         *          var wfcDefines = $('body').wfc_fw_variables();
+         *          console.log(wfcDefines.define('wfc_theme_name'));
+         *      });
+         *
+         * @version 0.1
+         *
+         */
         ?>
         <script type="text/javascript">
-            /**
-             * @name Framework Variables
-             *      this plugin allows js to use php definitions.
-             *      I created it to help with ajax, image, and file paths.
-             *      Issues almost always arise when working in between local, dev, and live
-             *      enviroments.
-             *
-             *      Example:
-             *      jQuery(function($){
-             *          var wfcDefines = $('body').wfc_fw_variables();
-             *          console.log(wfcDefines.define('wfc_theme_name'));
-             *      });
-             *
-             * @version 0.1
-             *
-             */
             (function ($) {
                 $.fn.wfc_fw_variables = function () {
                     var phpDefs = { <?php
@@ -365,7 +366,7 @@
                                 "wfc_uri" : "'.addslashes(WFC_URI).'",
                                 "wfc_theme_name" : "'.get_option('template').'",
                                 "wfc_adm" : "'.addslashes(WFC_ADM).'" ';
-                            ?> }
+                            ?> };
                     return {
                         phpDefs: phpDefs,
                         define : function (val) {
