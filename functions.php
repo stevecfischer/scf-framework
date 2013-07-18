@@ -36,7 +36,7 @@
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_homeboxes_link', true ); ?>">Learn More</a>
+            <a class="learn_more" href="<?php echo get_post_meta( get_the_ID(), 'wfc_homeboxes_link', true ); ?>">Learn More</a>
         <?php
         endwhile;endif;
         wp_reset_query();
@@ -51,7 +51,7 @@
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_Campaign_read_more', true ); ?>">Read More</a>
+            <a class="learn_more" href="<?php echo get_post_meta( get_the_ID(), 'wfc_Campaign_read_more', true ); ?>">Read More</a>
         <?php
         endwhile;endif;
         wp_reset_query();
@@ -66,7 +66,7 @@
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_News_read_more', true ); ?>">Learn More</a>
+            <a class="learn_more" href="<?php echo get_post_meta( get_the_ID(), 'wfc_News_read_more', true ); ?>">Learn More</a>
         <?php
         endwhile;endif;
         wp_reset_query();
@@ -81,7 +81,7 @@
                 <?php the_post_thumbnail( 'large' ); ?>
                 <?php echo get_the_content(); ?>
             </div>
-            <a class="learn_more" href="<?php echo get_post_meta( $post->ID, 'wfc_testimonial_read_more', true ); ?>">Learn More</a>
+            <a class="learn_more" href="<?php echo get_post_meta( get_the_ID(), 'wfc_testimonial_read_more', true ); ?>">Learn More</a>
         <?php
         endwhile;endif;
         wp_reset_query();
@@ -102,8 +102,8 @@
     function Wfc_Core_Subbanner_Loop(){
         global $wpdb;
         global $post;
-        if( has_post_thumbnail( $post->ID ) && is_page() ){
-            $src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'subpagebanners' );
+        if( has_post_thumbnail( get_the_ID() ) && is_page() ){
+            $src = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID() ), 'subpagebanners' );
             echo '<img src="'.$src[0].'"/>';
         } else{
             query_posts( "post_type=subpagebanner&orderby=rand&posts_per_page=1" );
