@@ -35,8 +35,6 @@
         wp_enqueue_script( 'jquery-ui-core' );
         wp_enqueue_script( 'jquery-ui-dialog' );
         wp_register_script( 'jquery.wfc.fn', WFC_ADM_JS_URI.'/wfc.admin.fn.js', array('jquery') );
-        wp_enqueue_script( 'media-upload' );
-        wp_enqueue_script( 'thickbox' );
         wp_enqueue_script( 'jquery.wfc.fn' );
     }
 
@@ -217,15 +215,12 @@
     /*
     ===============================
     REMOVE MENU ITEMS FOR OTHER USERS
-     * @since 2.1
+    * @since 2.1
     */
     add_action( 'admin_menu', 'wfc_remove_menu_items', 999 );
     function wfc_remove_menu_items(){
         global $current_user;
         if( $current_user->user_login != 'wfc' ){
-            /*
-                Hides ThreeWP Activity Monitor Plugin
-             */
             remove_submenu_page( 'index.php', 'ThreeWP_Activity_Monitor' );
             remove_submenu_page( 'index.php', 'update-core.php' );
             remove_menu_page( 'tools.php' );
