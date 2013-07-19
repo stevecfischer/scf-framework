@@ -181,18 +181,15 @@
     if( getActiveCPT( "TESTIMONIAL_CPT" ) ){
         $testimonial = new wfcfw($testimonial_args);
     }
-    /*
-    ===============================
-    REGISTER LEFT SIDEBAR
-    ===============================
-    */
-    register_sidebar(
-        array(
-             'name'          => 'Left Sidebar',
-             'id'            => 'sidebar-1',
-             'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-             'after_widget'  => "</aside>",
-             'before_title'  => '<h3 class="widget-title">',
-             'after_title'   => '</h3>',
-             'description'   => ''
-        ) );
+    /**
+     * ENABLE SHORTCODES INSIDE TEXT WIDGETS
+     */
+    add_filter( 'widget_text', 'do_shortcode' );
+    /**
+     * WFC IMAGE PATH IN SHORTCODE FORM. HELPFUL IN TEXT WIDGETS
+     * @return string
+     */
+    add_shortcode( 'wfcimg', 'wfc_img_url' );
+    function wfc_img_url(){
+        return WFC_IMG_URI;
+    }
