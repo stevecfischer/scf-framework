@@ -1,15 +1,9 @@
 <?php
     /*
-    ===============================
-    ===============================
-    */
-    // function to list all pages are that are not shortcuts
-    // two steps 1 query for all shortcut pages
-    // query for ALL pages but exclude the shortcut ones
-    /**
-    @TODO need to save the shortcut links in a better way.  right now the url is
-    getting saved. but they will break if the permalink structure changes.
-    === try saving the item object maybe ===
+     * @sftodo:
+        need to save the shortcut links in a better way.  right now the url is
+        getting saved. but they will break if the permalink structure changes.
+        === try saving the item object maybe ===
      */
     function get_shortcut_pages(){
         global $wpdb;
@@ -102,9 +96,6 @@
     );
     $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
     function scf_internal_link_checker(){
-        if( !isset($_GET['post']) ){
-            return;
-        }
         $post_permalink = get_permalink( $_GET['post'] );
         global $wpdb;
         $args           = array(
