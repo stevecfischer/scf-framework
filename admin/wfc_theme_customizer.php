@@ -67,7 +67,7 @@
     );
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
-        if( $_GET['page'] == basename( __FILE__ ) ){
+        if( isset($_GET['page']) && $_GET['page'] == basename( __FILE__ ) ){
             if( 'save' == $_REQUEST['action'] ){
                 foreach( $options as $value ){
                     update_option( $value['id'], $_REQUEST[$value['id']] );
@@ -98,11 +98,11 @@
         global $themename, $shortname, $options;
         $i = 0;
         if( $_REQUEST['saved'] ){
-            echo'<div id="message" class="updated fade"><p><strong>'.$themename.
+            echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings saved.</strong></p></div>';
         }
         if( $_REQUEST['reset'] ){
-            echo'<div id="message" class="updated fade"><p><strong>'.$themename.
+            echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings reset.</strong></p></div>';
         }
         ?>
@@ -124,7 +124,7 @@
                     <?php break;
                 case "title":
                     ?>
-                    <p>To easily use the <?php echo $themename;?> theme, you can use the menu below.</p>
+                    <p>To easily use the <?php echo $themename; ?> theme, you can use the menu below.</p>
                     <?php break;
                 case 'text':
                     ?>

@@ -10,6 +10,9 @@ WFC WP Framework
 
 == Installation ==
 
+Move following two files into theme root
+/scf-framework/theme_functions/style.css
+/scf-framework/theme_functions/functions.php
 
 == Frequently Asked Questions ==
 
@@ -54,3 +57,8 @@ Awnser number 1
 
 = 4.0 =
 Bug fixes
+
+= 5.1.0 =
+* Removed Core theme files. See Issue #1
+* Added Theme Builder
+    - dynamically create core theme files.
