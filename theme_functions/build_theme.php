@@ -12,6 +12,8 @@
      */
     /*
      * @sftodo: phase 1: get this class to create the exact files in current package.
+     *
+     * Completed
      */
     /*
      * @sftodo: phase 2: create checkbox form for user to select what files they need.
@@ -129,7 +131,7 @@ array(
             $single       = "";
             $archive      = "";
             $index        = "";
-            $theme_array =
+            $theme_array  =
                 array(
                     array('file' => 'header.php', 'content' => $header),
                     array('file' => 'footer.php', 'content' => $footer),
