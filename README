@@ -10,9 +10,10 @@ WFC WP Framework
 
 == Installation ==
 
-Move following two files into theme root
+Move these files into theme root-
 /scf-framework/theme_functions/style.css
 /scf-framework/theme_functions/functions.php
+/scf-framework/theme_functions/index.php
 
 == Frequently Asked Questions ==
 

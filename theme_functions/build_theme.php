@@ -13,7 +13,7 @@
     /*
      * @sftodo: phase 1: get this class to create the exact files in current package.
      *
-     * Completed
+     * Completed 7/24/13
      */
     /*
      * @sftodo: phase 2: create checkbox form for user to select what files they need.
@@ -37,100 +37,87 @@
     function Wfc_Build_Theme(){
         global $themename, $shortname, $options;
         $i = 0;
-        if( $_REQUEST['build'] ){
+        if( isset($_REQUEST['build']) && $_REQUEST['build'] ){
             if( file_exists( WFC_PT.'header.php' ) ){
                 die("Theme already built.  Go Fish.");
             }
-            $header       = '<!DOCTYPE html>
-<!--
- __      __     _____   ______
-/\ \  __/\ \  /\  ___\ /\  _  \
-\ \ \/\ \ \ \ \ \ \__/ \ \ \/\_\
- \ \ \ \ \ \ \ \ \  __\ \ \ \/ /_
-  \ \ \_/\ _\ \ \ \ \_/  \ \ \_\ \
-   \ \__/ \___/  \ \_\    \ \____/
-    \/__/ /__/    \/_/     \/___/
--->
-<!--[if lt IE 7 ]>
-<html class="ie ie6" <?php language_attributes(); ?>>
-<![endif]-->
-<!--[if IE 7 ]>
-<html class="ie ie7" <?php language_attributes(); ?>>
-<![endif]-->
-<!--[if IE 8 ]>
-<html class="ie ie8" <?php language_attributes(); ?>>
-<![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html <?php language_attributes(); ?>> <!--<![endif]-->
-<head>
-    <meta charset="<?php bloginfo( "charset" ); ?>"/>
-    <title><?php bloginfo( "name" ); ?> <?php wp_title( "", true ); ?></title>
-    <link rel="profile" href="http://gmpg.org/xfn/11"/>
-    <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( "stylesheet_url" ); ?>"/>
-    <link rel="pingback" href="<?php bloginfo( "pingback_url" ); ?>"/>
-    <?php wp_head(); ?>
-</head>
-<body <?php body_class(); ?>>
-
-<?php
-wp_nav_menu(
-array(
-"theme_location" => "Primary",
-"menu_id"        => "menu-custom",
-"menu_class"     => "menu",
-"depth"          => 0
-)
-);
-?>
-';
+            $header = '<!DOCTYPE html>
+                <!--
+                 __      __     _____   ______
+                /\ \  __/\ \  /\  ___\ /\  _  \
+                \ \ \/\ \ \ \ \ \ \__/ \ \ \/\_\
+                 \ \ \ \ \ \ \ \ \  __\ \ \ \/ /_
+                  \ \ \_/\ _\ \ \ \ \_/  \ \ \_\ \
+                   \ \__/ \___/  \ \_\    \ \____/
+                    \/__/ /__/    \/_/     \/___/
+                -->
+                <!--[if lt IE 7 ]>
+                <html class="ie ie6" <?php language_attributes(); ?>>
+                <![endif]-->
+                <!--[if IE 7 ]>
+                <html class="ie ie7" <?php language_attributes(); ?>>
+                <![endif]-->
+                <!--[if IE 8 ]>
+                <html class="ie ie8" <?php language_attributes(); ?>>
+                <![endif]-->
+                <!--[if (gte IE 9)|!(IE)]><!--><html <?php language_attributes(); ?>> <!--<![endif]-->
+                <head>
+                    <meta charset="<?php bloginfo( "charset" ); ?>"/>
+                    <title><?php bloginfo( "name" ); ?> <?php wp_title( "", true ); ?></title>
+                    <link rel="profile" href="http://gmpg.org/xfn/11"/>
+                    <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( "stylesheet_url" ); ?>"/>
+                    <link rel="pingback" href="<?php bloginfo( "pingback_url" ); ?>"/>
+                    <?php wp_head(); ?>
+                </head>
+                <body <?php body_class(); ?>>';
             $footer       = '</div><!-- //#wrapper -->
-<div id="footer">
-    <div id="wfc-footer-links">
-        <p>
-            <a target="_blank" href="http://www.webfullcircle.com">Internet Marketing</a>
-            |
-            <a target="_blank" href="http://www.webfullcircle.com">Website Design</a>
-        </p>
-    </div>
-    <!-- //#wfc-footer-links -->
-</div><!-- //#footer -->
-</div><!-- //#container -->
-<?php wp_footer(); ?>
-</body>
-</html>';
+                <div id="footer">
+                    <div id="wfc-footer-links">
+                        <p>
+                            <a target="_blank" href="http://www.webfullcircle.com">Internet Marketing</a>
+                            |
+                            <a target="_blank" href="http://www.webfullcircle.com">Website Design</a>
+                        </p>
+                    </div>
+                    <!-- //#wfc-footer-links -->
+                </div><!-- //#footer -->
+                </div><!-- //#container -->
+                <?php wp_footer(); ?>
+                </body>
+                </html>';
             $page         = '<div id="navigation" class="left_sidebar">
-    <?php
-    Wfc_Core_Sidebar();
-    ?>
-</div><!-- //#navigation.left_sidebar -->
-<?php Wfc_Core_Page_Loop(); ?>
-<?php get_footer(); ?>';
+                    <?php
+                    Wfc_Core_Sidebar();
+                    ?>
+                </div><!-- //#navigation.left_sidebar -->
+                <?php Wfc_Core_Page_Loop(); ?>
+                <?php get_footer(); ?>';
             $frontpage    = '<?php
-    get_header();
+                get_header();
 
-    Wfc_Core_Homecontent_Loop();
-    Wfc_Core_Campaign_Loop();
-    Wfc_Core_News_Loop();
-    Wfc_Core_Testimonial_Loop();
-    while( have_posts() ) : the_post();
-        the_title();
-        the_content();
-    endwhile;
-    wp_reset_query();
+                Wfc_Core_Homecontent_Loop();
+                Wfc_Core_Campaign_Loop();
+                Wfc_Core_News_Loop();
+                Wfc_Core_Testimonial_Loop();
+                while( have_posts() ) : the_post();
+                    the_title();
+                    the_content();
+                endwhile;
+                wp_reset_query();
 
-    get_footer();';
+                get_footer();';
             $search       = 'if( have_posts() ) :
-        while( have_posts() ) : the_post();
-            the_title();
-            the_content();
-        endwhile; else:
-        echo "There are no posts matching that search term.";
-    endif;
-    wp_reset_query();';
+                    while( have_posts() ) : the_post();
+                        the_title();
+                        the_content();
+                    endwhile; else:
+                    echo "There are no posts matching that search term.";
+                endif;
+                wp_reset_query();';
             $four_o_four  = 'echo "404 error."';
             $editor_style = "";
             $single       = "";
             $archive      = "";
-            $index        = "";
             $theme_array  =
                 array(
                     array('file' => 'header.php', 'content' => $header),
@@ -140,7 +127,7 @@ array(
                     array('file' => '404.php', 'content' => $four_o_four),
                     array('file' => 'editor-style.css', 'content' => $editor_style),
                     array('file' => 'single.php', 'content' => $single),
-                    array('file' => 'index.php', 'content' => $index),
+                    array('file' => 'front-page.php', 'content' => $frontpage),
                     array('file' => 'archive.php', 'content' => $archive)
                 );
             foreach( $theme_array as $page ){
@@ -160,4 +147,3 @@ array(
     }
 
     add_action( 'admin_menu', 'Wfc_Build_Theme_Page' );
-?>
