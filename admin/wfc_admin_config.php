@@ -97,47 +97,6 @@
     }
 
     /*
-     * Removes ability to add new Home Content Posts
-     *
-     * @since 2.3
-     */
-    if( !wfc_is_dev() ){
-        add_action( 'admin_menu', 'Wfc_homecontentposts_admin_redirect' );
-        add_action( 'admin_init', 'Wfc_homecontentposts_show_notice' );
-        function Wfc_homecontentposts_admin_redirect(){
-            $result = stripos( $_SERVER['REQUEST_URI'], 'post-new.php?post_type=homeboxes' );
-            if( $result !== false ){
-                wp_redirect( get_option( 'siteurl' ).'/wp-admin/index.php?permissions_error=true' );
-            }
-        }
-
-        function Wfc_homecontentposts_admin_notice(){
-            // use the class "error" for red notices, and "update" for yellow notices
-            echo "<div id='permissions-warning' class='error fade'><p><strong>".
-                __( 'You do not have permission to access that page.' )."</strong></p></div>";
-        }
-
-        function Wfc_homecontentposts_show_notice(){
-            if( $_GET['permissions_error'] ){
-                add_action( 'admin_notices', 'Wfc_homecontentposts_admin_notice' );
-            }
-        }
-
-        function Wfc_check_current_screen(){
-            if( !is_admin() ){
-                return;
-            }
-            global $current_screen;
-            if( $current_screen->post_type == "homeboxes" ){
-                echo "<style type=\"text/css\">.add-new-h2{display: none;}</style>";
-            }
-        }
-
-        add_action( 'admin_notices', 'Wfc_check_current_screen' );
-        add_action( 'admin_menu', 'hide_add_new_custom_type' );
-        add_action( 'admin_head', 'hide_buttons' );
-    }
-    /*
     ===============================
     WFC LOGIN LOGO
 
