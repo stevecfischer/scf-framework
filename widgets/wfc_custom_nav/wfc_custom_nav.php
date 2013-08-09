@@ -38,9 +38,10 @@
             if( $thedepth != 1 ){ //only if the page is not the top of the hierarchy
                 $top_page = $post->post_parent;
             }
-            echo '<ul>';
+            echo '<span class="span3">';
+            echo '<ul class="nav nav-list affix-top">';
             // show parent title
-            echo'<li class="previous"><a class="return" href="'.get_permalink( $post->post_parent ).'">'.
+            echo '<li class="previous"><a class="return" href="'.get_permalink( $post->post_parent ).'">'.
                 get_the_title( $post->post_parent ).'</a></li>';
             $children = wp_list_pages(
                 array(
@@ -52,6 +53,7 @@
                      'walker'   => new Wfc_Custom_Nav_Walker
                 ) );
             echo '</ul>';
+            echo '</span>';
         }
 
         function update( $new_instance, $old_instance ){
@@ -108,7 +110,7 @@
                 if( isset($short_new_tab) && !empty($short_new_tab) ){
                     $output .=
                         $indent.'<li class="'.$css_class.'"><a target="_blank" href="'.$short_cut.'">'.$link_before.
-                            apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
+                        apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
                 } else{
                     $output .= $indent.'<li class="'.$css_class.'"><a href="'.$short_cut.'">'.$link_before.
                         apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
