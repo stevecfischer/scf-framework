@@ -7,9 +7,18 @@
      */
     class  wfc_meta_box_class
     {
+        /**
+         * @var array
+         */
         private $new_meta_boxes = array();
+        /**
+         * @var string
+         */
         private $_cpt = "";
 
+        /**
+         * @param $obj
+         */
         public function __construct( $obj ){
             $this->_cpt                                                              = strtolower( $obj['cpt'] );
             $this->new_meta_boxes[$this->clean_handles( $obj['meta_box']['title'] )] = $obj;
@@ -17,12 +26,20 @@
             add_action( 'save_post', array(&$this, 'save_meta_box'), 10, 2 );
         }
 
+        /**
+         * @param $term
+         *
+         * @return string
+         */
         public function clean_handles( $term ){
             $field_id_cleaning = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $term ) );
             $field_id_cleaning = strtolower( str_replace( " ", "_", $field_id_cleaning ) );
             return 'wfc_'.$this->_cpt.'_'.$field_id_cleaning;
         }
 
+        /**
+         * @param $var
+         */
         public function types_meta_box( $var ){
             global $post;
             wp_nonce_field( 'wfc_meta_box_nonce', 'meta_box_nonce' );
@@ -39,26 +56,26 @@
                         $meta             = is_array( $field['options'] ) ? array() : '';
                     }
                     echo '
-                  <div id="'.$field['id'].'" class="wfc-meta-block">
-                  <p class="wfc-meta-label">
-                     <strong>'.$field['field_title'].'</strong>
-                  </p>';
+                        <div id="'.$field['id'].'" class="wfc-meta-block">
+                        <p class="wfc-meta-label">
+                            <strong>'.$field['field_title'].'</strong>
+                        </p>';
                     if( $field['desc'] != '' ){
                         echo '
-                     <div class="description-wrap">
-                     <a class="switch" href="#">[+] more info</a>
-                     <p class="description">'.$field['desc'].'</p>
-                     </div>';
+                            <div class="description-wrap">
+                            <a class="switch" href="#">[+] more info</a>
+                                <p class="description">'.$field['desc'].'</p>
+                            </div>';
                     }
                     echo '<p class="add_margin">';
                     switch( $field['type_of_box'] ){
                         case 'text':
-                            echo'<input class="'.$field['class'].'" type="text" name="'.$field['id'].'" value="'.
+                            echo '<input class="'.$field['class'].'" type="text" name="'.$field['id'].'" value="'.
                                 ($meta ? $meta : '').
                                 '"  />';
                             break;
                         case 'textarea':
-                            echo'<textarea cols="40" rows="2" name="'.$field['id'].'">'.($meta ? $meta : '').
+                            echo '<textarea cols="40" rows="2" name="'.$field['id'].'">'.($meta ? $meta : '').
                                 '</textarea>';
                             break;
                         case 'select':
@@ -67,7 +84,7 @@
                            <option value="none" >None</option>';
                             foreach( $field['options'] as $option_k => $option_v ){
                                 $val = is_int( $option_k ) ? $option_v : $option_k;
-                                echo'<option value="'.$val.'" '.($val == $meta ? ' selected="selected"' : '').' >'.
+                                echo '<option value="'.$val.'" '.($val == $meta ? ' selected="selected"' : '').' >'.
                                     $option_v.'</option>';
                             }
                             echo '</select>';
@@ -85,61 +102,12 @@
                         case 'checkbox':
                             foreach( $field['options'] as $option ){
                                 echo '
-                        <label>
-                           <input type="checkbox" name="'.$field['id'].'[]" value="'.$option.'" '.
+                                    <label>
+                                       <input type="checkbox" name="'.$field['id'].'[]" value="'.$option.'" '.
                                     (in_array( $option, $meta ) ? ' checked="checked"' : '').' />&nbsp;'
                                     .$option.'
-                        </label><br />';
+                                    </label><br />';
                             }
-                            break;
-                        case 'uploader':
-                            ?>
-                            <table id="form">
-                                <tbody class="wfc-image-gallery-table">
-                                <?php if( !empty($meta) ){
-                                    $meta_caption = get_post_meta( $post->ID, $field['id'].'_captions', true );
-                                    ?>
-                                    <?php for( $i = 0; $i < count( $meta ); $i++ ) : ?>
-                                        <tr valign="top" class="wfc-sortable-rows" id="row_<?php echo $i + 1; ?>">
-                                            <td scope="row">
-                                                <label for="image_<?php echo $i + 1; ?>">Picture</label><br/>
-                                            </td>
-                                            <td>
-                                                <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID; ?>"/>
-                                                <input type="text" name="<?php echo $field['id']; ?>[]" id="image_<?php echo
-                                                    $i + 1; ?>" size="70" value="<?php echo  $meta[$i]; ?>"/>
-                                                <input id="image_<?php echo
-                                                    $i +
-                                                    1; ?>" type="button" value="Upload Image" class="wfc_upload_image"/>
-                                                <input id="row_<?php echo$i +
-                                                    1; ?>" type="button" value="Remove picture" class="wfc_remove_image"/><br/>
-                                                <label for="caption_<?php echo $i + 1; ?>">Caption : </label>
-                                                <input type="text" name="<?php echo $field['id']; ?>_captions[]" id="caption_<?php echo
-                                                    $i + 1; ?>" size="59" value="<?php echo  $meta_caption[$i]; ?>"/>
-                                                <label class="levelonehandle">X</label>
-                                            </td>
-                                        </tr>
-                                    <?php endfor; ?>
-                                <?php } else{ ?>
-                                    <tr valign="top" id="row_1">
-                                        <td scope="row">
-                                            <label for="image_1">Picture</label><br/>
-                                        </td>
-                                        <td>
-                                            <input type="hidden" name="post_id" id="current_post_id" value="<?php echo $post_ID; ?>"/>
-                                            <input type="text" name="<?php echo $field['id']; ?>[]" id="image_1" size="70" value=""/>
-                                            <input id="image_1" type="button" value="Upload Image" class="wfc_upload_image"/>
-                                            <input id="row_1" type="button" value="Remove picture" class="wfc_remove_image"/><br/>
-                                            <label for="caption_1">Caption : </label>
-                                            <input type="text" name="<?php echo $field['id']; ?>_captions[]" id="caption_1" size="59" value=""/>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                                </tbody>
-                            </table>
-                            <br/>
-                            <a id="add_field" href="">Add an other picture</a>
-                            <?php
                             break;
                     }
                     echo '</p></div>';
@@ -148,6 +116,9 @@
         }
 
         //EOF
+        /**
+         *
+         */
         public function register_meta_box(){
             $vars = $this->new_meta_boxes;
             foreach( $vars as $var ){
@@ -164,6 +135,9 @@
         }
 
         //EOF
+        /**
+         * @param $post_obj
+         */
         public function display_meta_box_content( $post_obj ){
             $vars              = $this->new_meta_boxes;
             $current_post_type = $post_obj->post_type;
@@ -176,10 +150,13 @@
         }
 
         //EOF
+        /**
+         * @return mixed
+         */
         public function save_meta_box(){
             global $post;
             if( !is_object( $post ) ){
-                return;
+                return false;
             }
             $post_id = $post->ID;
             $vars    = $this->new_meta_boxes;
@@ -187,7 +164,8 @@
                 $meta_box = $var['meta_box'];
             }
             // verify nonce
-            if( !isset($_POST['meta_box_nonce']) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'wfc_meta_box_nonce' )
+            if( !isset($_POST['meta_box_nonce']) ||
+                !wp_verify_nonce( $_POST['meta_box_nonce'], 'wfc_meta_box_nonce' )
             ){
                 return $post_id;
             }
@@ -215,5 +193,8 @@
                     delete_post_meta( $post_id, $field['id'], $old );
                 }
             }
+            return true;
         }
-    }//EOC
+    }
+
+    //EOC
