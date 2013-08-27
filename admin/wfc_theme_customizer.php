@@ -232,7 +232,6 @@
                 }
             }
         </script>
-
     <?php
     }
 
@@ -254,6 +253,7 @@
         }
     }
 
+    //@sftodo: I moved the CPT instances here in order to make the framework "update-able".  I don't like the code below.  Please optimize it!
     if( getActiveCPT( "CAMPAIGN_CPT" ) ){
         $campaign_module_args = array(
             'cpt'       => 'Campaign' /* CPT Name */,
