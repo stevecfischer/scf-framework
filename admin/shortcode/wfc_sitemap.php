@@ -28,10 +28,15 @@
                 array(
                      'exclude' => ''
                 ), $atts ) );
-        $exclude_pages     = $exclude;
-        $exclude_pages_Arr = explode( ',', $exclude_pages );
-        $result            = wfc_get_ancestors();
-        $return            = '';
+        if( $exclude != '' && !empty($exclude) ){
+            $exclude_pages     = $exclude;
+            $exclude_pages_Arr = explode( ',', $exclude_pages );
+        } else{
+            $exclude_pages     = get_option( 'wfc_exclude_sitemap' );
+            $exclude_pages_Arr = explode( ',', $exclude_pages );
+        }
+        $result = wfc_get_ancestors();
+        $return = '';
         if( $result ){
             $return .= '<div class="sitemap_without_child">';
             $return .= '<ul>';
@@ -97,8 +102,8 @@
             extract( $args, EXTR_SKIP );
             $css_class = array('page_item', 'page-item-'.$page->ID);
             if( !empty($current_page) ){
-                $_current_page = get_page( $current_page );
-                _get_post_ancestors( $_current_page );
+                $_current_page = get_post( $current_page );
+                get_post_ancestors( $_current_page );
                 if( isset($_current_page->ancestors) && in_array( $page->ID, (array)$_current_page->ancestors ) ){
                     $css_class[] = 'current_page_ancestor';
                 }
@@ -119,7 +124,7 @@
                 if( isset($short_new_tab) && !empty($short_new_tab) ){
                     $output .=
                         $indent.'<li class="'.$css_class.'"><a target="_blank" href="'.$short_cut.'">'.$link_before.
-                            apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
+                        apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
                 } else{
                     $output .= $indent.'<li class="'.$css_class.'"><a href="'.$short_cut.'">'.$link_before.
                         apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
