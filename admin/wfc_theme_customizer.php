@@ -59,7 +59,7 @@
         array(
             "name" => "WFC Pages excluded in sitemap",
             "desc" => "Enter the page id to be excluded followed by a comma.  Its common to exclude Thank You, Home, and Sitemap pages.",
-            "id"   => $shortname."custom_css",
+            "id"   => $shortname."exclude_sitemap",
             "type" => "textarea",
             "std"  => ""
         ),
@@ -107,118 +107,132 @@
         }
         ?>
         <div class="wrap rm_wrap">
-        <h2><?php echo $themename; ?> Settings</h2>
-        <div class="rm_opts">
-        <form method="post">
-        <?php foreach( $options as $value ){
-            //print_r($value);
-            switch( $value['type'] ){
-                case "open":
+            <h2><?php echo $themename; ?> Settings</h2>
+            <div class="rm_opts">
+                <form method="post">
+                    <?php foreach ($options as $value){
+                        //print_r($value);
+                        switch ($value['type']){
+                        case "open":
+                            ?>
+                            <?php break;
+                        case "close":
                     ?>
-                    <?php break;
-                case "close":
-                    ?>
-                    </div>
-                    </div>
-                    <br/>
-                    <?php break;
-                case "title":
-                    ?>
-                    <p>To easily use the <?php echo $themename; ?> theme, you can use the menu below.</p>
-                    <?php break;
-                case 'text':
-                    ?>
-                    <div class="rm_input rm_text">
-                        <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
-                        <input name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>" type="<?php echo $value['type']; ?>" value="<?php if(
-                            get_option( $value['id'] ) != ""
-                        ){
-                            echo stripslashes( get_option( $value['id'] ) );
-                        } else{
-                            echo $value['std'];
-                        } ?>"/>
-                        <small><?php echo $value['desc']; ?></small>
-                        <div class="clearfix"></div>
-                    </div>
-                    <?php
-                    break;
-                case 'textarea':
-                    ?>
-                    <div class="rm_input rm_textarea">
-                        <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
-                        <textarea name="<?php echo $value['id']; ?>" type="<?php echo $value['type']; ?>" cols="" rows=""><?php if(
-                                get_option( $value['id'] ) != ""
-                            ){
-                                echo stripslashes( get_option( $value['id'] ) );
-                            } else{
-                                echo $value['std'];
-                            } ?></textarea>
-                        <small><?php echo $value['desc']; ?></small>
-                        <div class="clearfix"></div>
-                    </div>
-                    <?php
-                    break;
-                case 'select':
-                    ?>
-                    <div class="rm_input rm_select">
-                        <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
-                        <select name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>">
-                            <?php foreach( $value['options'] as $option ){ ?>
-                                <option <?php if( get_option( $value['id'] ) == $option ){
-                                    echo 'selected="selected"';
-                                } ?>><?php echo $option; ?></option><?php } ?>
-                        </select>
-                        <small><?php echo $value['desc']; ?></small>
-                        <div class="clearfix"></div>
-                    </div>
-                    <?php
-                    break;
-                case "checkbox":
-                    ?>
-                    <div class="rm_input rm_checkbox">
-                        <?php foreach( $value['options'] as $option ){ ?>
-                            <label>
-                                <?php $checked = ""; ?>
-                                <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
-                                    <?php
-                                    if( in_array( $option, get_option( $value['id'] ) ) ){
-                                        $checked = "checked=\"checked\"";
-                                    }
-                                    ?>
-                                <?php } ?>
-                                <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $option; ?>" <?php echo $checked; ?> />
-                                <?php echo $option; ?>
-                            </label>
-                            <br/>
-                        <?php } ?>
-                        <small><?php echo $value['desc']; ?></small>
-                        <div class="clearfix"></div>
-                    </div>
-                    <?php break;
-                case "section":
-                    $i++;
-                    ?>
-                    <div class="rm_section">
-                    <div class="rm_title"><h3>
-                            <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt=""><?php echo $value['name']; ?>
-                        </h3>
-                        <span class="submit"><input name="save<?php echo $i; ?>" type="submit" value="Save changes"/>
-                        </span>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="rm_options">
-                    <?php break;
-            }
-        }
-        ?>
-        <input type="hidden" name="action" value="save"/>
-        </form>
-        <form method="post">
-            <p class="submit">
-                <input name="reset" type="submit" value="Reset"/> <input type="hidden" name="action" value="reset"/>
-            </p>
-        </form>
+            </div>
         </div>
+    <br/>
+        <?php break;
+        case "title":
+            ?>
+            <p>To easily use the <?php echo $themename; ?> theme, you can use the menu below.</p>
+            <?php break;
+        case 'text':
+            ?>
+            <div class="rm_input rm_text">
+                <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
+                <input name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>" type="<?php echo $value['type']; ?>" value="<?php if(
+                    get_option( $value['id'] ) != ""
+                ){
+                    echo stripslashes( get_option( $value['id'] ) );
+                } else{
+                    echo $value['std'];
+                } ?>"/>
+                <small><?php echo $value['desc']; ?></small>
+                <div class="clearfix"></div>
+            </div>
+            <?php
+            break;
+        case 'textarea':
+            ?>
+            <div class="rm_input rm_textarea">
+                <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
+                <textarea name="<?php echo $value['id']; ?>" type="<?php echo $value['type']; ?>" cols="" rows=""><?php if(
+                        get_option( $value['id'] ) != ""
+                    ){
+                        echo stripslashes( get_option( $value['id'] ) );
+                    } else{
+                        echo $value['std'];
+                    } ?></textarea>
+                <small><?php echo $value['desc']; ?></small>
+                <div class="clearfix"></div>
+            </div>
+            <?php
+            break;
+        case 'select':
+            ?>
+            <div class="rm_input rm_select">
+                <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
+                <select name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>">
+                    <?php foreach( $value['options'] as $option ){ ?>
+                        <option <?php if( get_option( $value['id'] ) == $option ){
+                            echo 'selected="selected"';
+                        } ?>><?php echo $option; ?></option><?php } ?>
+                </select>
+                <small><?php echo $value['desc']; ?></small>
+                <div class="clearfix"></div>
+            </div>
+            <?php
+            break;
+        case "checkbox":
+            ?>
+            <div class="rm_input rm_checkbox">
+                <?php foreach( $value['options'] as $option ){ ?>
+                    <label>
+                        <?php $checked = ""; ?>
+                        <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
+                            <?php
+                            if( in_array( $option, get_option( $value['id'] ) ) ){
+                                $checked = "checked=\"checked\"";
+                            }
+                            ?>
+                        <?php } ?>
+                        <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $option; ?>" <?php echo $checked; ?> />
+                        <?php echo $option; ?>
+                    </label>
+                    <br/>
+                <?php } ?>
+                <small><?php echo $value['desc']; ?></small>
+                <div class="clearfix"></div>
+            </div>
+            <?php break;
+    case "section":
+        $i++;
+        ?>
+        <div class="rm_section">
+        <div class="rm_title"><h3>
+                <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt=""><?php echo $value['name']; ?>
+            </h3>
+            <span class="submit"><input name="save<?php echo $i; ?>" type="submit" value="Save changes"/>
+            </span>
+            <div class="clearfix"></div>
+        </div>
+        <div class="rm_options">
+            <?php break;
+                }
+                }
+            ?>
+            <input type="hidden" name="action" value="save"/>
+            </form>
+            <form method="post">
+                <p class="submit">
+                    <input name="reset" type="submit" onclick="return wfc_confirm();" value="Reset"/>
+                    <input type="hidden" name="action" value="reset"/>
+                </p>
+            </form>
+        </div>
+
+        <script>
+            function wfc_confirm() {
+                if (confirm('Are You Sure?')) {
+                    alert('If you insist!');
+                    return true;
+                } else {
+                    alert('A wise decision!');
+                    return false;
+                }
+            }
+        </script>
+
     <?php
     }
 
