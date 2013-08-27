@@ -1,4 +1,0 @@
-    <?php
-        /*
-         * Index Template
-         */

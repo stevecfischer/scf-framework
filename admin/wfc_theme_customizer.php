@@ -67,8 +67,8 @@
     );
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
-        if( isset($_GET['page']) && $_GET['page'] == basename( __FILE__ ) ){
-            if( 'save' == $_REQUEST['action'] ){
+        if( isset($_GET['page']) && ($_GET['page'] == basename( __FILE__ )) ){
+            if( isset($_REQUEST['action']) && 'save' == $_REQUEST['action'] ){
                 foreach( $options as $value ){
                     update_option( $value['id'], $_REQUEST[$value['id']] );
                 }
@@ -82,7 +82,7 @@
                 header( "Location: admin.php?page=wfc_theme_customizer.php&saved=true" );
                 die;
             } else{
-                if( 'reset' == $_REQUEST['action'] ){
+                if( isset($_REQUEST['action']) && 'reset' == $_REQUEST['action'] ){
                     foreach( $options as $value ){
                         delete_option( $value['id'] );
                     }
@@ -97,11 +97,11 @@
     function Wfc_Panel(){
         global $themename, $shortname, $options;
         $i = 0;
-        if( $_REQUEST['saved'] ){
+        if( isset($_REQUEST['saved']) && $_REQUEST['saved'] ){
             echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings saved.</strong></p></div>';
         }
-        if( $_REQUEST['reset'] ){
+        if( isset($_REQUEST['reset']) && $_REQUEST['reset'] ){
             echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings reset.</strong></p></div>';
         }
@@ -178,13 +178,13 @@
                     <div class="rm_input rm_checkbox">
                         <?php foreach( $value['options'] as $option ){ ?>
                             <label>
-                                <?php //print_r(get_option( $value['id'] )); ?>
+                                <?php $checked = ""; ?>
                                 <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
-                                    <?php if( in_array( $option, get_option( $value['id'] ) ) ){
+                                    <?php
+                                    if( in_array( $option, get_option( $value['id'] ) ) ){
                                         $checked = "checked=\"checked\"";
-                                    } else{
-                                        $checked = "";
-                                    } ?>
+                                    }
+                                    ?>
                                 <?php } ?>
                                 <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $option; ?>" <?php echo $checked; ?> />
                                 <?php echo $option; ?>
@@ -238,4 +238,70 @@
             echo $wfc_option;
             echo '</style>';
         }
+    }
+
+    if( getActiveCPT( "CAMPAIGN_CPT" ) ){
+        $campaign_module_args = array(
+            'cpt'       => 'Campaign' /* CPT Name */,
+            'menu_name' => 'Campaign' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $campaign_module      = new wfcfw($campaign_module_args);
+    }
+    if( getActiveCPT( "SUBPAGE_BANNER_CPT" ) ){
+        $subpage_banner_args = array(
+            'cpt'       => 'Subpage Banner' /* CPT Name */,
+            'menu_name' => 'Subpage Banner' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $subpage_banner      = new wfcfw($subpage_banner_args);
+    }
+    if( getActiveCPT( "NEWS_CPT" ) ){
+        $news_cpt_args = array(
+            'cpt'       => 'News' /* CPT Name */,
+            'menu_name' => 'News' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $news_cpt      = new wfcfw($news_cpt_args);
+    }
+    if( getActiveCPT( "HOME_BOXES_CPT" ) ){
+        $home_boxes_module_args = array(
+            'cpt'       => 'Home Page Boxes' /* CPT Name */,
+            'menu_name' => 'Home Page Boxes' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $home_boxes_module      = new wfcfw($home_boxes_module_args);
+    }
+    if( getActiveCPT( "TESTIMONIAL_CPT" ) ){
+        $testimonial_args = array(
+            'cpt'       => 'Testimonial' /* CPT Name */,
+            'menu_name' => 'Testimonial' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $testimonial      = new wfcfw($testimonial_args);
     }

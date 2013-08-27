@@ -63,3 +63,6 @@ Bug fixes
 * Removed Core theme files. See Issue #1
 * Added Theme Builder
     - dynamically create core theme files.
+
+= 5.1.1 =
+*

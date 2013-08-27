@@ -41,7 +41,7 @@
             if( file_exists( WFC_PT.'header.php' ) ){
                 die("Theme already built.  Go Fish.");
             }
-            $header = '<!DOCTYPE html>
+            $header       = '<!DOCTYPE html>
                 <!--
                  __      __     _____   ______
                 /\ \  __/\ \  /\  ___\ /\  _  \
@@ -63,7 +63,8 @@
                 <!--[if (gte IE 9)|!(IE)]><!--><html <?php language_attributes(); ?>> <!--<![endif]-->
                 <head>
                     <meta charset="<?php bloginfo( "charset" ); ?>"/>
-                    <title><?php bloginfo( "name" ); ?> <?php wp_title( "", true ); ?></title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title><?php bloginfo("name"); ?> | <?php is_front_page() ? bloginfo("description") : wp_title(""); ?></title>
                     <link rel="profile" href="http://gmpg.org/xfn/11"/>
                     <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( "stylesheet_url" ); ?>"/>
                     <link rel="pingback" href="<?php bloginfo( "pingback_url" ); ?>"/>
@@ -85,35 +86,20 @@
                 <?php wp_footer(); ?>
                 </body>
                 </html>';
-            $page         = '<div id="navigation" class="left_sidebar">
-                    <?php
-                    Wfc_Core_Sidebar();
-                    ?>
-                </div><!-- //#navigation.left_sidebar -->
-                <?php Wfc_Core_Page_Loop(); ?>
+            $page         = '<?php get_header(); ?>
                 <?php get_footer(); ?>';
-            $frontpage    = '<?php
-                get_header();
-
-                Wfc_Core_Homecontent_Loop();
-                Wfc_Core_Campaign_Loop();
-                Wfc_Core_News_Loop();
-                Wfc_Core_Testimonial_Loop();
-                while( have_posts() ) : the_post();
-                    the_title();
-                    the_content();
-                endwhile;
-                wp_reset_query();
-
-                get_footer();';
-            $search       = 'if( have_posts() ) :
+            $frontpage    = '<?php get_header(); ?>
+                <?php get_footer(); ?>';
+            $search       = '<?php get_header(); ?>
+            if( have_posts() ) :
                     while( have_posts() ) : the_post();
                         the_title();
                         the_content();
                     endwhile; else:
                     echo "There are no posts matching that search term.";
                 endif;
-                wp_reset_query();';
+                wp_reset_query();
+                <?php get_footer(); ?>';
             $four_o_four  = 'echo "404 error."';
             $editor_style = "";
             $single       = "";
@@ -146,4 +132,6 @@
     <?php
     }
 
-    add_action( 'admin_menu', 'Wfc_Build_Theme_Page' );
+    if( wfc_is_dev() ){
+        add_action( 'admin_menu', 'Wfc_Build_Theme_Page' );
+    }
