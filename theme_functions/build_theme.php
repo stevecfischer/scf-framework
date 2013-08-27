@@ -86,12 +86,17 @@
                 <?php wp_footer(); ?>
                 </body>
                 </html>';
-            $page         = '<?php get_header(); ?>
+            $page         = '
+                <?php get_header(); ?>
+                <?php Wfc_Core_Page_Loop(); ?>
                 <?php get_footer(); ?>';
-            $frontpage    = '<?php get_header(); ?>
+            $frontpage    = '
+                <?php get_header(); ?>
+                <?php Wfc_Core_Home_Page_Loop(); ?>
                 <?php get_footer(); ?>';
-            $search       = '<?php get_header(); ?>
-            if( have_posts() ) :
+            $search       = '
+                <?php get_header(); ?>
+                if( have_posts() ) :
                     while( have_posts() ) : the_post();
                         the_title();
                         the_content();
