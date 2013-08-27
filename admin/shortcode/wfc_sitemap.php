@@ -5,6 +5,7 @@
      * @author Steve (08/16/2012)
      * @added since 2.3
      */
+    //@sftodo: this is not a DRY method.  It gets used in Menu Walkers, Custom Nav Widget, etc
     function Wfc_fix_sitemap_url( $ancestor_id ){
         $shortCutUrl = get_post_meta( $ancestor_id, 'wfc_page_shortcut_url', true );
         if( $shortCutUrl == '' || empty($shortCutUrl) ){

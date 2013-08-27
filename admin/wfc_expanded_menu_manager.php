@@ -1,9 +1,6 @@
 <?php
     /*
-     * @sftodo:
-        need to save the shortcut links in a better way.  right now the url is
-        getting saved. but they will break if the permalink structure changes.
-        === try saving the item object maybe ===
+     * @sftodo: need to save the shortcut links in a better way.  right now the url is getting saved. but they will break if the permalink structure changes. === try saving the item object maybe ===
      */
     function get_shortcut_pages(){
         global $wpdb;
