@@ -38,22 +38,26 @@
             if( $thedepth != 1 ){ //only if the page is not the top of the hierarchy
                 $top_page = $post->post_parent;
             }
-            echo '<span class="span3">';
-            echo '<ul class="nav nav-list affix-top">';
             // show parent title
-            echo '<li class="previous"><a class="return" href="'.get_permalink( $post->post_parent ).'">'.
+            echo $before_widget;
+            $wfc_custom_nav                = array();
+            $wfc_custom_nav['before_menu'] = '<ul class="nav nav-list affix-top">';
+            $wfc_custom_nav['the_menu']    =
+                '<li class="previous"><a class="return" href="'.get_permalink( $post->post_parent ).'">'.
                 get_the_title( $post->post_parent ).'</a></li>';
-            $children = wp_list_pages(
+            $wfc_custom_nav['the_menu'] .= wp_list_pages(
                 array(
                      'title_li' => '',
-                     'echo'     => 1,
+                     'echo'     => 0,
                      'depth'    => $thedepth,
                      'child_of' => $top_page,
                      'exclude'  => $exclude_list,
                      'walker'   => new Wfc_Custom_Nav_Walker
                 ) );
-            echo '</ul>';
-            echo '</span>';
+            $wfc_custom_nav['after_menu'] = '</ul>';
+            $wfc_menu                     = apply_filters( 'wfc_before_menu', $wfc_custom_nav );
+            echo $wfc_menu['before_menu'].$wfc_menu['the_menu'].$wfc_menu['after_menu'];
+            echo $after_widget;
         }
 
         function update( $new_instance, $old_instance ){
@@ -89,8 +93,8 @@
             extract( $args, EXTR_SKIP );
             $css_class = array('page_item', 'page-item-'.$page->ID);
             if( !empty($current_page) ){
-                $_current_page = get_page( $current_page );
-                _get_post_ancestors( $_current_page );
+                $_current_page = get_post( $current_page );
+                get_post_ancestors( $_current_page );
                 if( isset($_current_page->ancestors) && in_array( $page->ID, (array)$_current_page->ancestors ) ){
                     $css_class[] = 'current_page_ancestor';
                 }
@@ -104,8 +108,8 @@
             }
             $css_class     =
                 implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
-            $short_cut     = get_post_meta( $page->ID, '_page_shortcut_link', true );
-            $short_new_tab = get_post_meta( $page->ID, '_page_new_tab_link', true );
+            $short_cut     = get_post_meta( $page->ID, 'wfc_page_shortcut_url', true );
+            $short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', false );
             if( isset($short_cut) && !empty($short_cut) ){
                 if( isset($short_new_tab) && !empty($short_new_tab) ){
                     $output .=
