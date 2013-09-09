@@ -176,6 +176,9 @@
        -CAMPAIGN
     ===============================
     */
+    /*
+     * @sftodo: this isn't working anymore. perhaps the api changed?
+     */
     function scf_add_shortcut_column( $cols ){
         $cols['scf_page_order']    = __( 'Order' );
         $cols['scf_shortcut_link'] = __( 'Shortcut Link' );
