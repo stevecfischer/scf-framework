@@ -27,7 +27,11 @@
         global $themename, $shortname, $options;
         if( isset($_GET['page']) && $_GET['page'] == basename( __FILE__ ) ){
             if( isset($_REQUEST['build']) && 'Build Out Theme' == $_REQUEST['build'] ){
-                header( "Location: admin.php?page=build_theme.php&build=true" );
+                $url='admin.php?page=build_theme.php&build=true';
+                //Place post infos in url, . will be replaced by _ automatically
+                foreach($_POST as $k=>$p)if($p)
+                    $url.='&'.$k.'=true';
+                header( 'Location: '.$url );
                 die;
             }
         }
@@ -121,20 +125,43 @@
                     array('file' => 'front-page.php', 'content' => $frontpage),
                     array('file' => 'archive.php', 'content' => $archive)
                 );
-            foreach( $theme_array as $page ){
+            //Replace _ by . in Request variable
+            $keys=implode(',',array_keys($_REQUEST));
+            $keys=str_replace('_','.',$keys);
+            $_REQUEST=array_combine(explode(',',$keys),array_values($_REQUEST));
+             
+            foreach( $theme_array as $page )if($_REQUEST[$page['file']]){
                 $fp = fopen( WFC_PT.$page['file'], "w" );
                 fwrite( $fp, $page['content'] );
                 fclose( $fp );
             }
+            echo 'Theme built successfully.';
         }
+        else
+        {
         ?>
 
         <form method="post">
+        	<p class="choices">
+        	Header.php : <input type="checkbox" name="header.php" disabled="disabled" /><br /> <!-- Required since we check if header.php exists to know if we need to build out the theme -->
+        	Footer.php : <input type="checkbox" name="footer.php" /><br />
+        	Page.php : <input type="checkbox" name="page.php" /><br />
+        	Frontpage.php : <input type="checkbox" name="frontpage.php" /><br />
+        	Search.php : <input type="checkbox" name="search.php" /><br />
+        	404.php : <input type="checkbox" name="404.php" /><br />
+        	Footer.php : <input type="checkbox" name="archive.php" /><br />
+        	Single.php : <input type="checkbox" name="single.php" /><br />
+        	Editor-Style.css : <input type="checkbox" name="editor-style.css" /><br />
+        	Index.php : <input type="checkbox" checked="checked" name="index" disabled="disabled" /><br />
+        	Style.css : <input type="checkbox" checked="checked" name="style" disabled="disabled" /><br />
+        	Functions.php : <input type="checkbox" checked="checked" name="functions" disabled="disabled" /><br />
+        	</p>
             <p class="submit">
                 <input name="build" type="submit" value="Build Out Theme"/>
             </p>
         </form>
-    <?php
+        <?php
+        }
     }
 
     if( wfc_is_dev() ){
