@@ -138,6 +138,7 @@
             echo 'Theme built successfully.';
         }
         else
+        {
         ?>
 
         <form method="post">
