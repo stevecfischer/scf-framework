@@ -6,9 +6,9 @@
 
 # Ignore phpstorm project folder
 /.idea
-/.functions.php
-/.index.php
-/.style.css
+/functions.php
+/index.php
+/style.css
 header.php
 footer.php
 front-page.php
