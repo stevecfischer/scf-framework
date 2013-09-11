@@ -20,6 +20,7 @@
     require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Small Helper Functions
     require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers
     require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Site Options Panel
+    require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Restricted Access Check/Balance
     require_once(WFC_THEME_FUNCTIONS.'/build_theme.php'); //Site Options Panel
     /*
     ===============================
