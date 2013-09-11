@@ -25,20 +25,7 @@
     define('WFC_ADM_IMG_URI', WFC_URI.'/admin/images');
     /*
     ===============================
-    TOGGLE STANDARD CPT's
-
-     * @since 2.2
-    ==============================
-    */
-    define('CAMPAIGN_CPT', 0);
-    define('SUBPAGE_BANNER_CPT', 0);
-    define('HOME_BOXES_CPT', 0);
-    define('NEWS_CPT', 0);
-    define('TESTIMONIAL_CPT', 0);
-    /*
-    ===============================
     MAIN INCLUDE FILE
-
      * @since 2.2
     ==============================
     */
