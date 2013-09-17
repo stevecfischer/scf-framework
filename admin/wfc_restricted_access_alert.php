@@ -1,7 +1,7 @@
 <?php
     /*
     ===============================
-    CREATE DISCLAIMER BOX
+    CREATE DISCLAIMER BOX ---------
     ===============================
     */
     function wfc_show_disclaimer(){
