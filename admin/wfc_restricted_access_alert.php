@@ -4,6 +4,7 @@
     CREATE DISCLAIMER BOX
     scf
 
+    CREATE DISCLAIMER BOX ---------
     ===============================
     */
     function wfc_show_disclaimer(){
