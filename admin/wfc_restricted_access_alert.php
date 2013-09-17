@@ -2,6 +2,8 @@
     /*
     ===============================
     CREATE DISCLAIMER BOX
+    scf
+
     ===============================
     */
     function wfc_show_disclaimer(){
