@@ -5,8 +5,7 @@
      * @author Steve (7/17/2013)
      * @version 4.0
      */
-    require_once('wfc_config/wfc_config.php');
-
+    require_once('wfc_files/wfc_config/wfc_config.php');
     /*
     ===============================
     FRAMEWORK SETUP
@@ -32,7 +31,6 @@
             register_nav_menu( 'Primary', 'Primary Navigation' );
         }
     endif; // wfc_framework_setup
-
     $campaign_meta_boxes_args = array(
         'cpt'       => 'Campaign' /* CPT Name */,
         'menu_name' => 'Campaign' /* Overide the name above */,
@@ -93,7 +91,7 @@
         global $post;
         $query = new WP_Query(array('post_type' => 'pages', 'pagename' => 'home'));
         while( $query->have_posts() ) : $query->the_post();
-        echo '<div id="content">';
+            echo '<div id="content">';
             echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
             the_content();
         endwhile;
