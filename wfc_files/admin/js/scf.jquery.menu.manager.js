@@ -1,6 +1,10 @@
 jQuery(function ($) {
     $("td.scf_shortcut_link:not(:empty)").parents("tr").css("background", "rgb(255,220,200)");
-    var newBtn = '<a class="add-new-h2" href="/cms-wfc/wp-admin/post-new.php?post_type=page&shortcut=true">Add Shortcut</a>';
+    var base_link=location.protocol + '//' + location.hostname;
+    var href_link=location.href;
+    href_link=href_link.replace(base_link,'');
+    href_link=href_link.substr(0,href_link.lastIndexOf('/'));
+    var newBtn = '<a class="add-new-h2" href="'+href_link+'post-new.php?post_type=page&shortcut=true">Add Shortcut</a>';
     $(newBtn).appendTo($('.add-new-h2').parent());
     var wfc_url = $('#wfc_page_shortcut_url input');
     $('select#wfc_page_existing_pages').change(function () {
