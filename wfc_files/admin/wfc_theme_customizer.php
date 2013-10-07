@@ -4,7 +4,6 @@
      * @package scf-framework
      * @author Steve
      * @date 1/5/13
-     * @version 2.2
      */
     $themename = get_bloginfo( 'name' );
     $shortname = "wfc_";
@@ -220,9 +219,9 @@
             </form>
         </div>
         <div id="theme_update">
-            This section will allow you to easly update your WFC Theme.<br />
-            <div class="rm_section">
-                <div class="rm_title"><h3>
+        This section will allow you to easly update your WFC Theme.<br/>
+        <div class="rm_section">
+            <div class="rm_title"><h3>
                     <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Theme Update
                 </h3>
                 </span>
@@ -231,14 +230,14 @@
             <div class="rm_options">
                 <div class="rm_input">
                     <?php
-                    wfc_callsLeft();
-                    $monitor=new Monitor();
-                    $monitor->StartTimer();
-                    echo wfc_manage_update();
-                    $monitor->StopTimer();
-                    echo '<br />';
-                    wfc_DisplayMonitor($monitor);
-                    wfc_print_api_limit();
+                        wfc_callsLeft();
+                        $monitor = new Monitor();
+                        $monitor->StartTimer();
+                        echo wfc_manage_update();
+                        $monitor->StopTimer();
+                        echo '<br />';
+                        wfc_DisplayMonitor( $monitor );
+                        wfc_print_api_limit();
                     ?>
                 </div>
             </div>

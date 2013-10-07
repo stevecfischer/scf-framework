@@ -3,7 +3,6 @@
      *
      * @package scf-framework
      * @author Steve (7/17/2013)
-     * @version 4.0
      */
     require_once('wfc_files/wfc_config/wfc_config.php');
     /*

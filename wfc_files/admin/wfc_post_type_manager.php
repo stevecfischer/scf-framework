@@ -3,7 +3,6 @@
      *
      * @package scf-framework
      * @author Steve (6/11/2012)
-     * @version 2.2
      */
     /*
     ** The Class
@@ -114,7 +113,7 @@
     function wfc_display_post_thumbnail_column( $col, $id ){
         switch( $col ){
             case 'wfc_post_thumb':
-                echo the_post_thumbnail('thumbnail');
+                echo the_post_thumbnail( 'thumbnail' );
                 break;
         }
     }

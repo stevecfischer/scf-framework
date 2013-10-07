@@ -2,7 +2,6 @@
  *
  * @package scf-framework
  * @author Steve (10/21/2012)
- * @version 2.1
  *
  *  ADDED HOVER OVER COLOR AND MAKE ENTIRE ROW CLICKABLE FOR ALL POST TYPES LIST VIEW
  *  1/5/12 --SCF: converted into jquery plugin

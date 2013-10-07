@@ -307,7 +307,6 @@
          *          console.log(wfcDefines.define('wfc_theme_name'));
          *      });
          *
-         * @version 0.1
          *
          */
         ?>

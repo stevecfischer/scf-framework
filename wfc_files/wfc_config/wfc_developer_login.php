@@ -3,7 +3,6 @@
      *
      * @package scf-framework
      * @author Steve (8/23/12
-     * @version 2.2
      * @since 2.2
      */
     /*
@@ -114,7 +113,8 @@
         echo 'Total pages with no content: '.count( $contentCheck );
         echo '<ul>';
         foreach( $contentCheck as $post ):
-            echo'<li><a href="'.WFC_ADMIN_URL.'post.php?post='.$post->ID.'&action=edit">'.$post->post_title.'</a></li>';
+            echo
+                '<li><a href="'.WFC_ADMIN_URL.'post.php?post='.$post->ID.'&action=edit">'.$post->post_title.'</a></li>';
         endforeach;
         echo '</ul>';
     }

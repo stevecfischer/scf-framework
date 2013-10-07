@@ -4,7 +4,6 @@
      * @package scf-framework
      * @author Steve
      * @date 7/20/13
-     * @version 5.0.1
      */
     // @sftodo: this file will create all theme files Ex: index.php, header.php,footer.php, page.php etc etc.  I foresee a admin form will check boxes for the different files/modules to create.  the main reason for this is to utilize Git more.  Specifically in the case of bugs.  currently i have to make the bug fix twice.  first is in the active project and second is in git. with getting this class setup i'll be able to make the fix in git and then update the active project.
     /*
@@ -44,7 +43,7 @@
     function Wfc_Build_Theme(){
         global $themename, $shortname, $options;
         $i = 0;
-        if(file_exists( WFC_PT.'../header.php')){
+        if( file_exists( WFC_PT.'../header.php' ) ){
             die("Theme already built.  Go Fish.");
         }
         if( isset($_REQUEST['build']) && $_REQUEST['build'] ){
@@ -129,13 +128,13 @@
                     array('file' => 'archive.php', 'content' => $archive)
                 );
             //Replace _ by . in Request variable
-            $keys     = implode( ',', array_keys( $_REQUEST ) );
-            $keys     = str_replace( '_', '.', $keys );
-            $_REQUEST = array_combine( explode( ',', $keys ), array_values( $_REQUEST ) );
-            $_REQUEST['header.php']=true;
+            $keys                   = implode( ',', array_keys( $_REQUEST ) );
+            $keys                   = str_replace( '_', '.', $keys );
+            $_REQUEST               = array_combine( explode( ',', $keys ), array_values( $_REQUEST ) );
+            $_REQUEST['header.php'] = true;
             foreach( $theme_array as $page ){
                 if( $_REQUEST[$page['file']] ){
-                    echo  WFC_PT.'../'.$page['file'].' - Created<br />';
+                    echo WFC_PT.'../'.$page['file'].' - Created<br />';
                     $fp = fopen( WFC_PT.'../'.$page['file'], "w" );
                     fwrite( $fp, $page['content'] );
                     fclose( $fp );
@@ -147,7 +146,8 @@
 
             <form method="post">
                 <p class="choices">
-                    Header.php <br/> <!-- Required since we check if header.php exists to know if we need to build out the theme -->
+                    Header.php
+                    <br/> <!-- Required since we check if header.php exists to know if we need to build out the theme -->
                     Footer.php : <input type="checkbox" name="footer.php"/><br/>
                     Page.php : <input type="checkbox" name="page.php"/><br/>
                     Frontpage.php : <input type="checkbox" name="frontpage.php"/><br/>
