@@ -26,8 +26,9 @@ function get_git_version() {
     $all=$gr->getRepoContents('');
     foreach($all as $f) if(substr($f->name,-3)=='wfc'){
             $name=substr($f->name,0,-4);
-             if(explode('_',$name)[0]=='Ver')
-                return $ver_git=explode('_',$name)[1];
+             $tempvar=explode('_',$name);
+             if($tempvar[0]=='Ver')
+                return $ver_git=$tempvar[1];
             else
                 return false;
         }
@@ -39,8 +40,9 @@ function get_local_version() {
     if ($handle = opendir(WFC_PT.'..')) {
         while (false !== ($entry = readdir($handle)))if(substr($entry,-3)=='wfc') {
             $name=substr($entry,0,-4);
-            if(explode('_',$name)[0]=='Ver')
-                return $ver_local=explode('_',$name)[1];
+            $tempvar=explode('_',$name);
+            if($tempvar[0]=='Ver')    
+                return $ver_local=$tempvar[1];
             else
                 return false;
         }
