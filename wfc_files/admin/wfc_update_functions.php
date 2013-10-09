@@ -21,7 +21,7 @@ function rrmdir($dir) {
  }
 
 function get_git_version() {
-    $gr = new GRepo('bqk-');
+     $gr = new GRepo(GIT_USER, GIT_REPO);
     $ver_git='';
     $all=$gr->getRepoContents('');
     foreach($all as $f) if(substr($f->name,-3)=='wfc'){
@@ -53,21 +53,23 @@ function get_local_version() {
 
 class GRepo
 {
+    
     protected 
-        // needs "user"
-        $src_userRepos = "https://api.github.com/users/%s/repos",
-        // needs "user,repo"
-        $src_userRepoDetails = "https://api.github.com/repos/bqk-/themeUpdater",
+        $src_userRepos = 'https://api.github.com/users/%s/repos',
+        $src_userRepoDetails = 'https://api.github.com/repos/%s/%s',
+        $src_userRepoTags = 'https://api.github.com/repos/%s/%s/tags',
+        $src_userRepoContents = 'https://api.github.com/repos/%s/%s/contents',
         $responseCode, $responseText,
-        $user;
+        $user, $repo;
 
-    public function __construct($user) {
+
+    public function __construct($user,$repo) {
         $this->user = $user;
+        $this->repo = $repo;
     }
 
     public function listRepos() {
-        $this->_request(
-            sprintf($this->src_userRepos, $this->user));
+        $this->_request(sprintf($this->src_userRepos, $this->user));
         if ($this->responseCode != 200) {
             throw new Exception('Server error!'); // e.g
         }
@@ -75,8 +77,7 @@ class GRepo
     }
 
     public function getRepoDetails($repo) {
-        $this->_request(
-            sprintf($this->src_userRepoDetails, $this->user, $repo));
+        $this->_request(sprintf($this->src_userRepoDetails, $this->user, $this->repo));
         if ($this->responseCode != 200) {
             throw new Exception('Server error!'); // e.g
         }
@@ -91,7 +92,7 @@ class GRepo
     }
 
     public function getRepoTags() {
-        $this->_request('https://api.github.com/repos/bqk-/themeUpdater/tags');
+        $this->_request(sprintf($this->src_userRepoDetails, $this->user, $this->repo));
         if ($this->responseCode != 200) {
             throw new Exception('Server error!'); // e.g
         }
@@ -99,7 +100,7 @@ class GRepo
     }
 
     public function getRepoContents($repo) {
-        $this->_request($this->src_userRepoDetails.'/contents'.$repo);
+        $this->_request(sprintf($this->src_userRepoContents, $this->user, $this->repo));
         if ($this->responseCode != 200) {
             throw new Exception('Server error!'); // e.g
         }
@@ -114,6 +115,7 @@ class GRepo
         return json_decode($this->responseText);
     }
 }
+
 function read_file($entry) {
     return file_get_contents($entry);   
 }

@@ -14,7 +14,11 @@
 * Update : zip download, replace of a folder, start investigating
 *
 */
-require_once('wfc_update_functions.php');
+error_reporting(E_ALL);
+define('GIT_USER','stevecfischer');
+define('GIT_REPO','scf-framework');
+
+include 'wfc_update_functions.php';
 
 function wfc_callsLeft() {
 	//Quick api rate check
@@ -38,10 +42,9 @@ function wfc_manage_update() {
 		return wfc_check_update();
 }
 function wfc_check_update() {
-	$gr = new GRepo('bqk-');
-	$git=get_git_version();
-	$loc=get_local_version();
-	global $gr;
+	$gr = new GRepo(GIT_USER, GIT_REPO);
+	echo 'Git : '.$git=get_git_version();
+	echo '<br />Local : '.$loc=get_local_version().'<br />';
 	if(!$git)
 		echo 'A version file is missing on git, need to stop there.';
 	else if(!$loc)
@@ -60,7 +63,7 @@ function wfc_check_update() {
 }
 function wfc_check_diffs() {
 	if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true){
-		$gr = new GRepo('bqk-');
+		$gr = new GRepo(GIT_USER, GIT_REPO);
 		//Time to check if the server files are all the same as last version !
 		//First, download the version of the server on git
 		$tags=$gr->getRepoTags();
@@ -218,7 +221,7 @@ function wfc_doUpdate() {
 
 			$path_to_current=WFC_PT.'../wfc_files/';
 						
-			$gr = new GRepo('bqk-');
+			$gr = new GRepo(GIT_USER, GIT_REPO);
 			$tags=$gr->getRepoTags();
 			$git=get_git_version();
 			$loc=get_local_version();
@@ -311,165 +314,6 @@ function wfc_doUpdate() {
 		$result='Unable to update, the security token is outdated, make sure to make the diffs first !';
 	return $result;
 }
-
-/*
-if(!$git)
-	echo 'A version file is missing on git, need to stop there.';
-else if(!$loc)
-	echo 'A version file is missing on local, someone has probably made changes, do not update.';
-else
-{
-	$mostRecent=version_comparee($loc, $git);
-	if(!$mostRecent)
-		echo 'Both same version, we are fine !';
-	else if($mostRecent==$loc)
-		echo 'Local has a higher version, someone has probably made changes, do not update.';
-	else
-	{
-		//Time to check if the server files are all the same as last version !
-		//First, download the version of the server on git
-		$tags=$gr->getRepoTags();
-		$exists=false;
-		foreach($tags as $tag) if($tag->name==$loc){
-			echo 'Found !<br />';
-			$exists=true;
-			 $target_url = $tag->zipball_url;  
-			 $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';  
-			 $file_zip = "working_directory/Ver_".$tag->name.'.zip';  
-			 echo "<br>Starting<br>Target_url: $target_url";  
-			 echo "<br>Headers stripped out";  
-			 // make the cURL request to $target_url  
-			 $ch = curl_init();  
-			 $fp = fopen($file_zip, "w+");  
-			 curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  
-			 curl_setopt($ch, CURLOPT_URL,$target_url);  
-			 curl_setopt($ch, CURLOPT_FAILONERROR, true);  
-			 curl_setopt($ch, CURLOPT_HEADER,0);  
-			 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  
-			 curl_setopt($ch, CURLOPT_AUTOREFERER, true);  
-			 curl_setopt($ch, CURLOPT_BINARYTRANSFER,true);  
-			 curl_setopt($ch, CURLOPT_TIMEOUT, 10);  
-			 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
-			 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);   
-			 curl_setopt($ch, CURLOPT_FILE, $fp);  
-			 $page = curl_exec($ch);  
-			 if (!$page) {  
-			   echo "<br />cURL error number:" .curl_errno($ch);  
-			   echo "<br />cURL error:" . curl_error($ch);  
-			   exit;  
-			 }  
-			 curl_close($ch);  
-			 echo "<br />Downloaded file: $target_url";  
-			 echo "<br />Saved as file: $file_zip";  
-			 echo "<br />About to unzip ...";  
-			 // Un zip the file  
-			 $zip = new ZipArchive;  
-			   if (! $zip) {  
-			     echo "<br>Could not make ZipArchive object.";  
-			     exit;  
-			   }  
-			   if($zip->open("$file_zip") != "true") {  
-			       echo "<br>Could not open $file_zip";  
-			         }  
-			   $zip->extractTo("working_directory/");  
-			   $zip->close();  
-			 echo "<br />Unzipped file.<br /><br />"; 
-			 //Need to get folder name
-			$folder_name='';
-			if ($handle = opendir('working_directory')) {
-			    while (false !== ($entry = readdir($handle))) {
-			        if ($entry != "." && $entry != "..") {
-			        	if(is_dir('working_directory/'.$entry))
-			            	$folder_name=$entry;
-			        }
-			    }
-			    closedir($handle);
-			}
-			if($folder_name!='') {
-				//Process diff on files
-				$old_files=array();
-				$current_files=array();
-				$path_to_old='working_directory/'.$folder_name.'/wfc-files/';
-				$path_to_current='wfc-files/';
-				$old_nb_carac=strlen($path_to_old)+1;
-				$current_nb_carac=strlen($path_to_current)+1;
-				$old_files=listFolderFilesArr($path_to_old,array(),$old_nb_carac,$old_files);
-				$current_files=listFolderFilesArr($path_to_current,array(),$current_nb_carac,$current_files);
-				$old_files=array_map('sha1_file',$old_files);
-				$current_files=array_map('sha1_file', $current_files);
-				
-				//echo '<pre>';
-				//print_r($old_files);
-				//print_r($current_files);
-				//echo '</pre>';
-				
-				$missing='';
-				$do_update=true;
-				foreach($old_files as $f=>$sha) if(!in_array($f, unserialize(IGNORE))) {
-					if(array_key_exists ($f, $current_files)) {
-						if($sha==$current_files[$f])
-							echo $f.' <span style="color:green;font-weight:bolder;">OK</span><br />';
-						else
-						{
-							$do_update=false;
-							echo $f.' <span style="color:red;font-weight:bolder;">NO</span><br />';
-						}
-						unset($current_files[$f]);
-					}
-					else
-					{
-						$do_update=false;
-						$missing.='<span style="color:#FF6600;font-weight:bold;">File : <strong style="color:black;">'.$f.'</strong> is missing on local.</span><br />';
-					}
-				}
-				foreach($current_files as $f=>$sha) if(!in_array($f, unserialize(IGNORE))) {
-					$do_update=false;
-					$missing.='<span style="color:#FF6600;font-weight:bold;">File : <strong style="color:black;">'.$f.'</strong> is missing on GitHub.</span><br />';
-				}
-				echo $missing;
-				if($do_update)
-					$message='Everything is fine, the system is safe to be updated.<br /><br />
-							Although all the best conditions are regrouped, you should backup your installation using the backup-manager plugin.<br />
-							To view the result of the tests, click outside of the box or on the cross in the top right corner. A button will allow to update from there too.<br />
-							Click on the button to proceed to the update : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?update='.$token.'"><input type="submit" value="Update" /></form>';
-				else
-					$message='Some conditons are missing.<br /><br />
-							The system might not be safe to be upgraded, please read carefully the result of the test.<br />
-							If you still want to update, a button will allow you to do so from there.<br />
-							';
-				echo '<div id="box_msg">
-							<div class="close" onclick="document.getElementById(\'box_msg\').style.display=\'none\';document.getElementById(\'background-update\').style.display=\'none\';">X</div>
-							'.$message.'
-						</div>
-						<div id="background-update" onclick="document.getElementById(\'box_msg\').style.display=\'none\';this.style.display=\'none\';"></div>';
-			}
-			else 
-				echo 'Unable to find the name of the folder where the old version has been unzipped..<br />';
-		}
-
-		if(!$exists)
-			echo 'The local version doesn\'t exists on git, someone has probably made changes, do not update';
-	}	
-}
-
-if(!empty($message))
-	echo '<form method="POST" action ="'.$_SERVER['PHP_SELF'].'?update='.$token.'"><input type="submit" value="Update" /></form>';
-*/
-
-/*
-$options=array();
-require_once dirname(__FILE__).'/lib/Diff/Renderer/Html/Inline.php';
-foreach($b as $k=>$c) {
-	if(file_exists($k)) {
-		$a=explode("\n", read_file($k));
-		$diff = new Diff($a, $c, $options);
-		$renderer = new Diff_Renderer_Html_Inline;
-		echo $diff->render($renderer);
-	}
-	else
-		echo 'File: <strong>'.$k.'</strong> is missing.<br />';
-}
-*/
 
 function wfc_print_api_limit() {
 	$limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
