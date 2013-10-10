@@ -107,7 +107,28 @@
             }
             $css_class     =
                 implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
-            $short_cut     = get_post_meta( $page->ID, 'wfc_page_shortcut_url', true );
+            $short_cut     = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
+            if(intval($short_cut)>0)
+            {
+                switch($short_cut)
+                {
+                    case 1:
+                        $short_cut =get_permalink(get_post_meta( $page->ID, 'wfc_page_existing_pages', true ));
+                    break;
+                    case 2:
+                        $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
+                    break;
+                    case 3:
+                        $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_images', true ));
+                    break;
+                    case 4:
+                         $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true ));
+                    break;
+                    case 5:
+                        $short_cut =get_permalink(get_post_meta( $page->ID, 'wfc_page_existing_posts', true ));
+                    break;
+                }
+            }
             $short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', false );
             if( isset($short_cut) && !empty($short_cut) ){
                 if( isset($short_new_tab) && !empty($short_new_tab) ){

@@ -161,9 +161,6 @@
     font-size        : 18px;
     text-align       : center;
 }
-.wfc-page-shortcut_url{
-    width : 50%;
-}
 .wfc-meta-label{
     float : left;
 }
@@ -173,4 +170,15 @@
 }
 .add_margin{
     clear : both;
+}
+.img_shortcut {
+    width:160px;
+    height:110px;
+    overflow:hidden;
+    padding:5px;
+    text-align:center;
+    border:1px solid black;
+}
+.img_shortcut img {
+    width:150px;
 }

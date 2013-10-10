@@ -111,13 +111,34 @@
     }
 
     function Wfc_fix_atoz_url( $post_id ){
-        $shortCutUrl = get_post_meta( $post_id, 'wfc_page_shortcut_url', true );
-        if( $shortCutUrl == '' || empty($shortCutUrl) ){
-            return get_permalink( $post_id );
-        } else{
-            return $shortCutUrl;
+       $short_cut     = get_post_meta( $post_id, 'wfc_page_type_shortcut', true );
+        if(intval($short_cut)>0)
+        {
+            switch($short_cut)
+            {
+                case 1:
+                    $short_cut =get_permalink(get_post_meta( $post_id, 'wfc_page_existing_pages', true ));
+                break;
+                case 2:
+                    $short_cut=get_post_meta( $post_id, 'wfc_page_external_link', true );
+                break;
+                case 3:
+                    $short_cut=wp_get_attachment_url(get_post_meta( $post_id, 'wfc_page_existing_images', true ));
+                break;
+                case 4:
+                     $short_cut=wp_get_attachment_url(get_post_meta( $post_id, 'wfc_page_existing_pdfs', true ));
+                break;
+                case 5:
+                    $short_cut =get_permalink(get_post_meta( $post_id, 'wfc_page_existing_posts', true ));
+                break;
+            }
+            return $short_cut;
         }
+        else
+            return get_permalink( $post_id );
     }
+
+
 
     function wfc_get_atozindex(){
         $return = '<div id="wfc-atoz">';

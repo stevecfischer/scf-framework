@@ -7,12 +7,31 @@
      */
     //@sftodo: this is not a DRY method.  It gets used in Menu Walkers, Custom Nav Widget, etc
     function Wfc_fix_sitemap_url( $ancestor_id ){
-        $shortCutUrl = get_post_meta( $ancestor_id, 'wfc_page_shortcut_url', true );
-        if( $shortCutUrl == '' || empty($shortCutUrl) ){
-            return get_permalink( $ancestor_id );
-        } else{
-            return $shortCutUrl;
+        $short_cut     = get_post_meta( $ancestor_id, 'wfc_page_type_shortcut', true );
+        if(intval($short_cut)>0)
+        {
+            switch($short_cut)
+            {
+                case 1:
+                    $short_cut =get_permalink(get_post_meta( $ancestor_id, 'wfc_page_existing_pages', true ));
+                break;
+                case 2:
+                    $short_cut=get_post_meta( $ancestor_id, 'wfc_page_external_link', true );
+                break;
+                case 3:
+                    $short_cut=wp_get_attachment_url(get_post_meta( $ancestor_id, 'wfc_page_existing_images', true ));
+                break;
+                case 4:
+                     $short_cut=wp_get_attachment_url(get_post_meta( $ancestor_id, 'wfc_page_existing_pdfs', true ));
+                break;
+                case 5:
+                    $short_cut =get_permalink(get_post_meta( $ancestor_id, 'wfc_page_existing_posts', true ));
+                break;
+            }
+            return $short_cut;
         }
+        else
+            return get_permalink( $ancestor_id );
     }
 
     function wfc_get_ancestors(){
@@ -118,7 +137,28 @@
             }
             $css_class =
                 implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
-            $short_cut = get_post_meta( $page->ID, 'wfc_page_shortcut_url', true );
+            $short_cut     = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
+            if(intval($short_cut)>0)
+            {
+                switch($short_cut)
+                {
+                    case 1:
+                        $short_cut =get_permalink(get_post_meta( $page->ID, 'wfc_page_existing_pages', true ));
+                    break;
+                    case 2:
+                        $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
+                    break;
+                    case 3:
+                        $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_images', true ));
+                    break;
+                    case 4:
+                         $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true ));
+                    break;
+                    case 5:
+                        $short_cut =get_permalink(get_post_meta( $page->ID, 'wfc_page_existing_posts', true ));
+                    break;
+                }
+            }
             // new tab comes out as an array -- need to fix this
             $short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', true );
             if( isset($short_cut) && !empty($short_cut) ){

@@ -1,15 +1,56 @@
 <?php
-    /*
-     * @sftodo: need to save the shortcut links in a better way.  right now the url is getting saved. but they will break if the permalink structure changes. === try saving the item object maybe ===
-     */
-    function get_shortcut_pages(){
+/**
+* Class to manage shortcuts
+* Create an instance of this class will enable the shortcut feature
+*
+* Supports 5 types of shortcuts, see $shortcut_medias
+*
+* @author Thibault Miclo
+* @version 1.0
+* @since 5.2
+*/
+class shortcutManager
+{
+    /**
+    * List of supported medias
+    */
+    protected $shortcut_medias=array( 1=>'Page',
+                            2=>'External Link',
+                            3=>'Image',
+                            4=>'PDF',
+                            5=>'Post');
+    /**
+    * Constructor to initialize the shortcuts
+    * No real code to explain there
+    *
+    * @access public
+    */
+    public function __construct()
+    {
+        add_action( 'admin_init', array($this,'scf_intercept_add_new_page') );
+        add_filter( 'get_edit_post_link', array($this,'scf_page_link') );
+        add_action( 'admin_enqueue_scripts', array($this,'scf_load_menu_manager_js') );
+        add_filter( 'manage_page_posts_columns', array($this,'scf_add_shortcut_column'), 5 );
+        add_action( 'manage_page_posts_custom_column', array($this,'scf_display_shortcut_column'), 5, 2 ); 
+        $this->build_shortcut_meta_box();
+    }
+    /**
+    * Return all the pages with shortcut on it
+    * To avoid display in the select
+    *
+    * @access private
+    * @global $wpdb
+    * @return array pages with a shortcut
+    */
+    private function get_shortcut_pages(){
         global $wpdb;
         $args        = array(
-            'post_type'      => 'page',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
+            'post_type'  => 'page',
+            'meta_query' => array(
                 array(
-                    'key' => 'wfc_page_shortcut_url',
+                    'key'     => 'wfc_page_type_shortcut',
+                    'value'   => 1,//page
+                    'compare' => '='
                 )
             )
         );
@@ -23,84 +64,170 @@
         wp_reset_query();
         return $exclude_arr;
     }
-
-    function get_all_pages(){
-        global $pagenow;
-        if( $pagenow == 'media.php' || $pagenow == 'media-new.php' || $pagenow == 'async-upload.php' ){
-            return '';
-        }
-        $exclude = get_shortcut_pages();
+    /**
+    * Get the all the items with the post_type $type
+    *
+    * @access private
+    * @param int $type the post_type
+    * @return array all the needed items
+    */
+    private function get_all_by_type($type)
+    {
         global $wpdb;
-        $args  = array(
-            'post__not_in'   => $exclude,
-            'post_type'      => 'page',
-            'posts_per_page' => -1,
-            'post_status'    => 'publish',
-            'orderby'        => 'title',
-            'order'          => 'ASC'
-        );
-        $query = new WP_Query($args);
         $arr   = array();
-        if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
-            $arr[get_permalink()] = get_the_title();
-        endwhile;endif;
-        wp_reset_query();
-        $pdf_args    = array(
-            'post_type'      => 'attachment',
-            'numberposts'    => NULL,
-            'post_status'    => NULL,
-            'post_mime_type' => 'application/pdf'
-        );
-        $attachments = get_posts( $pdf_args );
-        if( $attachments ){
-            foreach( $attachments as $attachment ){
-                $arr[wp_get_attachment_url( $attachment->ID )] = apply_filters( 'the_title', $attachment->post_title );
-            }
+        switch($type) 
+        {
+            case 1://Page
+                $exclude = $this->get_shortcut_pages();
+                $exclude = array_merge($exclude,array($_REQUEST['post'])); //Exclude edited page to avoid loops
+                $args  = array(
+                    'post__not_in'   => $exclude,
+                    'post_type'      => 'page',
+                    'posts_per_page' => -1,
+                    'post_status'    => 'publish',
+                    'orderby'        => 'title',
+                    'order'          => 'ASC'
+                );
+                $query = new WP_Query($args);
+                if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
+                    $arr[get_the_ID()] = get_the_title();
+                endwhile;endif;
+            break;
+
+            case 2://External
+            break;
+
+            case 3://Image
+                $args    = array(
+                    'post_type'      => 'attachment',
+                    'numberposts'    => NULL,
+                    'post_status'    => NULL,
+                    'post_mime_type' => 'image'
+                );
+                $attachments = get_posts( $args );
+                if( $attachments ){
+                    foreach( $attachments as $attachment ){
+                        $arr[$attachment->ID] = '<div class="img_shortcut"><img title="'.apply_filters( 'the_title', $attachment->post_title ).'" src="'.wp_get_attachment_url($attachment->ID).'" /></div>';
+                    }
+                }
+            break;
+
+            case 4://PDF
+                $args    = array(
+                    'post_type'      => 'attachment',
+                    'numberposts'    => NULL,
+                    'post_status'    => NULL,
+                    'post_mime_type' => 'application/pdf'
+                );
+                $attachments = get_posts( $args );
+                if( $attachments ){
+                    foreach( $attachments as $attachment ){
+                        $arr[$attachment->ID] = apply_filters( 'the_title', $attachment->post_title );
+                    }
+                }
+            break;
+
+            case 5://Post
+                $args  = array(
+                    'post_type'      => 'post',
+                    'posts_per_page' => -1,
+                    'post_status'    => 'publish',
+                    'orderby'        => 'title',
+                    'order'          => 'ASC'
+                );
+                $query = new WP_Query($args);
+                if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
+                    $arr[get_the_ID()] = get_the_title();
+                endwhile;endif;
+            break;
         }
         return $arr;
     }
-
-    /*
-    ===============================
-    ===============================
+    /**
+    * Prepare arguments to build meta_box
+    * To add shortcuts on page edition
+    * Then build it
+    *
+    * @access private
+    * @return true
     */
-    $page_shortcut_args = array(
-        'cpt'      => 'page' /* CPT Name */,
-        'meta_box' => array(
-            'handler'   => '_additional_page_short_cut_options',
-            'title'     => 'Shortcut Page',
-            'cpt'       => 'page',
-            'new_boxes' => array(
-                array(
-                    'field_title' => 'Shortcut URL: ',
-                    'type_of_box' => 'text',
-                    'desc'        => 'Enter the destination link'
-                ),
-                array(
-                    'field_title' => 'Existing Pages: ',
-                    'type_of_box' => 'select',
-                    'desc'        => 'Select page to set as shortcut link',
-                    'options'     => get_all_pages(),
-                ),
-                array(
-                    'field_title' => 'New Tab Option: ',
-                    'type_of_box' => 'checkbox',
-                    'options'     => array('new_tab' => 'Open in a new tab'),
-                    'desc'        => 'Check if you want the link to open in a new tab.'
+    private function build_shortcut_meta_box() 
+    {
+        $page_shortcut_args = array(
+            'cpt'      => 'page' /* CPT Name */,
+            'meta_box' => array(
+                'handler'   => '_additional_page_short_cut_options',
+                'title'     => 'Shortcut Page',
+                'cpt'       => 'page',
+                'new_boxes' => array(
+                    array(
+                        'field_title' => 'Type shortcut',
+                        'type_of_box' => 'select',
+                        'desc'        => 'Select the type of media you want to shortcut link',
+                        'options'     =>  $this->shortcut_medias,
+                    ),
+                    array(
+                        'field_title' => 'Existing Pages: ',
+                        'type_of_box' => 'select',
+                        'desc'        => 'Select page to set as shortcut link',
+                        'options'     => $this->get_all_by_type(1),
+                    ),
+                     array(
+                        'field_title' => 'Existing posts: ',
+                        'type_of_box' => 'select',
+                        'desc'        => 'Select post to set as shortcut link',
+                        'options'     => $this->get_all_by_type(5),
+                    ),
+                    array(
+                        'field_title' => 'External link: ',
+                        'type_of_box' => 'text',
+                        'desc'        => 'Enter the external link',
+                    ),
+                    array(
+                        'field_title' => 'Existing Images: ',
+                        'type_of_box' => 'radio',
+                        'desc'        => 'Select image to set as shortcut link',
+                        'options'     => $this->get_all_by_type(3),
+                    ),
+                    array(
+                        'field_title' => 'Existing PDFs: ',
+                        'type_of_box' => 'select',
+                        'desc'        => 'Select PDF to set as shortcut link',
+                        'options'     => $this->get_all_by_type(4),
+                    ),
+                    array(
+                        'field_title' => 'New Tab Option: ',
+                        'type_of_box' => 'checkbox',
+                        'options'     => array('new_tab' => 'Open in a new tab'),
+                        'desc'        => 'Check if you want the link to open in a new tab.'
+                    ),
                 ),
             ),
-        ),
-    );
-    $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
-    function scf_internal_link_checker(){
-        $post_permalink = get_permalink( $_GET['post'] );
+        );
+        $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
+        return true;
+    }
+    /**
+    * Get all the shortcuts going to a page
+    * When you edit a page which has shortcuts linked on it
+    * Diplay them
+    *
+    * @access public
+    * @return string $str string displayed on page edited
+    */
+    public function pages_with_shortcut(){
         global $wpdb;
         $args           = array(
             'post_type'  => 'page',
             'meta_query' => array(
                 array(
-                    'key'     => 'wfc_page_shortcut_url',
-                    'value'   => $post_permalink,
+                    'key'     => 'wfc_page_type_shortcut',
+                    'value'   => 1,//page
+                    'compare' => '='
+                ),
+                 array(
+                    'key'     => 'wfc_page_existing_pages',
+                    'value'   => intval($_GET['post']),//page
                     'compare' => '='
                 )
             )
@@ -110,18 +237,110 @@
         $i              = 0;
         if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
             $i++;
-            $str_permalinks .= get_permalink( get_the_ID() ).'<br />';
+            $str_permalinks .= get_the_title().'<br />';
         endwhile;endif;
         wp_reset_query();
-        return $str_permalinks.' '.$i;
+        return $i.' pages have a shortcut to this page :<br />'.$str_permalinks;
     }
-
-    /*
-    ===============================
-    MENU MANAGEMENT ADDITION
-    ===============================
+    /**
+    * Get all the shortcuts going to a post
+    * When you edit a post which has shortcuts linked on it
+    * Diplay them
+    *
+    * @access public
+    * @return string $str string displayed on post edited
     */
-    function scf_intercept_add_new_page(){
+    public function posts_with_shortcut(){
+        global $wpdb;
+        $args           = array(
+            'post_type'  => 'page',
+            'meta_query' => array(
+                array(
+                    'key'     => 'wfc_page_type_shortcut',
+                    'value'   => 5,//post
+                    'compare' => '='
+                ),
+                 array(
+                    'key'     => 'wfc_page_existing_posts',
+                    'value'   => intval($_GET['post']),//page
+                    'compare' => '='
+                )
+            )
+        );
+        $query          = new WP_Query($args);
+        $str_permalinks = '';
+        $i              = 0;
+        if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
+            $i++;
+            $str_permalinks .= get_the_title().'<br />';
+        endwhile;endif;
+        wp_reset_query();
+        return $i.' pages have a shortcut to this post :<br />'.$str_permalinks;
+    }
+    /**
+    * Get all the shortcuts going to an attachment
+    * When you edit an attachment which has shortcuts linked on it
+    * Diplay them
+    *
+    * @access public
+    * @return string $str string displayed on attachment edited
+    */
+    public function attachment_with_shortcut(){
+        global $wpdb;
+        $args           = array(
+            'post_type'  => 'page',
+            'meta_query' => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'wfc_page_type_shortcut',
+                    'value'   => 3,//image
+                    'compare' => '='
+                ),
+                 array(
+                    'key'     => 'wfc_page_existing_images',
+                    'value'   => intval($_GET['post']),
+                    'compare' => '='
+                )
+            )
+        );
+        $query          = new WP_Query($args);
+        $str_permalinks = '';
+        $i              = 0;
+        if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
+            $i++;
+            $str_permalinks .= get_the_title().'<br />';
+        endwhile;endif;
+        wp_reset_query();
+        $args           = array(
+            'post_type'  => 'page',
+            'meta_query' => array(
+                'relation' => 'AND',
+                array(
+                    'key'     => 'wfc_page_type_shortcut',
+                    'value'   => 4,//PDF
+                    'compare' => '='
+                ),
+                 array(
+                    'key'     => 'wfc_page_existing_pdfs',
+                    'value'   => intval($_GET['post']),
+                    'compare' => '='
+                )
+            )
+        );
+        $query          = new WP_Query($args);
+        if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
+            $i++;
+            $str_permalinks .= get_the_title().'<br />';
+        endwhile;endif;
+        wp_reset_query();
+        return $i.' pages have a shortcut to this attachment :<br />'.$str_permalinks;
+    }
+    /**
+    * Intercept add new page to remove wysiwyg editor
+    *
+    * @access public
+    */
+    public function scf_intercept_add_new_page(){
         if( !isset($_GET['post_type']) || !isset($_GET['shortcut']) ){
             return;
         }
@@ -132,30 +351,32 @@
             }
         }
     }
-
-    add_action( 'admin_init', 'scf_intercept_add_new_page' );
-    /*
-    =========================================
-    APPEND EDIT URL WITH SHORTCUT PARAMETER
-    =========================================
+    /**
+    * Add $_GET['shortcut']=true into url
+    * Set post type to page
+    * $_GET['shortcut'] will be used and tested to display the wysiwyg editor or not
+    *
+    * @access public
+    * @param string $link old url
+    * @return string $link new url
     */
-    function scf_page_link( $link ){
+   public function scf_page_link( $link ){
         global $post;
         global $wpdb;
-        $short_cut = get_post_meta( $post->ID, 'wfc_page_shortcut_url', true );
-        if( isset($short_cut) && !empty($short_cut) ){
+        $short_cut = intval(get_post_meta( $post->ID, 'wfc_page_type_shortcut', true ));
+        if( $short_cut>0 ){
             $link = $link.'&post_type=page&shortcut=true';
         }
         return $link;
     }
-
-    add_filter( 'get_edit_post_link', 'scf_page_link' );
-    /*
-    ===============================
-    REGISTER MENU MANAGER JQUERY
-    ===============================
+    /**
+    * Load js scripts on the pages that require it
+    *
+    * @access public
+    * @global $post 
+    * @global $pagenow
     */
-    function scf_load_menu_manager_js(){
+    public function scf_load_menu_manager_js(){
         global $post;
         global $pagenow;
         if( !is_object( $post ) ){
@@ -168,35 +389,64 @@
             wp_enqueue_script( 'scf.jquery.menu.manager' );
         }
     }
-
-    add_action( 'admin_enqueue_scripts', 'scf_load_menu_manager_js' );
-    /*
-    ===============================
-    ADDS THUMBNAIL IMAGES TO ADMIN LIST VIEW FOR
-       -CAMPAIGN
-    ===============================
+    /**    
+    * Add an order & shortcut column in manage page page
+    * 
+    * @access public
+    * @param array $cols columns before
+    * @return array $cols columns after
     */
-    /*
-     * @sftodo: this isn't working anymore. perhaps the api changed?
-     */
-    function scf_add_shortcut_column( $cols ){
+    public function scf_add_shortcut_column( $cols ){
         $cols['scf_page_order']    = __( 'Order' );
         $cols['scf_shortcut_link'] = __( 'Shortcut Link' );
         return $cols;
     }
-
-    add_filter( 'manage_page_posts_columns', 'scf_add_shortcut_column', 5 );
-    function scf_display_shortcut_column( $col, $id ){
+    /**
+    * Display the content of the new columns
+    *
+    * @access public
+    * @param int $col column name
+    * @param int $id post ID
+    */
+    public function scf_display_shortcut_column( $col, $id ){
         global $post;
         $post_type = get_post_type( $id );
         switch( $col ){
             case 'scf_page_order':
                 echo $post->menu_order;
-                break;
+            break;
             case 'scf_shortcut_link':
-                echo get_post_meta( $post->ID, 'wfc_page_shortcut_url', true );
-                break;
+                $metas=get_post_meta( $post->ID);
+                if(!empty($metas['wfc_page_type_shortcut']))
+                switch($metas['wfc_page_type_shortcut'][0])
+                {
+                    case 1:
+                        if($metas['wfc_page_existing_pages'][0]!='none')
+                            echo 'Page: '.get_the_title($metas['wfc_page_existing_pages'][0]);
+                    break;
+
+                    case 2:
+                        if($metas['wfc_page_external_link'][0]!='')
+                            echo 'Link: '.$metas['wfc_page_external_link'][0];
+                    break;
+
+                    case 3:
+                        if($metas['wfc_page_existing_images'][0]!='')
+                            echo 'Image: '.get_the_title($metas['wfc_page_existing_images'][0]);
+                    break;
+
+                    case 4:
+                        if($metas['wfc_page_existing_pdfs'][0]!='none')
+                            echo 'PDF: '.get_the_title($metas['wfc_page_existing_pdfs'][0]);
+                    break;
+
+                    case 5:
+                        if($metas['wfc_page_existing_posts'][0]!='none')
+                            echo 'Post: '.get_the_title($metas['wfc_page_existing_posts'][0]);
+                    break;
+                }
+            break;
         }
     }
-
-    add_action( 'manage_page_posts_custom_column', 'scf_display_shortcut_column', 5, 2 );
+}
+$shortcuts=new shortcutManager();

@@ -44,7 +44,7 @@
                 wp_nonce_field( 'wfc_meta_box_nonce', 'meta_box_nonce' );
                 if( is_array( $var['meta_box']['new_boxes'] ) ){
                     foreach( $var['meta_box']['new_boxes'] as $field ){
-                        $field_id_cleaning = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $field['field_title'] ) );
+                          $field_id_cleaning = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $field['field_title'] ) );
                         $field_id_cleaning = strtolower( str_replace( " ", "_", $field_id_cleaning ) );
                         $field['id']       = 'wfc_'.$var['cpt'].'_'.$field_id_cleaning;
                         $field['class']    = 'wfc-'.$var['cpt'].'-'.$field_id_cleaning;
@@ -66,7 +66,7 @@
                                 <p class="description">'.$field['desc'].'</p>
                             </div>';
                         }
-                        echo '<p class="add_margin">';
+                      echo '<div class="add_margin">';
                         switch( $field['type_of_box'] ){
                             case 'text':
                                 echo '<input class="'.$field['class'].'" type="text" name="'.$field['id'].'" value="'.
@@ -82,20 +82,20 @@
                         <select name="'.$field['id'].'" id="'.$field['id'].'">
                            <option value="none" >None</option>';
                                 foreach( $field['options'] as $option_k => $option_v ){
-                                    $val = is_int( $option_k ) ? $option_v : $option_k;
-                                    echo '<option value="'.$val.'" '.($val == $meta ? ' selected="selected"' : '').' >'.
+                                    //$val = is_int( $option_k ) ? $option_v : $option_k;
+                                    echo '<option value="'.$option_k.'" '.($option_k == $meta ? ' selected="selected"' : '').' >'.
                                         $option_v.'</option>';
                                 }
                                 echo '</select>';
                                 break;
                             case 'radio':
-                                foreach( $field['options'] as $option ){
+                                foreach( $field['options'] as $k=>$option ){
                                     echo '
-                        <label>
-                           <input type="radio" name="'.$field['id'].'[]" value="'.$option.'" '.
-                                        (in_array( $option, $meta ) ? ' checked="checked"' : '').' />&nbsp;'
-                                        .$option.'
-                        </label><br />';
+                                        <label>
+                                        <input type="radio" name="'.$field['id'].'" value="'.$k.'" 
+                                        '.($k == $meta  ? ' checked="checked"' : '').' />
+                                        '.$option.'
+                                    </label><br />';
                                 }
                                 break;
                             case 'checkbox':
@@ -109,7 +109,8 @@
                                 }
                                 break;
                         }
-                        echo '</p></div>';
+                       echo '</div>';
+                       echo '</div>';
                     }
                 }
             }
@@ -126,7 +127,7 @@
                         $filtered_handle.'_metabox',
                         $var['meta_box']['title'],
                         array(&$this, 'display_meta_box_content'),
-                        $var['cpt'],
+                        $this->_cpt,
                         'advanced',
                         'high'
                     );
