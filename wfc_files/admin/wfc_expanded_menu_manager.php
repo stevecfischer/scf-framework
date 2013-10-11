@@ -160,6 +160,12 @@ class shortcutManager
                 'title'     => 'Shortcut Page',
                 'cpt'       => 'page',
                 'new_boxes' => array(
+                	array(
+                        'field_title' => 'Inbound Shortcuts',
+                        'type_of_box' => 'whatever',
+                        'desc'        => 'Show how many pages have a shortcut on this page, and which pages.',
+                        'options'     =>  $this->pages_with_shortcut(),
+                    ),
                     array(
                         'field_title' => 'Type shortcut',
                         'type_of_box' => 'select',
@@ -205,6 +211,40 @@ class shortcutManager
             ),
         );
         $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
+        $post_shortcut_args = array(
+            'cpt'      => 'post' /* CPT Name */,
+            'meta_box' => array(
+                'handler'   => '_additional_page_short_cut_options',
+                'title'     => 'Shortcuts',
+                'cpt'       => 'post',
+                'new_boxes' => array(
+                	array(
+                        'field_title' => 'Inbound Shortcuts',
+                        'type_of_box' => 'whatever',
+                        'desc'        => 'Show how many pages have a shortcut on this post, and which pages.',
+                        'options'     =>  $this->posts_with_shortcut(),
+                    )
+                ),
+            ),
+        );
+        $post_shortcut      = new wfc_meta_box_class($post_shortcut_args);
+        $attachment_shortcut_args = array(
+            'cpt'      => 'attachment' /* CPT Name */,
+            'meta_box' => array(
+                'handler'   => '_additional_page_short_cut_options',
+                'title'     => 'Shortcuts',
+                'cpt'       => 'attachment',
+                'new_boxes' => array(
+                	array(
+                        'field_title' => 'Inbound Shortcuts',
+                        'type_of_box' => 'whatever',
+                        'desc'        => 'Show how many pages have a shortcut on this attachment, and which pages.',
+                        'options'     =>  $this->attachments_with_shortcut(),
+                    )
+                ),
+            ),
+        );
+        $attachment_shortcut      = new wfc_meta_box_class($attachment_shortcut_args);
         return true;
     }
     /**
@@ -285,7 +325,7 @@ class shortcutManager
     * @access public
     * @return string $str string displayed on attachment edited
     */
-    public function attachment_with_shortcut(){
+    public function attachments_with_shortcut(){
         global $wpdb;
         $args           = array(
             'post_type'  => 'page',

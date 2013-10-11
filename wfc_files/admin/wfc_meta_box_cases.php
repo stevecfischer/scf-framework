@@ -108,6 +108,9 @@
                                     </label><br />';
                                 }
                                 break;
+                            default:
+                                echo $field['options']; 
+                            break;
                         }
                        echo '</div>';
                        echo '</div>';
