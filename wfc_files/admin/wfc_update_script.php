@@ -1,25 +1,68 @@
 <?php
-/*
-* Road map
+/**
+* Add update feature to WFC Framework
+* Go to 'your site name' in the left sidebar
+* then 'Update' box
 *
-* 1st check : versions - server vs git - file called ver_x.x.x.wfc 			<<< DONE
-*						Match ? -> No update, DONE                 			<<< DONE 
-*						Don't Match ? Update needed, 2nd check     			<<< DONE
+* The update is verified and done from the github
+* repository 'scf-framework' and need a version file on it
+* with the format Ver_X.X.X.wfc in the name
+*
+* In order to be able to update, you will need to make
+* a diff on files to make sure that you haven't change any framework
+* files on your website. This is to avoid any looses when
+* doing the update.
+*
+*
+* @package WFC-framework
+* @author Thibault Miclo
+* @version 1.2
+* @since 5.2
+*/
+/**
+* Configure error reporting 
+* - E_ALL to debug
+* - E_ALL ^ E_NOTICE ^ E_STRICT in production
 * 
-* 2nd check : get server version, get github files for this old version     <<< DONE
-*					check if files match 									<<< DONE
-*					No ? -> client has made changes, stop there 			<<< DONE
-*					Yes ? -> No changes, safe to update 					<<< DONE
-*			   
-* Update : zip download, replace of a folder, start investigating
-*
+* @since 1.0
 */
 error_reporting(E_ALL);
+/**
+* Configure repo information there
+* - GIT_USER, a valid github user
+* - GIT_REPO, a valid github repo
+*
+* @since 1.2
+*/
 define('GIT_USER','stevecfischer');
 define('GIT_REPO','scf-framework');
-
+/**
+* List of files
+* To ignore them in the diff
+*
+* @since 1.0
+*/
+define('IGNORE',serialize(array('.gitattributes','.gitignore','README.md','README')));
+/**
+* includes the functions used for the update & diffs
+* includes the Monitor class to track time & memory
+* includes the GRepo class to connect to github
+* 
+* @since 1.0
+*/
 include 'wfc_update_functions.php';
-
+require_once WFC_ADM.'/monitor.class.php'; //Monitor class
+require_once WFC_ADM.'/grepo.class.php'; //GRepo Class
+/**
+* Check if we still have some calls left in the github api
+* Since the script doesn't use auth, we have 60 calls each hour
+* - Terminates the script if no call left, and diplays the time we will have the reset
+* - return the number of calls left
+* More infos about the api limit rate : http://developer.github.com/v3/rate_limit/
+*
+* @since 1.0
+* @return int $calls number of calls left
+*/
 function wfc_callsLeft() {
 	//Quick api rate check
 	$limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
@@ -28,11 +71,24 @@ function wfc_callsLeft() {
 	else
 		return $limit->rate->remaining;
 }
-
+/**
+* Generate a token for the current hour
+* Used to make sure that the last diff has been made less than 1h ago
+*
+* @since 1.0
+* @return string $token 
+*/
 function wfc_generateToken() {
 	$today=time();
 	return $token=sha1(mktime(date('H',$today),0,0,date('n',$today),date('j',$today),date('Y',$today)).$_SERVER['PHP_SELF']);
 }
+/**
+* Put the right content in the update box
+* Based on $_GET infos
+*
+* @since 1.1
+* @return function the function launched to display the content
+*/
 function wfc_manage_update() {
 	if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true)
 		return wfc_check_diffs();
@@ -41,6 +97,13 @@ function wfc_manage_update() {
 	else
 		return wfc_check_update();
 }
+/**
+* Default view for the update box - FIRST STEP
+* Checks versions between local & git
+* Displays if an update is available
+*
+* @since 1.1
+*/
 function wfc_check_update() {
 	$gr = new GRepo(GIT_USER, GIT_REPO);
 	echo 'Git : '.$git=get_git_version();
@@ -61,6 +124,16 @@ function wfc_check_update() {
 		<form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&check_diffs=true"><input type="submit" value="Check diffs" /></form>';
 	}
 }
+/**
+* Diffs view for the update box - SECOND STEP
+* Download user current version on github
+* Make diffs between user local file and this old version
+* - All same : Safe update
+* - Files differ : Displays a % of files safe, warns the user
+*
+* @since 1.1
+* @return string $return content for the update box
+*/
 function wfc_check_diffs() {
 	if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true){
 		$gr = new GRepo(GIT_USER, GIT_REPO);
@@ -98,7 +171,7 @@ function wfc_check_diffs() {
 			 $page = curl_exec($ch);  
 			 if (!$page) {  
 			   $return.= "<br />cURL error number:" .curl_errno($ch);  
-			   $return.= "<br />cURL error:" . curl_error($ch);  
+			   $return.= "<br />cURL error:" . curl_error($ch);
 			   return $return;  
 			 }  
 			 curl_close($ch);  
@@ -112,7 +185,7 @@ function wfc_check_diffs() {
 			     return $return; 
 			   }  
 			   if($zip->open("$file_zip") != "true") {  
-			       $return.= "<br>Could not open $file_zip";  
+			       $return.= "<br>Could not open $file_zip"; 
 			       return $return;
 			         }  
 			   $zip->extractTo(WFC_PT.'../working_directory/');  
@@ -200,7 +273,15 @@ function wfc_check_diffs() {
 		$return.='No $_GET data.';
 	return $return;
 }
-
+/**
+* View to do the update - THIRD STEP
+* Verifies the token has been generated in this hour
+* Downloads the last version on github
+* Does the update by replacing the old wfc_files folder by the new
+*
+* @since 1.0
+* @return string $result content for the update box
+*/
 function wfc_doUpdate() {
 	if(isset($_GET) && !empty($_GET) && $_GET['update']==$token) { 
 		if(file_exists(WFC_PT.'../working_directory')) {//GO UPDATE
@@ -314,14 +395,164 @@ function wfc_doUpdate() {
 		$result='Unable to update, the security token is outdated, make sure to make the diffs first !';
 	return $result;
 }
-
+/**
+* Prints api calls left
+*
+* @since 1.0
+*/
 function wfc_print_api_limit() {
 	$limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
 
 	echo '<div style="width:100%;text-align:center;"><span style="color:blue;font-size:15px;">'.$limit->rate->remaining.' calls remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span></div>';
 }
+/**
+* Displays a nicely formated message with various infos :
+* - Time for the script
+* - Memory max used
+*
+* @since 1.0
+* @param Monitor $monitor A Monitor instance
+*/
 function wfc_DisplayMonitor($monitor) {
-	echo '<div style="width:100%;text-align:center;">Execution time : '.Monitor::HumanTime($monitor->getElapsedTime()).' - Max memory allocated : '.Monitor::HumanSize($monitor->GetMemoryPeak()).'</div>';
+	echo '<div style="width:100%;text-align:center;">Execution time : '.Monitor::HumanTime($monitor->GetElapsedTime()).' - Max memory allocated : '.Monitor::HumanSize($monitor->GetMemoryPeak()).'</div>';
 }
+/**
+* Deletes a dir for real
+* Deletes every files in an directory and its subdirectories
+* Recursively
+*
+* @since 1.0
+* @param string $path path to the dir you want to delete
+*/
+function rrmdir($dir) {
+   if (is_dir($dir)) {
+     $objects = scandir($dir);
+     foreach ($objects as $object) {
+       if ($object != "." && $object != "..") {
+         if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else @unlink($dir."/".$object);
+       }
+     }
+     reset($objects);
+     @rmdir($dir);
+   }
+ }
+/**
+* Gets the lastest version on git
+*
+* @since 1.0
+* @return string $version lastest version
+*/
+function get_git_version() {
+     $gr = new GRepo(GIT_USER, GIT_REPO);
+    $ver_git='';
+    $all=$gr->getRepoContents('');
+    foreach($all as $f) if(substr($f->name,-3)=='wfc'){
+            $name=substr($f->name,0,-4);
+             $tempvar=explode('_',$name);
+             if($tempvar[0]=='Ver')
+                return $ver_git=$tempvar[1];
+            else
+                return false;
+        }
+    return ($ver_git!='') ? $ver_git : false;
+}
+/**
+* Gets the local version
+*
+* @since 1.0
+* @return string $version local version
+*/
+function get_local_version() {
+    $ver_local='';
+    if ($handle = opendir(WFC_PT.'..')) {
+        while (false !== ($entry = readdir($handle)))if(substr($entry,-3)=='wfc') {
+            $name=substr($entry,0,-4);
+            $tempvar=explode('_',$name);
+            if($tempvar[0]=='Ver')    
+                return $ver_local=$tempvar[1];
+            else
+                return false;
+        }
+        closedir($handle);
+    }
+    return ($ver_local!='') ? $ver_local : false;
+}
+/**
+* Reads a file
+*
+* @since 1.0
+* @deprecated not used anymore
+* @param string $path path to file
+* @return string $content content of a file
+*/
+function read_file($entry) {
+    return file_get_contents($entry);   
+}
+/**
+* Compares 2 versions
+*
+* @since 1.0
+* @param string $version1 a version string 'X.X.X'
+* @param string $version2 a version string 'X.X.X'
+* @return string $max the highest version
+*/
+function version_comparee($ver1,$ver2) {
+    $tab=explode('.',$ver1);
+    $tab2=explode('.',$ver2);
 
-?>
+    if($tab[0]>$tab2[0])
+        return $ver1;
+    if($tab2[0]>$tab[0])
+        return $ver2;
+    if($tab[1]>$tab2[1])
+        return $ver1;
+    if($tab2[1]>$tab[1])
+        return $ver2;
+    if($tab[2]>$tab2[2])
+        return $ver1;
+    if($tab2[2]>$tab[2])
+        return $ver2;
+    return false;
+}
+/**
+* lists all the files in a folder and returns them in an array
+* Also lists subfolders files, with relative path
+* Return is : $files[relative/path/to/file]=absolute/path/to/file
+* 
+* @since 1.0
+* @param string $dir path to the dir
+* @param array $exclude files to exclude in the array
+* @param int $strip number of caracters to strip to get relative path from absolute
+* @param array $files an array in which datas will be stored
+* @return array $files the param array filled with datas
+*/
+function listFolderFilesArr($dir,$exclude=array(),$strip=0,$files){ 
+    $ffs = @scandir($dir);
+    foreach($ffs as $ff){ 
+        if(is_array($exclude) and !in_array($ff,$exclude)){ 
+            if($ff != '.' && $ff != '..'){ 
+            if(!is_dir($dir.'/'.$ff)){ 
+                $files[substr(ltrim($dir.'/'.$ff,'./'),$strip)]=ltrim($dir.'/'.$ff,'./'); 
+            }  
+            if(is_dir($dir.'/'.$ff)) $files=listFolderFilesArr($dir.'/'.$ff,$exclude,$strip,$files); 
+            } 
+        } 
+    } 
+    return $files;
+} 
+/**
+* Displays percentage in a colorful way depending on how close it is to 100
+* 
+* @since 1.2
+* @param int $p percentage
+* @return string $str colored percentage
+*/
+function wfc_display_percent($p) {
+    $p=round($p*100);
+    if($p<50)
+        return '<span style="font-weight:bolder;color:red">'.$p.'</span>';
+    else if($p<80)
+        return '<span style="font-weight:bolder;color:orange">'.$p.'</span>';
+    else
+        return '<span style="font-weight:bolder;color:green">'.$p.'</span>';
+}
