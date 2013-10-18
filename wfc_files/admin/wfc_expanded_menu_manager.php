@@ -16,9 +16,8 @@ class shortcutManager
     */
     protected $shortcut_medias=array( 1=>'Page',
                             2=>'External Link',
-                            3=>'Image',
-                            4=>'PDF',
-                            5=>'Post');
+                            3=>'PDF'
+                            );
     /**
     * Constructor to initialize the shortcuts
     * No real code to explain there
@@ -97,22 +96,7 @@ class shortcutManager
             case 2://External
             break;
 
-            case 3://Image
-                $args    = array(
-                    'post_type'      => 'attachment',
-                    'numberposts'    => NULL,
-                    'post_status'    => NULL,
-                    'post_mime_type' => 'image'
-                );
-                $attachments = get_posts( $args );
-                if( $attachments ){
-                    foreach( $attachments as $attachment ){
-                        $arr[$attachment->ID] = '<div class="img_shortcut"><img title="'.apply_filters( 'the_title', $attachment->post_title ).'" src="'.wp_get_attachment_url($attachment->ID).'" /></div>';
-                    }
-                }
-            break;
-
-            case 4://PDF
+            case 3://PDF
                 $args    = array(
                     'post_type'      => 'attachment',
                     'numberposts'    => NULL,
@@ -127,19 +111,6 @@ class shortcutManager
                 }
             break;
 
-            case 5://Post
-                $args  = array(
-                    'post_type'      => 'post',
-                    'posts_per_page' => -1,
-                    'post_status'    => 'publish',
-                    'orderby'        => 'title',
-                    'order'          => 'ASC'
-                );
-                $query = new WP_Query($args);
-                if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
-                    $arr[get_the_ID()] = get_the_title();
-                endwhile;endif;
-            break;
         }
         return $arr;
     }
@@ -161,7 +132,7 @@ class shortcutManager
                     'title'     => 'Shortcut Page',
                     'cpt'       => 'page',
                     'new_boxes' => array(
-                    	array(
+                        array(
                             'field_title' => 'Inbound Shortcuts',
                             'type_of_box' => 'whatever',
                             'desc'        => 'Show how many pages have a shortcut on this page, and which pages.',
@@ -179,28 +150,16 @@ class shortcutManager
                             'desc'        => 'Select page to set as shortcut link',
                             'options'     => $this->get_all_by_type(1),
                         ),
-                         array(
-                            'field_title' => 'Existing posts: ',
-                            'type_of_box' => 'select',
-                            'desc'        => 'Select post to set as shortcut link',
-                            'options'     => $this->get_all_by_type(5),
-                        ),
                         array(
                             'field_title' => 'External link: ',
                             'type_of_box' => 'text',
                             'desc'        => 'Enter the external link',
                         ),
                         array(
-                            'field_title' => 'Existing Images: ',
-                            'type_of_box' => 'radio',
-                            'desc'        => 'Select image to set as shortcut link',
-                            'options'     => $this->get_all_by_type(3),
-                        ),
-                        array(
                             'field_title' => 'Existing PDFs: ',
                             'type_of_box' => 'select',
                             'desc'        => 'Select PDF to set as shortcut link',
-                            'options'     => $this->get_all_by_type(4),
+                            'options'     => $this->get_all_by_type(3),
                         ),
                         array(
                             'field_title' => 'New Tab Option: ',
@@ -229,23 +188,6 @@ class shortcutManager
                 ),
             );
         $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
-        $post_shortcut_args = array(
-            'cpt'      => 'post' /* CPT Name */,
-            'meta_box' => array(
-                'handler'   => '_additional_page_short_cut_options',
-                'title'     => 'Shortcuts',
-                'cpt'       => 'post',
-                'new_boxes' => array(
-                	array(
-                        'field_title' => 'Inbound Shortcuts',
-                        'type_of_box' => 'whatever',
-                        'desc'        => 'Show how many pages have a shortcut on this post, and which pages.',
-                        'options'     =>  $this->posts_with_shortcut(),
-                    )
-                ),
-            ),
-        );
-        $post_shortcut      = new wfc_meta_box_class($post_shortcut_args);
         $attachment_shortcut_args = array(
             'cpt'      => 'attachment' /* CPT Name */,
             'meta_box' => array(
@@ -253,7 +195,7 @@ class shortcutManager
                 'title'     => 'Shortcuts',
                 'cpt'       => 'attachment',
                 'new_boxes' => array(
-                	array(
+                    array(
                         'field_title' => 'Inbound Shortcuts',
                         'type_of_box' => 'whatever',
                         'desc'        => 'Show how many pages have a shortcut on this attachment, and which pages.',
@@ -348,30 +290,7 @@ class shortcutManager
     */
     public function attachments_with_shortcut(){
         global $wpdb;
-        $args           = array(
-            'post_type'  => 'page',
-            'meta_query' => array(
-                'relation' => 'AND',
-                array(
-                    'key'     => 'wfc_page_type_shortcut',
-                    'value'   => 3,//image
-                    'compare' => '='
-                ),
-                 array(
-                    'key'     => 'wfc_page_existing_images',
-                    'value'   => intval($_GET['post']),
-                    'compare' => '='
-                )
-            )
-        );
-        $query          = new WP_Query($args);
-        $str_permalinks = '';
         $i              = 0;
-        if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
-            $i++;
-            $str_permalinks .= get_the_title().'<br />';
-        endwhile;endif;
-        wp_reset_query();
         $args           = array(
             'post_type'  => 'page',
             'meta_query' => array(
@@ -492,19 +411,10 @@ class shortcutManager
                     break;
 
                     case 3:
-                        if($metas['wfc_page_existing_images'][0]!='')
-                            echo 'Image: '.get_the_title($metas['wfc_page_existing_images'][0]);
-                    break;
-
-                    case 4:
                         if($metas['wfc_page_existing_pdfs'][0]!='none')
                             echo 'PDF: '.get_the_title($metas['wfc_page_existing_pdfs'][0]);
                     break;
-
-                    case 5:
-                        if($metas['wfc_page_existing_posts'][0]!='none')
-                            echo 'Post: '.get_the_title($metas['wfc_page_existing_posts'][0]);
-                    break;
+                   
                 }
             break;
         }
