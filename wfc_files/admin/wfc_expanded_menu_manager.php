@@ -153,63 +153,81 @@ class shortcutManager
     */
     private function build_shortcut_meta_box() 
     {
-        $page_shortcut_args = array(
-            'cpt'      => 'page' /* CPT Name */,
-            'meta_box' => array(
-                'handler'   => '_additional_page_short_cut_options',
-                'title'     => 'Shortcut Page',
-                'cpt'       => 'page',
-                'new_boxes' => array(
-                	array(
-                        'field_title' => 'Inbound Shortcuts',
-                        'type_of_box' => 'whatever',
-                        'desc'        => 'Show how many pages have a shortcut on this page, and which pages.',
-                        'options'     =>  $this->pages_with_shortcut(),
-                    ),
-                    array(
-                        'field_title' => 'Type shortcut',
-                        'type_of_box' => 'select',
-                        'desc'        => 'Select the type of media you want to shortcut link',
-                        'options'     =>  $this->shortcut_medias,
-                    ),
-                    array(
-                        'field_title' => 'Existing Pages: ',
-                        'type_of_box' => 'select',
-                        'desc'        => 'Select page to set as shortcut link',
-                        'options'     => $this->get_all_by_type(1),
-                    ),
-                     array(
-                        'field_title' => 'Existing posts: ',
-                        'type_of_box' => 'select',
-                        'desc'        => 'Select post to set as shortcut link',
-                        'options'     => $this->get_all_by_type(5),
-                    ),
-                    array(
-                        'field_title' => 'External link: ',
-                        'type_of_box' => 'text',
-                        'desc'        => 'Enter the external link',
-                    ),
-                    array(
-                        'field_title' => 'Existing Images: ',
-                        'type_of_box' => 'radio',
-                        'desc'        => 'Select image to set as shortcut link',
-                        'options'     => $this->get_all_by_type(3),
-                    ),
-                    array(
-                        'field_title' => 'Existing PDFs: ',
-                        'type_of_box' => 'select',
-                        'desc'        => 'Select PDF to set as shortcut link',
-                        'options'     => $this->get_all_by_type(4),
-                    ),
-                    array(
-                        'field_title' => 'New Tab Option: ',
-                        'type_of_box' => 'checkbox',
-                        'options'     => array('new_tab' => 'Open in a new tab'),
-                        'desc'        => 'Check if you want the link to open in a new tab.'
+        if($this->pages_with_shortcut()==='No shortcut')
+            $page_shortcut_args = array(
+                'cpt'      => 'page' /* CPT Name */,
+                'meta_box' => array(
+                    'handler'   => '_additional_page_short_cut_options',
+                    'title'     => 'Shortcut Page',
+                    'cpt'       => 'page',
+                    'new_boxes' => array(
+                    	array(
+                            'field_title' => 'Inbound Shortcuts',
+                            'type_of_box' => 'whatever',
+                            'desc'        => 'Show how many pages have a shortcut on this page, and which pages.',
+                            'options'     =>  $this->pages_with_shortcut(),
+                        ),
+                        array(
+                            'field_title' => 'Type shortcut',
+                            'type_of_box' => 'select',
+                            'desc'        => 'Select the type of media you want to shortcut link',
+                            'options'     =>  $this->shortcut_medias,
+                        ),
+                        array(
+                            'field_title' => 'Existing Pages: ',
+                            'type_of_box' => 'select',
+                            'desc'        => 'Select page to set as shortcut link',
+                            'options'     => $this->get_all_by_type(1),
+                        ),
+                         array(
+                            'field_title' => 'Existing posts: ',
+                            'type_of_box' => 'select',
+                            'desc'        => 'Select post to set as shortcut link',
+                            'options'     => $this->get_all_by_type(5),
+                        ),
+                        array(
+                            'field_title' => 'External link: ',
+                            'type_of_box' => 'text',
+                            'desc'        => 'Enter the external link',
+                        ),
+                        array(
+                            'field_title' => 'Existing Images: ',
+                            'type_of_box' => 'radio',
+                            'desc'        => 'Select image to set as shortcut link',
+                            'options'     => $this->get_all_by_type(3),
+                        ),
+                        array(
+                            'field_title' => 'Existing PDFs: ',
+                            'type_of_box' => 'select',
+                            'desc'        => 'Select PDF to set as shortcut link',
+                            'options'     => $this->get_all_by_type(4),
+                        ),
+                        array(
+                            'field_title' => 'New Tab Option: ',
+                            'type_of_box' => 'checkbox',
+                            'options'     => array('new_tab' => 'Open in a new tab'),
+                            'desc'        => 'Check if you want the link to open in a new tab.'
+                        ),
                     ),
                 ),
-            ),
-        );
+            );
+        else
+            $page_shortcut_args = array(
+                'cpt'      => 'page' /* CPT Name */,
+                'meta_box' => array(
+                    'handler'   => '_additional_page_short_cut_options',
+                    'title'     => 'Shortcut Page',
+                    'cpt'       => 'page',
+                    'new_boxes' => array(
+                        array(
+                            'field_title' => 'Inbound Shortcuts',
+                            'type_of_box' => 'whatever',
+                            'desc'        => 'Show how many pages have a shortcut on this page, and which pages.',
+                            'options'     =>  $this->pages_with_shortcut(),
+                        ),
+                    ),
+                ),
+            );
         $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
         $post_shortcut_args = array(
             'cpt'      => 'post' /* CPT Name */,
@@ -280,7 +298,10 @@ class shortcutManager
             $str_permalinks .= get_the_title().'<br />';
         endwhile;endif;
         wp_reset_query();
-        return $i.' pages have a shortcut to this page :<br />'.$str_permalinks;
+        if($i>0)
+            return $i.' page'.($i>1?'s':'').' ha.'($i>1?'ve':'s')'. a shortcut to this page :<br />'.$str_permalinks;
+        else
+            return 'No shortcut';
     }
     /**
     * Get all the shortcuts going to a post
