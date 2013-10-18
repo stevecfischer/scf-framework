@@ -297,7 +297,7 @@ class shortcutManager
                 'relation' => 'AND',
                 array(
                     'key'     => 'wfc_page_type_shortcut',
-                    'value'   => 4,//PDF
+                    'value'   => 3,//PDF
                     'compare' => '='
                 ),
                  array(
