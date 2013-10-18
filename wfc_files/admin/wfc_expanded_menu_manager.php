@@ -1,12 +1,13 @@
 <?php
 /**
 * Class to manage shortcuts
-* Create an instance of this class will enable the shortcut feature
+* Creating an instance of this class will enable the shortcut feature
 *
-* Supports 5 types of shortcuts, see $shortcut_medias
+* Supports 3 types of shortcuts, see $shortcut_medias
 *
 * @author Thibault Miclo
-* @version 1.0
+* @version 1.1
+* @package wfc-framework
 * @since 5.2
 */
 class shortcutManager
@@ -16,8 +17,7 @@ class shortcutManager
     */
     protected $shortcut_medias=array( 1=>'Page',
                             2=>'External Link',
-                            3=>'PDF'
-                            );
+                            3=>'PDF');
     /**
     * Constructor to initialize the shortcuts
     * No real code to explain there
@@ -166,9 +166,9 @@ class shortcutManager
                             'type_of_box' => 'checkbox',
                             'options'     => array('new_tab' => 'Open in a new tab'),
                             'desc'        => 'Check if you want the link to open in a new tab.'
-                        ),
-                    ),
-                ),
+                        )
+                    )
+                )
             );
         else
             $page_shortcut_args = array(
@@ -183,9 +183,9 @@ class shortcutManager
                             'type_of_box' => 'whatever',
                             'desc'        => 'Show how many pages have a shortcut on this page, and which pages.',
                             'options'     =>  $this->pages_with_shortcut(),
-                        ),
-                    ),
-                ),
+                        )
+                    )
+                )
             );
         $page_shortcut      = new wfc_meta_box_class($page_shortcut_args);
         $attachment_shortcut_args = array(
@@ -201,8 +201,8 @@ class shortcutManager
                         'desc'        => 'Show how many pages have a shortcut on this attachment, and which pages.',
                         'options'     =>  $this->attachments_with_shortcut(),
                     )
-                ),
-            ),
+                )
+            )
         );
         $attachment_shortcut      = new wfc_meta_box_class($attachment_shortcut_args);
         return true;
@@ -241,44 +241,9 @@ class shortcutManager
         endwhile;endif;
         wp_reset_query();
         if($i>0)
-            return $i.' page'.($i>1?'s':'').' ha.'($i>1?'ve':'s')'. a shortcut to this page :<br />'.$str_permalinks;
+            return $i.' page'.($i>1?'s':'').' ha'.($i>1?'ve':'s').' a shortcut to this page :<br />'.$str_permalinks;
         else
             return 'No shortcut';
-    }
-    /**
-    * Get all the shortcuts going to a post
-    * When you edit a post which has shortcuts linked on it
-    * Diplay them
-    *
-    * @access public
-    * @return string $str string displayed on post edited
-    */
-    public function posts_with_shortcut(){
-        global $wpdb;
-        $args           = array(
-            'post_type'  => 'page',
-            'meta_query' => array(
-                array(
-                    'key'     => 'wfc_page_type_shortcut',
-                    'value'   => 5,//post
-                    'compare' => '='
-                ),
-                 array(
-                    'key'     => 'wfc_page_existing_posts',
-                    'value'   => intval($_GET['post']),//page
-                    'compare' => '='
-                )
-            )
-        );
-        $query          = new WP_Query($args);
-        $str_permalinks = '';
-        $i              = 0;
-        if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
-            $i++;
-            $str_permalinks .= get_the_title().'<br />';
-        endwhile;endif;
-        wp_reset_query();
-        return $i.' pages have a shortcut to this post :<br />'.$str_permalinks;
     }
     /**
     * Get all the shortcuts going to an attachment
@@ -290,6 +255,7 @@ class shortcutManager
     */
     public function attachments_with_shortcut(){
         global $wpdb;
+        $str_permalinks = '';
         $i              = 0;
         $args           = array(
             'post_type'  => 'page',
