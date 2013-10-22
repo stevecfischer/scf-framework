@@ -357,3 +357,21 @@ if( getActiveCPT( "TESTIMONIAL_CPT" ) ){
     );
     $testimonial      = new wfcfw($testimonial_args);
 }
+/**
+* Add shortcode help in the editor help
+* - wfc_sitemap
+* - wfc_atoz
+*
+*/
+function custom_help_page() {
+  add_filter('contextual_help','custom_page_help');
+}
+function custom_page_help($help) {
+   // echo $help;
+    $help.="<h5>WFC Shortcodes</h5>";
+    $help.="<p>- [wfc_sitmap] : displays a sitemap, parameters ?</p>";
+    $help.="<p>- [wfc_atoz] : displays all pages from A to Z</p>";
+    return $help;
+}
+add_action('load-page-new.php','custom_help_page');
+add_action('load-page.php','custom_help_page');

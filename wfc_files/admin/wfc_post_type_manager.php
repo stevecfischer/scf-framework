@@ -1,21 +1,27 @@
 <?php
     /**
+     * Include the custome metaboxes to go with our custom types
+     */
+    include_once('wfc_meta_box_cases.php');
+
+    /**
+     * Class to add new posttype easly
      *
      * @package scf-framework
      * @author Steve (6/11/2012)
      */
-    /*
-    ** The Class
-    */
-    include_once('wfc_meta_box_cases.php');
-    /*
-    **================================
-    **================================
-    */
     class wfcfw
     {
+        /**
+         * @var array $new_cpts
+         */
         private $new_cpts = array();
 
+        /**
+         * Constructor, launch everyting
+         * 
+         * @param array $obj an array of parameters to build the new CPT
+         */
         public function __construct( $obj ){
             $this->new_cpts[] = $obj;
             if( isset($obj['meta_box']) ){
@@ -24,6 +30,12 @@
             $this->add_cpt_to_admin_menu();
         }
 
+        /**
+         * Add the new CPT to the admin panel
+         * Register the posttype
+         * Register the taxonomy
+         * 
+         */
         function add_cpt_to_admin_menu(){
             $vars = $this->new_cpts;
             foreach( $vars as $var ){
@@ -93,23 +105,30 @@
         }
     }
 
-    /*EOC*/
-    /*
-    ===============================
-    DISPLAY FEATURED IMAGE IN ADMIN LIST VIEW FOR CPT'S
-
-     * @since 2.2
-    ===============================
+    /**
+    * Add featured image in admin list view for custom CPT's
+    *
+    * @param array $cols old columns
+    * @return array $cols new columns
+    * @since 2.2
     */
     function wfc_add_post_thumbnail_column( $cols ){
         $cols['wfc_post_thumb'] = __( 'Featured' );
         return $cols;
     }
-
     add_filter( 'manage_campaign_posts_columns', 'wfc_add_post_thumbnail_column', 5 );
     add_filter( 'manage_news_posts_columns', 'wfc_add_post_thumbnail_column', 5 );
     add_filter( 'manage_homeboxes_posts_columns', 'wfc_add_post_thumbnail_column', 5 );
     add_filter( 'manage_subpagebanner_posts_columns', 'wfc_add_post_thumbnail_column', 5 );
+
+    /**
+    * Displays featured image in admin list view for custom CPT's
+    * Called during the loop to display
+    *
+    * @param array $col the column currently parsed
+    * @param integer $id id of the post
+    * @since 2.2
+    */
     function wfc_display_post_thumbnail_column( $col, $id ){
         switch( $col ){
             case 'wfc_post_thumb':

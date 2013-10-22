@@ -1,15 +1,27 @@
 <?php
     /**
+     * Checks the browser and diplays alerts
      *
      * @package scf-framework
      * @author Steve
      * @since 3/12/13
+     */
+
+
+    /**
+     * Constants
      */
     define('WFC_MINUTE_IN_SECONDS', 60);
     define('WFC_HOUR_IN_SECONDS', 60 * WFC_MINUTE_IN_SECONDS);
     define('WFC_DAY_IN_SECONDS', 24 * WFC_HOUR_IN_SECONDS);
     define('WFC_WEEK_IN_SECONDS', 7 * WFC_DAY_IN_SECONDS);
     define('WFC_YEAR_IN_SECONDS', 365 * WFC_DAY_IN_SECONDS);
+
+    /**
+     * Checks if a wfc_browser_check exists
+     * If empty, fill it in the footer 
+     * 
+     */
     function wfc_cookie_management(){
         if( !isset($_COOKIE['wfc_browser_check']) ){
             return;
@@ -18,9 +30,13 @@
             add_action( 'wp_footer', 'wfc_check_browser_version' );
         }
     }
-
     wfc_cookie_management();
-    // Display Browser Nag Meta Box
+
+    /**
+     * Applies filter and displays an alert 
+     * if the browser is too old or insecure. 
+     * 
+     */
     function wfc_dashboard_browser_nag(){
         $notice   = '';
         $response = wfc_check_browser_version();
@@ -163,4 +179,3 @@
         }
     }
 
-//print_r($response);

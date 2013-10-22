@@ -1,11 +1,20 @@
 <?php
     /**
-     *
+     * [wfc_sitemap] shortcode
+     * 
      * @package scf-framework
      * @author Steve (08/16/2012)
-     * @added since 2.3
+     * @since since 2.3
      */
-    //@sftodo: this is not a DRY method.  It gets used in Menu Walkers, Custom Nav Widget, etc
+
+    /**
+     * Fix url to include shortcuts
+     *  
+     * @author Thibault Miclo
+     * @since 5.2
+     * @param integer $id id of the element
+     * @return string $url correct url
+     */
     function Wfc_fix_sitemap_url( $ancestor_id ){
         $short_cut     = get_post_meta( $ancestor_id, 'wfc_page_type_shortcut', true );
         if(intval($short_cut)>0)
@@ -19,13 +28,7 @@
                     $short_cut=get_post_meta( $ancestor_id, 'wfc_page_external_link', true );
                 break;
                 case 3:
-                    $short_cut=wp_get_attachment_url(get_post_meta( $ancestor_id, 'wfc_page_existing_images', true ));
-                break;
-                case 4:
                      $short_cut=wp_get_attachment_url(get_post_meta( $ancestor_id, 'wfc_page_existing_pdfs', true ));
-                break;
-                case 5:
-                    $short_cut =get_permalink(get_post_meta( $ancestor_id, 'wfc_page_existing_posts', true ));
                 break;
             }
             return $short_cut;
@@ -34,14 +37,25 @@
             return get_permalink( $ancestor_id );
     }
 
+    /**
+     * get all ancestor pages, pages with no post parent from wordpress database
+     * 
+     * @global $wpdb
+     * @return object $result a wordpress sql result
+     */
     function wfc_get_ancestors(){
-        //get all ancestor pages, pages with no post parent from wordpress database
         global $wpdb;
         $result =
             $wpdb->get_results( "SELECT ID, post_title, guid FROM $wpdb->posts WHERE post_type = 'page' AND post_parent = 0 AND post_status = 'publish' ORDER BY menu_order " );
         return $result;
     }
 
+    /**
+     * Build the HTML for the sitemap
+     * 
+     * @param array $atts attributes sent through the shortcode
+     * @return string $html html to be displayed instead of the shortcode
+     */
     function wfc_get_sitemap( $atts ){
         extract(
             shortcode_atts(
@@ -108,10 +122,19 @@
         }
         return $return;
     }
-
     add_shortcode( 'wfc_sitemap', 'wfc_get_sitemap' );
-    class Wfc_Sitemap_Walker
-        extends Walker_page
+
+    /**
+     * Class to walk through each page and display them in a list
+     * 
+     * @param $output
+     * @param $page
+     * @param $depth
+     * @param $args
+     * @param $current_page
+     * @return string $html $output + additional html
+     */
+    class Wfc_Sitemap_Walker extends Walker_page
     {
         function start_el( &$output, $page, $depth, $args, $current_page ){
             if( $depth ){
@@ -149,13 +172,7 @@
                         $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
                     break;
                     case 3:
-                        $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_images', true ));
-                    break;
-                    case 4:
                          $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true ));
-                    break;
-                    case 5:
-                        $short_cut =get_permalink(get_post_meta( $page->ID, 'wfc_page_existing_posts', true ));
                     break;
                 }
             }

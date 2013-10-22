@@ -119,13 +119,7 @@
                         $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
                     break;
                     case 3:
-                        $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_images', true ));
-                    break;
-                    case 4:
                          $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true ));
-                    break;
-                    case 5:
-                        $short_cut =get_permalink(get_post_meta( $page->ID, 'wfc_page_existing_posts', true ));
                     break;
                 }
             }

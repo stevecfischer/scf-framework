@@ -1,6 +1,8 @@
     <?php
         /**
-         *
+         * Class to build custom metabox easly
+         * On the edit pages
+         * 
          * @package scf-framework
          * @author Steve (6/11/2012)
          */
@@ -16,7 +18,11 @@
             private $_cpt = "";
 
             /**
-             * @param $obj
+             * Constructor
+             * Add all the necessary actions
+             * And clean the parameters
+             * 
+             * @param array $obj a metabox to build
              */
             public function __construct( $obj ){
                 $this->_cpt                                                              = strtolower( $obj['cpt'] );
@@ -26,9 +32,10 @@
             }
 
             /**
-             * @param $term
-             *
-             * @return string
+             * Clean parameters
+             * 
+             * @param string $term term you want to clean
+             * @return string cleaned term with correct name
              */
             public function clean_handles( $term ){
                 $field_id_cleaning = preg_replace( "/[^A-Za-z0-9 ]/", '', trim( $term ) );
@@ -37,7 +44,11 @@
             }
 
             /**
-             * @param $var
+             * Echo the correct HTML code for
+             * each type of meta box
+             * 
+             * @global $post
+             * @param array $var all the metabox options
              */
             public function types_meta_box( $var ){
                 global $post;
@@ -118,9 +129,9 @@
                 }
             }
 
-            //EOF
             /**
-             *
+             * Add the metabox in the edit page
+             * 
              */
             public function register_meta_box(){
                 $vars = $this->new_meta_boxes;
@@ -137,9 +148,9 @@
                 }
             }
 
-            //EOF
             /**
-             * @param $post_obj
+             * Displays the content of each metaboxes added
+             * @param object $post_obj a wordpress post
              */
             public function display_meta_box_content( $post_obj ){
                 $vars              = $this->new_meta_boxes;
@@ -152,9 +163,11 @@
                 }
             }
 
-            //EOF
             /**
-             * @return mixed
+             * Saves the metabox content when you save the page
+             * 
+             * @return integer $post_id id of the post
+             * @return boolean false if saving fails, else true
              */
             public function save_meta_box(){
                 global $post;
@@ -199,5 +212,3 @@
                 return true;
             }
         }
-
-        //EOC

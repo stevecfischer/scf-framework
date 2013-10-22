@@ -1,12 +1,8 @@
 <?php
-    /*
-    ===============================
-    CREATE DISCLAIMER BOX
-    scf
-
-    CREATE DISCLAIMER BOX ---------
-    -------------------------------
-    ===============================
+    /**
+    * Creates a disclamer with JS to prevent user modifications
+    * in the plugins page
+    *
     */
     function wfc_show_disclaimer(){
         ?>
@@ -21,16 +17,32 @@
         </script>
     <?php
     }
-
     add_action( 'admin_footer-plugins.php', 'wfc_show_disclaimer' );
+
+    /**
+     * Class to manage the seal
+     * Add a seal on the plugins page
+     * It can be broke by the user and it sends an email to WFC
+     */
     class Wfc_Plugin_Seal
     {
+        /**
+         * Constructor
+         * Initialize the plugin
+         */
         function Wfc_Plugin_Seal(){
             add_action( 'admin_init', array(&$this, 'Wfc_Admin_Init') );
             add_action( 'views_plugins', array(&$this, 'Wfc_Get_Seal_Form') );
             //add_filter( 'wp_mail', array( &$this, 'hijack_mail' ), 1 );
         }
 
+        /**
+         * Receive the form and do some verifications
+         * Then update the seal status 
+         * And send the email
+         * 
+         * @global $current_user
+         */ 
         function Wfc_Admin_Init(){
             global $current_user;
             $wfc_plugin_seal         =
@@ -57,24 +69,43 @@
             }
         }
 
+        /**
+         * Creates the seal into the website options
+         */
         public function Wfc_Create_Seal(){
             add_option( 'wfc_plugin_seal' );
         }
-
+        /**
+         * Gives the current state of the seal
+         * - 0 if the seal is still in place
+         * - >0, the id of the user who broke the seal
+         * 
+         * @return intger $state seal's state
+         */
         public function Wfc_Read_Seal(){
             return get_option( 'wfc_plugin_seal' );
         }
-
+        /**
+         * Updates the value of the seal
+         * 
+         * @param intger $user id of the user
+         */
         public function Wfc_Update_Seal( $user ){
             update_option( 'wfc_plugin_seal', $user->ID );
         }
-
+        /**
+         * Deletes the seal (NOT USED)
+         */
         public function Wfc_Delete_Seal(){
         }
-
+        /**
+         * Checks if the seal is still present (NOT USED)
+         */
         public function Wfc_Check_Seal(){
         }
-
+        /**
+         * Displays the HTML form for the seal
+         */
         public function Wfc_Get_Seal_Form(){
             ?>
             <h3>Plugin Disclaimer</h3>
@@ -94,6 +125,11 @@
             die();
         }
 
+        /**
+         * Send email to Steve to notify him that a seal has been broken
+         * With infos, date, time, user
+         * 
+         */
         private function Wfc_Email_Broken_Seal(){
             $headers[] = 'From: Website Name <me@example.net>';
             $headers[] = 'Cc: steve fischer <steve.fischer@webfullcircle.com>';
@@ -104,5 +140,7 @@
         }
     }
 
-    // Instantiate the class
+    /**
+     * Instanciate the class to load the plugin into the framework
+     */
     $WfcPluginSeal = new Wfc_Plugin_Seal();
