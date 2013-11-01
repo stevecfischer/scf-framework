@@ -50,7 +50,6 @@ define('IGNORE',serialize(array('.gitattributes','.gitignore','README.md','READM
 * 
 * @since 1.0
 */
-include 'wfc_update_functions.php';
 require_once WFC_ADM.'/monitor.class.php'; //Monitor class
 require_once WFC_ADM.'/grepo.class.php'; //GRepo Class
 /**
