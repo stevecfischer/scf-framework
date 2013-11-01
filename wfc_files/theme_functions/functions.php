@@ -34,7 +34,7 @@
         'cpt'       => 'Campaign' /* CPT Name */,
         'menu_name' => 'Campaign' /* Overide the name above */,
         'meta_box'  => array(
-            'title'     => 'Campaing Meta Info',
+            'title'     => 'Campaign Meta Info',
             'new_boxes' => array(
                 array(
                     'field_title' => 'Link to URL: ',
