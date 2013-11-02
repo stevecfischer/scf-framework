@@ -5,6 +5,14 @@
      * @author Steve (7/17/2013)
      */
     require_once('wfc_files/wfc_config/wfc_config.php');
+
+    /*
+    === Add theme specific functions below.
+    === If you feel you need to edit the framework files consult a manager first.
+    */
+
+
+
     /*
     ===============================
     FRAMEWORK SETUP
@@ -50,10 +58,7 @@
         ),
     );
     $campaign_meta_boxes = new wfc_meta_box_class($campaign_meta_boxes_args);
-    /*
-    === Add theme specific functions below.
-    === If you feel you need to edit the framework files consult a manager first.
-    */
+
     add_image_size( 'spotlight-thumb', 255, 131, true );
     register_nav_menu( 'Quick Links', 'Quick Links' );
     add_action( 'wp_enqueue_scripts', 'wfc_js_scripts' );
