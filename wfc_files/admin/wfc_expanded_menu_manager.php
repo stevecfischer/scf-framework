@@ -78,7 +78,7 @@ class shortcutManager
         {
             case 1://Page
                 $exclude = $this->get_shortcut_pages();
-                $exclude = array_merge($exclude,array($_REQUEST['post'])); //Exclude edited page to avoid loops
+                $exclude = array_merge($exclude,array(@intval($_REQUEST['post']))); //Exclude edited page to avoid loops
                 $args  = array(
                     'post__not_in'   => $exclude,
                     'post_type'      => 'page',
@@ -227,7 +227,7 @@ class shortcutManager
                 ),
                  array(
                     'key'     => 'wfc_page_existing_pages',
-                    'value'   => intval($_GET['post']),//page
+                    'value'   => @intval($_GET['post']),//page
                     'compare' => '='
                 )
             )
@@ -268,7 +268,7 @@ class shortcutManager
                 ),
                  array(
                     'key'     => 'wfc_page_existing_pdfs',
-                    'value'   => intval($_GET['post']),
+                    'value'   => @intval($_GET['post']),
                     'compare' => '='
                 )
             )

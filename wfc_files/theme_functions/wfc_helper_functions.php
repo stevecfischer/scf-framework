@@ -199,5 +199,7 @@ function add_edit_link($content)
         return $content.'<br /><br /><a href="'.admin_url().'post.php?post='.get_the_ID().'&action=edit">Edit this page</a>';
     if(current_user_can('edit_posts') && is_post())
         return $content.'<br /><br /><a href="'.admin_url().'post.php?post='.get_the_ID().'&action=edit">Edit this post</a>';
+    else
+        return $content;
 }
 add_filter('the_content','add_edit_link');
