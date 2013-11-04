@@ -6,8 +6,6 @@
      * @since 2.2
      */
     require_once(WFC_ADM.'/Wfc_Admin_Class.php');
-
-
     /**
      * Require each parts of the framework
      *
@@ -104,9 +102,9 @@
         echo '<style type="text/css">.login h1 a{background-size:250px 49px !important;}h1 a { background-image:url('.
             WFC_ADM_IMG_URI.'/wfc_logo.png) !important;}</style>';
         echo '<script type="text/javascript">
-  jQuery(function($){
-     $("a:first").addClass("external").attr({ target: "_blank" });
-  });</script>';
+            jQuery(function($){
+                $("a:first").addClass("external").attr({ target: "_blank" });
+            });</script>';
     }
 
     add_action( 'login_head', 'wfc_login_logo' );
@@ -277,22 +275,11 @@
      */
     function getActiveCPT( $cpt, $deprecated = '' ){
         global $wfc_admin;
-        print_r($wfc_admin);
-
+        print_r( $wfc_admin );
         if( empty($deprecated) ){
-            $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.1' );
+            $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.1', 'Current method to use: $wfc_admin->is_active_cpt($cpt)' );
         }
-
-        return $wfc_admin->is_active_cpt($cpt);
-
-        /*$activeCPT = get_option( 'wfc_activate_cpt' );
-        if( !is_array( $activeCPT ) ){
-            return false;
-        } elseif( in_array( $cpt, $activeCPT ) ){
-            return true;
-        } else{
-            return false;
-        }*/
+        return $wfc_admin->is_active_cpt( $cpt );
     }
 
     /**
@@ -337,21 +324,6 @@
      * @since 4.0
      */
     function Wfc_framework_variables(){
-        /**
-         * Framework Variables
-         *      this plugin allows js to use php definitions.
-         *      I created it to help with ajax, image, and file paths.
-         *      Issues almost always arise when working in between local, dev, and live
-         *      enviroments.
-         *
-         *      Example:
-         *      jQuery(function($){
-         *          var wfcDefines = $('body').wfc_fw_variables();
-         *          console.log(wfcDefines.define('wfc_theme_name'));
-         *      });
-         *
-         *
-         */
         ?>
         <script type="text/javascript">
             (function ($) {
