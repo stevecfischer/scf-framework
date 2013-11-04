@@ -83,7 +83,7 @@
     class Wfc_Custom_Nav_Walker
         extends Walker_page
     {
-        function start_el( &$output, $page, $depth, $args, $current_page ){
+        function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ){
             if( $depth ){
                 $indent = str_repeat( "\t", $depth );
             } else{
