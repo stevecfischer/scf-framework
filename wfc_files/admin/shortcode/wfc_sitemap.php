@@ -1,7 +1,7 @@
 <?php
     /**
      * [wfc_sitemap] shortcode
-     * 
+     *
      * @package scf-framework
      * @author Steve (08/16/2012)
      * @since since 2.3
@@ -9,7 +9,7 @@
 
     /**
      * Fix url to include shortcuts
-     *  
+     *
      * @author Thibault Miclo
      * @since 5.2
      * @param integer $id id of the element
@@ -39,7 +39,7 @@
 
     /**
      * get all ancestor pages, pages with no post parent from wordpress database
-     * 
+     *
      * @global $wpdb
      * @return object $result a wordpress sql result
      */
@@ -52,7 +52,7 @@
 
     /**
      * Build the HTML for the sitemap
-     * 
+     *
      * @param array $atts attributes sent through the shortcode
      * @return string $html html to be displayed instead of the shortcode
      */
@@ -126,7 +126,7 @@
 
     /**
      * Class to walk through each page and display them in a list
-     * 
+     *
      * @param $output
      * @param $page
      * @param $depth
@@ -136,7 +136,7 @@
      */
     class Wfc_Sitemap_Walker extends Walker_page
     {
-        function start_el( &$output, $page, $depth, $args, $current_page ){
+        function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ){
             if( $depth ){
                 $indent = str_repeat( "\t", $depth );
             } else{
