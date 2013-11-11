@@ -146,9 +146,14 @@
 
             <form method="post">
                 <p class="choices">
-                    Header.php
-                    <br/> <!-- Required since we check if header.php exists to know if we need to build out the theme -->
-                    Footer.php : <input type="checkbox" name="footer.php"/><br/>
+                The following files will be created automatically:<br />
+                    Header.php <br />
+                    Index.php <br/>
+                    Style.css <br/>
+                    Functions.php <br/>
+                    <br/> 
+                <!-- Required since we check if header.php exists to know if we need to build out the theme -->
+                You can choose to build the following files or not:<br />
                     Page.php : <input type="checkbox" name="page.php"/><br/>
                     Frontpage.php : <input type="checkbox" name="frontpage.php"/><br/>
                     Search.php : <input type="checkbox" name="search.php"/><br/>
@@ -156,9 +161,6 @@
                     Footer.php : <input type="checkbox" name="archive.php"/><br/>
                     Single.php : <input type="checkbox" name="single.php"/><br/>
                     Editor-Style.css : <input type="checkbox" name="editor-style.css"/><br/>
-                    Index.php : <br/>
-                    Style.css : <br/>
-                    Functions.php : <br/>
                 </p>
                 <p class="submit">
                     <input name="build" type="submit" value="Build Out Theme"/>
