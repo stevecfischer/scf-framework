@@ -5,21 +5,11 @@
      * @author Steve
      * @date 7/20/13
      */
-    // @sftodo: this file will create all theme files Ex: index.php, header.php,footer.php, page.php etc etc.  I foresee a admin form will check boxes for the different files/modules to create.  the main reason for this is to utilize Git more.  Specifically in the case of bugs.  currently i have to make the bug fix twice.  first is in the active project and second is in git. with getting this class setup i'll be able to make the fix in git and then update the active project.
+
     /*
-     * @sftodo: i should really integrate this with post types, meta boxes. Ex user enters custom post type like staff in form field and this class will build required files.  like staff-archive.php, dept-taxonomy.php, staff-single.php etc etc.
+     * @sftodo: We should really integrate this with post types, meta boxes. Ex user enters custom post type like staff in form field and this class will build required files.  like staff-archive.php, dept-taxonomy.php, staff-single.php etc etc.
      */
-    /*
-     * @sftodo: phase 1: get this class to create the exact files in current package.
-     *
-     * Completed 7/24/13
-     */
-    /*
-     * @sftodo: phase 2: create checkbox form for user to select what files they need.
-     */
-    /*
-     * @sftodo: phase 3: create input form for user to type what files they need.
-     */
+
     $themename = get_bloginfo( 'name' );
     $shortname = "wfc_";
     function Wfc_Build_Theme_Page(){
@@ -77,8 +67,11 @@
                     <?php wp_head(); ?>
                 </head>
                 <body <?php body_class(); ?>>';
-            $footer       = '</div><!-- //#wrapper -->
-                <div id="footer">
+            $footer       = '<!-- FOOTER -->
+                <footer>
+                    <p class="pull-right">
+                        <a href="#">Back to top</a>
+                    </p>
                     <div id="wfc-footer-links">
                         <p>
                             <a target="_blank" href="http://www.webfullcircle.com">Internet Marketing</a>
@@ -86,12 +79,15 @@
                             <a target="_blank" href="http://www.webfullcircle.com">Website Design</a>
                         </p>
                     </div>
-                    <!-- //#wfc-footer-links -->
-                </div><!-- //#footer -->
-                </div><!-- //#container -->
+                </footer>
+                </div>
+                <!-- /.container -->
+                <!-- Bootstrap core JavaScript
+                ================================================== -->
+                <!-- Placed at the end of the document so the pages load faster -->
                 <?php wp_footer(); ?>
                 </body>
-                </html>';
+                </html';
             $page         = '
                 <?php get_header(); ?>
                 <?php Wfc_Core_Page_Loop(); ?>
@@ -132,6 +128,7 @@
             $keys                   = str_replace( '_', '.', $keys );
             $_REQUEST               = array_combine( explode( ',', $keys ), array_values( $_REQUEST ) );
             $_REQUEST['header.php'] = true;
+            $_REQUEST['footer.php'] = true;
             foreach( $theme_array as $page ){
                 if( $_REQUEST[$page['file']] ){
                     echo WFC_PT.'../'.$page['file'].' - Created<br />';
@@ -146,19 +143,13 @@
 
             <form method="post">
                 <p class="choices">
-                    Header.php
-                    <br/> <!-- Required since we check if header.php exists to know if we need to build out the theme -->
-                    Footer.php : <input type="checkbox" name="footer.php"/><br/>
                     Page.php : <input type="checkbox" name="page.php"/><br/>
-                    Frontpage.php : <input type="checkbox" name="frontpage.php"/><br/>
+                    Front-page.php : <input type="checkbox" name="front-page.php"/><br/>
                     Search.php : <input type="checkbox" name="search.php"/><br/>
                     404.php : <input type="checkbox" name="404.php"/><br/>
-                    Footer.php : <input type="checkbox" name="archive.php"/><br/>
+                    Archive.php : <input type="checkbox" name="archive.php"/><br/>
                     Single.php : <input type="checkbox" name="single.php"/><br/>
                     Editor-Style.css : <input type="checkbox" name="editor-style.css"/><br/>
-                    Index.php : <br/>
-                    Style.css : <br/>
-                    Functions.php : <br/>
                 </p>
                 <p class="submit">
                     <input name="build" type="submit" value="Build Out Theme"/>

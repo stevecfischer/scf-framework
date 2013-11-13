@@ -79,11 +79,31 @@
         }
     }
 
+    /**
+     * Filter the "Thank you" text displayed in the admin footer. If the current version is out of date display it for developer to reference.
+     *
+     * @since 4.0
+     * @param string The content that will be printed.
+     */
     function Wfc_Developer_Footer( $text ){
-        $text = '<span id="footer-thankyou" class="wfc-admin-footer">WFC Developer Logged In</span>';
+
+        $cur = get_preferred_from_update_core();
+        $wfc_current_version = '';
+        if ( $cur->response  == 'upgrade' ){
+            global $wp_version;
+            $wfc_current_version = "Current WP ver: " . $wp_version;
+        }
+
+        $text = '<span id="footer-thankyou" class="wfc-admin-footer">WFC Developer Logged In. '.$wfc_current_version.'</span>';
         return $text;
     }
 
+    /**
+     * Filter class for body tag in admin area. Used for WFC background watermark
+     *
+     * @since 4.0
+     * @param string Classes added to body tag.
+     */
     function Wfc_Developer_Body_Class( $classes ){
         $classes .= ' wfc_developer_logged_in ';
         return $classes;
@@ -103,7 +123,7 @@
                 post_name,
                 ID
             FROM
-                $wpdb->posts
+                wfc_posts
             WHERE
                 post_status = 'publish'
             AND post_type = 'page'

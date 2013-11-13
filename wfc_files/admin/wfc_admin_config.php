@@ -5,7 +5,7 @@
      * @author Steve (6/11/2012)
      * @since 2.2
      */
-    require_once(WFC_ADM.'/Wfc_Admin_Class.php');
+    require_once(WFC_ADM.'/wfc_admin_class.php');
     /**
      * Require each parts of the framework
      *
@@ -15,13 +15,15 @@
     require_once(WFC_ADM.'/wfc_post_type_manager.php'); //CPT / Tax / Metabox Class
     require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
-    //require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
+    require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
     require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Small Helper Functions
     require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers
     require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Site Options Panel
     require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Restricted Access Check/Balance
     require_once(WFC_ADM.'/wfc_update_script.php'); //Update from github
     require_once(WFC_THEME_FUNCTIONS.'/build_theme.php'); //Auto theme builder
+    require_once(WFC_THEME_FUNCTIONS.'/Wfc_Autoload_Script_Class.php'); //Auto theme builder
+    require_once(WFC_ADM.'/wfc_admin_hooks.php'); //Auto theme builder
     /**
      * Includes WFC Shortcodes
      *
@@ -254,7 +256,6 @@
      */
     function getActiveCPT( $cpt, $deprecated = '' ){
         global $wfc_admin;
-        print_r( $wfc_admin );
         if( empty($deprecated) ){
             $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.1', 'Current method to use: $wfc_admin->is_active_cpt($cpt)' );
         }
@@ -285,48 +286,3 @@
         </script>
     <?php
     }
-
-    /**
-     * Framework Variables
-     *      this plugin allows js to use php definitions.
-     *      I created it to help with ajax, image, and file paths.
-     *      Issues almost always arise when working in between local, dev, and live
-     *      enviroments.
-     *
-     *      Example:
-     *      jQuery(function($){
-     *          var wfcDefines = $('body').wfc_fw_variables();
-     *          console.log(wfcDefines.define('wfc_theme_name'));
-     *      });
-     *
-     *
-     * @since 4.0
-     */
-    add_action( 'admin_head', 'Wfc_framework_variables' );
-    add_action( 'wp_head', 'Wfc_framework_variables' );
-    function Wfc_framework_variables(){
-        ?>
-        <script type="text/javascript">
-            (function ($) {
-                $.fn.wfc_fw_variables = function () {
-                    var phpDefs = { <?php
-                            echo ' "wfc_site_url" : "'.addslashes(WFC_SITE_URL).'",
-                            "wfc_admin_url" : "'.WFC_ADMIN_URL.'",
-                            "wfc_pt" : "'.addslashes(WFC_PT).'",
-                            "wfc_config" : "'.addslashes(WFC_CONFIG).'",
-                            "wfc_uri" : "'.addslashes(WFC_URI).'",
-                            "wfc_theme_name" : "'.get_option('template').'",
-                            "wfc_adm" : "'.addslashes(WFC_ADM).'" ';
-                        ?> };
-                    return {
-                        phpDefs: phpDefs,
-                        define : function (val) {
-                            return this.phpDefs[val];
-                        }
-                    };
-                };
-            }(jQuery));
-        </script>
-    <?php
-    }
-

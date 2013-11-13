@@ -20,10 +20,10 @@
 * @since 5.2
 */
 /**
-* Configure error reporting 
+* Configure error reporting
 * - E_ALL to debug
 * - E_ALL ^ E_NOTICE ^ E_STRICT in production
-* 
+*
 * @since 1.0
 */
 error_reporting(E_ALL);
@@ -47,11 +47,11 @@ define('IGNORE',serialize(array('.gitattributes','.gitignore','README.md','READM
 * includes the functions used for the update & diffs
 * includes the Monitor class to track time & memory
 * includes the GRepo class to connect to github
-* 
+*
 * @since 1.0
 */
-require_once WFC_ADM.'/monitor.class.php'; //Monitor class
-require_once WFC_ADM.'/grepo.class.php'; //GRepo Class
+require_once WFC_ADM.'/wfc_monitor_class.php'; //Monitor class
+require_once WFC_ADM.'/wfc_grepo_class.php'; //GRepo Class
 /**
 * Check if we still have some calls left in the github api
 * Since the script doesn't use auth, we have 60 calls each hour
@@ -75,7 +75,7 @@ function wfc_callsLeft() {
 * Used to make sure that the last diff has been made less than 1h ago
 *
 * @since 1.0
-* @return string $token 
+* @return string $token
 */
 function wfc_generateToken() {
 	$today=time();
@@ -146,50 +146,50 @@ function wfc_check_diffs() {
 		foreach($tags as $tag) if($tag->name==$loc){
 			$return.='Found : '.$tag->zipball_url.'<br />';
 			$exists=true;
-			 $target_url = $tag->zipball_url;  
-			 $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)'; 
+			 $target_url = $tag->zipball_url;
+			 $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
 			 if(!file_exists(WFC_PT.'../working_directory'))
-				mkdir(WFC_PT.'../working_directory'); 
-			 $file_zip = WFC_PT.'../working_directory/Ver_'.$tag->name.'.zip';  
-			 //echo "<br>Starting<br>Target_url: $target_url";  
-			 //echo "<br>Headers stripped out";  
-			 // make the cURL request to $target_url  
-			 $ch = curl_init();  
-			 $fp = fopen($file_zip, "w+");  
-			 curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  
-			 curl_setopt($ch, CURLOPT_URL,$target_url);  
-			 curl_setopt($ch, CURLOPT_FAILONERROR, true);  
-			 curl_setopt($ch, CURLOPT_HEADER,0);  
-			 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  
-			 curl_setopt($ch, CURLOPT_AUTOREFERER, true);  
-			 curl_setopt($ch, CURLOPT_BINARYTRANSFER,true);  
-			 curl_setopt($ch, CURLOPT_TIMEOUT, 10);  
-			 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
-			 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);   
-			 curl_setopt($ch, CURLOPT_FILE, $fp);  
-			 $page = curl_exec($ch);  
-			 if (!$page) {  
-			   $return.= "<br />cURL error number:" .curl_errno($ch);  
+				mkdir(WFC_PT.'../working_directory');
+			 $file_zip = WFC_PT.'../working_directory/Ver_'.$tag->name.'.zip';
+			 //echo "<br>Starting<br>Target_url: $target_url";
+			 //echo "<br>Headers stripped out";
+			 // make the cURL request to $target_url
+			 $ch = curl_init();
+			 $fp = fopen($file_zip, "w+");
+			 curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+			 curl_setopt($ch, CURLOPT_URL,$target_url);
+			 curl_setopt($ch, CURLOPT_FAILONERROR, true);
+			 curl_setopt($ch, CURLOPT_HEADER,0);
+			 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			 curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+			 curl_setopt($ch, CURLOPT_BINARYTRANSFER,true);
+			 curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+			 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+			 curl_setopt($ch, CURLOPT_FILE, $fp);
+			 $page = curl_exec($ch);
+			 if (!$page) {
+			   $return.= "<br />cURL error number:" .curl_errno($ch);
 			   $return.= "<br />cURL error:" . curl_error($ch);
-			   return $return;  
-			 }  
-			 curl_close($ch);  
-			 //echo "<br />Downloaded file: $target_url";  
-			 // echo "<br />Saved as file: $file_zip";  
-			 // echo "<br />About to unzip ...";  
-			 // Un zip the file  
-			 $zip = new ZipArchive;  
-			   if (! $zip) {  
-			     $return.="<br>Could not make ZipArchive object.";  
-			     return $return; 
-			   }  
-			   if($zip->open("$file_zip") != "true") {  
-			       $return.= "<br>Could not open $file_zip"; 
+			   return $return;
+			 }
+			 curl_close($ch);
+			 //echo "<br />Downloaded file: $target_url";
+			 // echo "<br />Saved as file: $file_zip";
+			 // echo "<br />About to unzip ...";
+			 // Un zip the file
+			 $zip = new ZipArchive;
+			   if (! $zip) {
+			     $return.="<br>Could not make ZipArchive object.";
+			     return $return;
+			   }
+			   if($zip->open("$file_zip") != "true") {
+			       $return.= "<br>Could not open $file_zip";
 			       return $return;
-			         }  
-			   $zip->extractTo(WFC_PT.'../working_directory/');  
-			   $zip->close();  
-			 //echo "<br />Unzipped file.<br /><br />"; 
+			         }
+			   $zip->extractTo(WFC_PT.'../working_directory/');
+			   $zip->close();
+			 //echo "<br />Unzipped file.<br /><br />";
 			 //Need to get folder name
 			$folder_name='';
 			if ($handle = opendir(WFC_PT.'../working_directory/')) {
@@ -262,7 +262,7 @@ function wfc_check_diffs() {
 							<form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&update='.$token.'"><input type="submit" value="Update" /></form>';
 				$return.=$missing.$message;
 			}
-			else 
+			else
 				$return.='Unable to find the name of the folder where the old version has been unzipped..<br />';
 		}
 	if(!$exists)
@@ -282,7 +282,7 @@ function wfc_check_diffs() {
 * @return string $result content for the update box
 */
 function wfc_doUpdate() {
-	if(isset($_GET) && !empty($_GET) && $_GET['update']==$token) { 
+	if(isset($_GET) && !empty($_GET) && $_GET['update']==$token) {
 		if(file_exists(WFC_PT.'../working_directory')) {//GO UPDATE
 			$folder_name='';
 			if ($handle = opendir(WFC_PT.'../working_directory')) {
@@ -300,7 +300,7 @@ function wfc_doUpdate() {
 			}
 
 			$path_to_current=WFC_PT.'../wfc_files/';
-						
+
 			$gr = new GRepo(GIT_USER, GIT_REPO);
 			$tags=$gr->getRepoTags();
 			$git=get_git_version();
@@ -310,49 +310,49 @@ function wfc_doUpdate() {
 			foreach($tags as $tag) if($tag->name==$git){
 				$return.='Found : '.$tag->zipball_url.'<br />';
 				$exists=true;
-				$target_url = $tag->zipball_url;  
-				$userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)'; 
+				$target_url = $tag->zipball_url;
+				$userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
 				if(!file_exists(WFC_PT.'../working_directory'))
-					mkdir(WFC_PT.'../working_directory'); 
-				$file_zip = WFC_PT.'../working_directory/Ver_'.$tag->name.'.zip';  
-				//echo "<br>Starting<br>Target_url: $target_url";  
-				//echo "<br>Headers stripped out";  
-				// make the cURL request to $target_url  
-				$ch = curl_init();  
-				$fp = fopen($file_zip, "w+");  
-				curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);  
-				curl_setopt($ch, CURLOPT_URL,$target_url);  
-				curl_setopt($ch, CURLOPT_FAILONERROR, true);  
-				curl_setopt($ch, CURLOPT_HEADER,0);  
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  
-				curl_setopt($ch, CURLOPT_AUTOREFERER, true);  
-				curl_setopt($ch, CURLOPT_BINARYTRANSFER,true);  
-				curl_setopt($ch, CURLOPT_TIMEOUT, 10);  
-				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);   
-				curl_setopt($ch, CURLOPT_FILE, $fp);  
-				$page = curl_exec($ch);  
-				if (!$page) {  
-				   $return.= "<br />cURL error number:" .curl_errno($ch);  
-				   $return.= "<br />cURL error:" . curl_error($ch);  
-				   return $return;  
-				}  
-				curl_close($ch);  
-				 //echo "<br />Downloaded file: $target_url";  
-				 // echo "<br />Saved as file: $file_zip";  
-				 // echo "<br />About to unzip ...";  
-				 // Un zip the file  
-				$zip = new ZipArchive;  
-				if (! $zip) {  
-				    $return.="<br>Could not make ZipArchive object.";  
-				    return $return; 
-				}  
-				if($zip->open("$file_zip") != "true") {  
-					$return.= "<br>Could not open $file_zip";  
+					mkdir(WFC_PT.'../working_directory');
+				$file_zip = WFC_PT.'../working_directory/Ver_'.$tag->name.'.zip';
+				//echo "<br>Starting<br>Target_url: $target_url";
+				//echo "<br>Headers stripped out";
+				// make the cURL request to $target_url
+				$ch = curl_init();
+				$fp = fopen($file_zip, "w+");
+				curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+				curl_setopt($ch, CURLOPT_URL,$target_url);
+				curl_setopt($ch, CURLOPT_FAILONERROR, true);
+				curl_setopt($ch, CURLOPT_HEADER,0);
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+				curl_setopt($ch, CURLOPT_BINARYTRANSFER,true);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+				curl_setopt($ch, CURLOPT_FILE, $fp);
+				$page = curl_exec($ch);
+				if (!$page) {
+				   $return.= "<br />cURL error number:" .curl_errno($ch);
+				   $return.= "<br />cURL error:" . curl_error($ch);
+				   return $return;
+				}
+				curl_close($ch);
+				 //echo "<br />Downloaded file: $target_url";
+				 // echo "<br />Saved as file: $file_zip";
+				 // echo "<br />About to unzip ...";
+				 // Un zip the file
+				$zip = new ZipArchive;
+				if (! $zip) {
+				    $return.="<br>Could not make ZipArchive object.";
+				    return $return;
+				}
+				if($zip->open("$file_zip") != "true") {
+					$return.= "<br>Could not open $file_zip";
 					return $return;
-				}  
-				$zip->extractTo(WFC_PT.'../working_directory/');  
-				$zip->close(); 
+				}
+				$zip->extractTo(WFC_PT.'../working_directory/');
+				$zip->close();
 			}
 			$folder_name='';
 			if ($handle = opendir(WFC_PT.'../working_directory')) {
@@ -467,7 +467,7 @@ function get_local_version() {
         while (false !== ($entry = readdir($handle)))if(substr($entry,-3)=='wfc') {
             $name=substr($entry,0,-4);
             $tempvar=explode('_',$name);
-            if($tempvar[0]=='Ver')    
+            if($tempvar[0]=='Ver')
                 return $ver_local=$tempvar[1];
             else
                 return false;
@@ -485,7 +485,7 @@ function get_local_version() {
 * @return string $content content of a file
 */
 function read_file($entry) {
-    return file_get_contents($entry);   
+    return file_get_contents($entry);
 }
 /**
 * Compares 2 versions
@@ -517,7 +517,7 @@ function version_comparee($ver1,$ver2) {
 * lists all the files in a folder and returns them in an array
 * Also lists subfolders files, with relative path
 * Return is : $files[relative/path/to/file]=absolute/path/to/file
-* 
+*
 * @since 1.0
 * @param string $dir path to the dir
 * @param array $exclude files to exclude in the array
@@ -525,23 +525,23 @@ function version_comparee($ver1,$ver2) {
 * @param array $files an array in which datas will be stored
 * @return array $files the param array filled with datas
 */
-function listFolderFilesArr($dir,$exclude=array(),$strip=0,$files){ 
+function listFolderFilesArr($dir,$exclude=array(),$strip=0,$files){
     $ffs = @scandir($dir);
-    foreach($ffs as $ff){ 
-        if(is_array($exclude) and !in_array($ff,$exclude)){ 
-            if($ff != '.' && $ff != '..'){ 
-            if(!is_dir($dir.'/'.$ff)){ 
-                $files[substr(ltrim($dir.'/'.$ff,'./'),$strip)]=ltrim($dir.'/'.$ff,'./'); 
-            }  
-            if(is_dir($dir.'/'.$ff)) $files=listFolderFilesArr($dir.'/'.$ff,$exclude,$strip,$files); 
-            } 
-        } 
-    } 
+    foreach($ffs as $ff){
+        if(is_array($exclude) and !in_array($ff,$exclude)){
+            if($ff != '.' && $ff != '..'){
+            if(!is_dir($dir.'/'.$ff)){
+                $files[substr(ltrim($dir.'/'.$ff,'./'),$strip)]=ltrim($dir.'/'.$ff,'./');
+            }
+            if(is_dir($dir.'/'.$ff)) $files=listFolderFilesArr($dir.'/'.$ff,$exclude,$strip,$files);
+            }
+        }
+    }
     return $files;
-} 
+}
 /**
 * Displays percentage in a colorful way depending on how close it is to 100
-* 
+*
 * @since 1.2
 * @param int $p percentage
 * @return string $str colored percentage

@@ -8,6 +8,7 @@
      * @author Thibault Miclo
      * @version 1.1
      * @package wfc-framework
+     * @subpackage wfc-admin
      * @since 5.2
      */
     class shortcutManager
