@@ -10,6 +10,7 @@
     define('WFC_SITE_URL', get_bloginfo( 'url' ).'/');
     define('WFC_ADMIN_URL', admin_url());
     define('WFC_PT', dirname( __DIR__ ).'/');
+    define('WFC_THEME_ROOT', realpath(__DIR__ . '/../../'));
     define('WFC_CONFIG', WFC_PT.'/wfc_config');
     define('WFC_THEME_FUNCTIONS', WFC_PT.'/theme_functions');
     define('WFC_WIDGETS', WFC_PT.'/widgets');
