@@ -130,7 +130,7 @@
             $_REQUEST['header.php'] = true;
             $_REQUEST['footer.php'] = true;
             foreach( $theme_array as $page ){
-                if( $_REQUEST[$page['file']] ){
+                if( isset($_REQUEST[$page['file']]) ){
                     echo WFC_PT.'../'.$page['file'].' - Created<br />';
                     $fp = fopen( WFC_PT.'../'.$page['file'], "w" );
                     fwrite( $fp, $page['content'] );
@@ -145,17 +145,15 @@
                 <p class="choices">
                 The following files will be created automatically:<br />
                     Header.php <br />
-                    Index.php <br/>
-                    Style.css <br/>
-                    Functions.php <br/>
+                    Footer.php <br />
                     <br/>
                 <!-- Required since we check if header.php exists to know if we need to build out the theme -->
                 You can choose to build the following files or not:<br />
+                    Archive.php : <input type="checkbox" name="archive.php"/><br/>
                     Page.php : <input type="checkbox" name="page.php"/><br/>
-                    Frontpage.php : <input type="checkbox" name="frontpage.php"/><br/>
+                    Front-page.php : <input type="checkbox" name="front-page.php"/><br/>
                     Search.php : <input type="checkbox" name="search.php"/><br/>
                     404.php : <input type="checkbox" name="404.php"/><br/>
-                    Footer.php : <input type="checkbox" name="archive.php"/><br/>
                     Single.php : <input type="checkbox" name="single.php"/><br/>
                     Editor-Style.css : <input type="checkbox" name="editor-style.css"/><br/>
                 </p>
