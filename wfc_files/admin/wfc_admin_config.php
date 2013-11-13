@@ -22,7 +22,7 @@
     require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Restricted Access Check/Balance
     require_once(WFC_ADM.'/wfc_update_script.php'); //Update from github
     require_once(WFC_THEME_FUNCTIONS.'/build_theme.php'); //Auto theme builder
-    require_once(WFC_THEME_FUNCTIONS.'/Wfc_Autoload_Script_Class.php'); //Auto theme builder
+    require_once(WFC_THEME_FUNCTIONS.'/wfc_autoload_script_class.php'); //Auto theme builder
     require_once(WFC_ADM.'/wfc_admin_hooks.php'); //Auto theme builder
     /**
      * Includes WFC Shortcodes
