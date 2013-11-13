@@ -5,7 +5,7 @@
      * @author Steve (6/11/2012)
      * @since 0.1
      */
-    // WFC STANDARD FUNCTIONS //
+    // WFC STANDARD DEFINITIONS //
     // ---------------------- //
     define('WFC_SITE_URL', get_bloginfo( 'url' ).'/');
     define('WFC_ADMIN_URL', admin_url());
