@@ -182,3 +182,38 @@
 .img_shortcut img {
     width:150px;
 }
+.wfc-metabox-checkbox{
+    height: 60px;
+    width: 60px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    z-index: 100;
+    opacity: 0;
+}
+.wfc-input-checkbox label{
+    height: 60px;
+    width: 60px;
+    overflow: hidden;
+    margin: 10px 5px 0;
+    position: relative;
+    display:inline-block;
+}
+input.wfc-metabox-checkbox:checked + img {
+    opacity: 1;
+    background-color: #ED8732;
+}
+input.wfc-metabox-checkbox + img {
+    opacity: 0.25;
+    background-color: transparent;
+}
+.wfc-input-checkbox img {
+    -webkit-transition: opacity 500ms ease;
+    -moz-transition: opacity 500ms ease;
+    -o-transition: opacity 500ms ease;
+    -ms-transition: opacity 500ms ease;
+    transition: opacity 500ms ease;
+}
