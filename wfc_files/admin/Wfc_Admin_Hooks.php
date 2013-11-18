@@ -3,4 +3,3 @@
         do_action('wfc_footer');
     }
 
-//test
