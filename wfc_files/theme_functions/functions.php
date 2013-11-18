@@ -39,7 +39,6 @@
     EXAMPLE OF A CUSTOM POST TYPE WITH CUSTOM META BOX OPTIONS
     ===============================
     */
-    $campaign_meta_boxes = new wfc_meta_box_class($campaign_meta_boxes_args);
     $campaign_meta_boxes_args = array(
         'cpt'       => 'Campaign' /* CPT Name */,
         'menu_name' => 'Campaign' /* Overide the name above */,
@@ -59,7 +58,7 @@
             )
         ),
     );
-
+    $campaign_meta_boxes = new wfc_meta_box_class($campaign_meta_boxes_args);
 
     /**
      * AUTO ENQUEUE ALL JS FILES THAT ARE IN THE JS FOLDER.  TO EXCLUDE A FILE ADD `EXCL` TO THE FILENAME
@@ -68,6 +67,7 @@
      */
     add_action( 'wp_enqueue_scripts', 'wfc_js_scripts' );
     function wfc_js_scripts(){
+        // must do this so jquery loads in the footer.
         if( !is_admin() ){
             wp_deregister_script( 'jquery' );
             wp_register_script( 'jquery', ("http://code.jquery.com/jquery-latest.min.js"), false, "", true );

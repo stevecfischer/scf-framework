@@ -29,8 +29,16 @@
             "desc"    => "Select the CPT you want to activate",
             "id"      => $shortname."activate_cpt",
             "type"    => "checkbox",
-            "options" => array("CAMPAIGN_CPT", "SUBPAGE_BANNER_CPT", "HOME_BOXES_CPT", "NEWS_CPT", "TESTIMONIAL_CPT","PORTFOLIO_CPT"),
-            "std"     => "CAMPAIGN_CPT"
+            "options" => array(
+                "steve" => "EXAMPLE_CPT",
+                "CAMPAIGN_CPT",
+                "SUBPAGE_BANNER_CPT",
+                "HOME_BOXES_CPT",
+                "NEWS_CPT",
+                "TESTIMONIAL_CPT",
+                "PORTFOLIO_CPT"
+            ),
+            "std"     => "EXAMPLE_CPT"
         ),
         array(
             "name"    => "WFC Client Admin menu",
@@ -69,7 +77,6 @@
             "type" => "section"
         ),
         array("type" => "open"),
-
         array(
             "name" => "Easter Egg Video",
             "desc" => "enter url to video",
@@ -84,9 +91,7 @@
     );
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
-
         $themename1 = !empty($themename) ? $themename : "Theme Settings";
-
         if( isset($_GET['page']) && $_GET['page'] == basename( __FILE__ ) ){
             if( isset($_REQUEST['action']) && 'save' == $_REQUEST['action'] ){
                 foreach( $options as $value ){
@@ -117,14 +122,13 @@
     function Wfc_Panel(){
         global $themename, $shortname, $options;
         $themename1 = !empty($themename) ? $themename : "Theme";
-
         $i = 0;
         if( isset($_REQUEST['saved']) && $_REQUEST['saved'] ){
-            echo'<div id="message" class="updated fade"><p><strong>'.$themename.
+            echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings saved.</strong></p></div>';
         }
         if( isset($_REQUEST['reset']) && $_REQUEST['reset'] ){
-            echo'<div id="message" class="updated fade"><p><strong>'.$themename.
+            echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings reset.</strong></p></div>';
         }
         ?>
@@ -201,11 +205,10 @@
                         <?php foreach( $value['options'] as $option ){ ?>
                             <label>
                                 <?php //print_r(get_option( $value['id'] )); ?>
+                                <?php $checked = ""; ?>
                                 <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
                                     <?php if( in_array( $option, get_option( $value['id'] ) ) ){
                                         $checked = "checked=\"checked\"";
-                                    } else{
-                                        $checked = "";
                                     } ?>
                                 <?php } ?>
                                 <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $option; ?>" <?php echo $checked; ?> />
@@ -260,4 +263,130 @@
             echo $wfc_option;
             echo '</style>';
         }
+    }
+
+    /* Example of all Custom Metabox Options */
+    if( getActiveCPT( "EXAMPLE_CPT" ) ){
+        $campaign_module_args = array(
+            'cpt'       => 'Example' /* CPT Name */,
+            'menu_name' => 'Example Menu Overide' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $campaign_module      = new wfcfw($campaign_module_args);
+        $campaign_meta_boxes_args = array(
+            'cpt'      => 'example' /* CPT Name */,
+            'meta_box' => array(
+                'title'     => 'Test all Meta Box Options',
+                'new_boxes' => array(
+                    array(
+                        'field_title' => 'Text Test: ',
+                        'type_of_box' => 'text',
+                        'desc'        => 'Testing Text Field Notes', /* optional */
+                    ),
+                    array(
+                        'field_title' => 'Textarea Test: ',
+                        'type_of_box' => 'textarea',
+                        'desc'        => 'Testing Description Textarea Field Notes', /* optional */
+                    ),
+                    array(
+                        'field_title' => 'Radio Test: ',
+                        'type_of_box' => 'radio',
+                        'options'     => array(
+                            'one'   => "<img src='http://lorempixel.com/75/75/nightlife/5' />",
+                            'two'   => '222',
+                            'three' => '333'
+                        ), /* required */
+                    ),
+                    array(
+                        'field_title' => 'Checkbox Test: ',
+                        'type_of_box' => 'checkbox',
+                        'options'     => array(
+                            'one'   => "<img src='http://lorempixel.com/75/75/nightlife/1' />",
+                            'two'   => "<img src='http://lorempixel.com/75/75/nightlife/2' />",
+                            'three'   => "<img src='http://lorempixel.com/75/75/nightlife/3' />"
+                        ),
+                    ),
+                    array(
+                        'field_title' => 'Select Dropdown Test: ',
+                        'type_of_box' => 'select',
+                        'options'     => array('one' => '111', 'two' => '222', 'three' => '333'), /* required */
+                    ),
+                    array(
+                        'field_title' => 'Wysiwyg Test: ',
+                        'type_of_box' => 'wysiwyg',
+                    ),
+                )
+            ),
+        );
+        $campaign_meta_boxes      = new wfc_meta_box_class($campaign_meta_boxes_args);
+    }
+    if( getActiveCPT( "CAMPAIGN_CPT" ) ){
+        $campaign_module_args = array(
+            'cpt'       => 'Campaign' /* CPT Name */,
+            'menu_name' => 'Campaign' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $campaign_module      = new wfcfw($campaign_module_args);
+    }
+    if( getActiveCPT( "SUBPAGE_BANNER_CPT" ) ){
+        $subpage_banner_args = array(
+            'cpt'       => 'Subpage Banner' /* CPT Name */,
+            'menu_name' => 'Subpage Banner' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $subpage_banner      = new wfcfw($subpage_banner_args);
+    }
+    if( getActiveCPT( "NEWS_CPT" ) ){
+        $news_cpt_args = array(
+            'cpt'       => 'News' /* CPT Name */,
+            'menu_name' => 'News' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $news_cpt      = new wfcfw($news_cpt_args);
+    }
+    if( getActiveCPT( "HOME_BOXES_CPT" ) ){
+        $home_boxes_module_args = array(
+            'cpt'       => 'Home Page Boxes' /* CPT Name */,
+            'menu_name' => 'Home Page Boxes' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $home_boxes_module      = new wfcfw($home_boxes_module_args);
+    }
+    if( getActiveCPT( "TESTIMONIAL_CPT" ) ){
+        $testimonial_args = array(
+            'cpt'       => 'Testimonial' /* CPT Name */,
+            'menu_name' => 'Testimonial' /* Overide the name above */,
+            'supports'  => array(
+                'title',
+                'page-attributes',
+                'thumbnail',
+                'editor'
+            ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+        );
+        $testimonial      = new wfcfw($testimonial_args);
     }

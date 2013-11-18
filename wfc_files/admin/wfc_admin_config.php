@@ -23,7 +23,7 @@
     require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Small Helper Functions
     require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers
     require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Site Options Panel
-    require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Restricted Access Check/Balance
+    //require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Beta not ready for release
     require_once(WFC_ADM.'/wfc_update_script.php'); //Update from github
     require_once(WFC_THEME_FUNCTIONS.'/build_theme.php'); //Auto theme builder
     require_once(WFC_THEME_FUNCTIONS.'/wfc_autoload_script_class.php'); //Auto theme builder
@@ -67,11 +67,9 @@
      */
     add_action( 'admin_enqueue_scripts', 'wfc_admin_css_styles' );
     function wfc_admin_css_styles(){
+        //Framework Styles includes jqueryui and bootstrap
         wp_register_style( 'wfc-admin-style', WFC_ADM_CSS_URI.'/wfc-admin-styles.css' );
-        wp_register_style( 'wfc-jquery-ui', 'http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' );
-        wp_enqueue_style( 'wfc-jquery-ui' );
         wp_enqueue_style( 'wfc-admin-style' );
-        wp_enqueue_style( 'thickbox' );
     }
 
     /**

@@ -14,8 +14,8 @@
 
         public function Wfc_Admin_Class(){
             $this->get_active_cpts();
-            add_action( 'admin_head', array(&$this, 'Wfc_framework_variables') );
-            add_action( 'wfc_footer', array(&$this, 'Wfc_framework_variables') );
+            add_action( 'admin_head', array(&$this, 'wfc_framework_variables') );
+            add_action( 'wfc_footer', array(&$this, 'wfc_framework_variables') );
             add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
             add_filter( 'manage_campaign_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
@@ -31,12 +31,13 @@
             add_action( 'manage_news_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             add_action(
                 'manage_homepageboxes_posts_custom_column', array(
-                                                             &$this,
-                                                             'wfc_display_post_thumbnail_column'
-                                                        ), 5, 2 );
-            add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
+                                                                 &$this,
+                                                                 'wfc_display_post_thumbnail_column'
+                                                            ), 5, 2 );
 
-            //test commit
+            /* @scftodo: working on moving cpt registering to here from wfc_theme_customizer. */
+            //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
+            //add_action( 'init', array(&$this, 'wfc_init_cpt') );
         }
 
         /**
@@ -117,7 +118,7 @@
             }
         }
 
-        public function Wfc_framework_variables(){
+        public function wfc_framework_variables(){
             /**
              * @name Framework Variables
              *      this plugin allows js to use php definitions.
@@ -168,6 +169,23 @@
             $help .= '<p>- [wfc_sitmap] : displays a sitemap. params: [exclude](string) = Comma seperated page ids to exclude from sitemap.  Must be comma seperated. Ex. [wfc_sitemap exclude="10,20,30"]</p>';
             $help .= "<p>- [wfc_atoz] : displays all pages from A to Z in tab formatting. May require additional styling.</p>";
             return $help;
+        }
+
+        public function wfc_init_cpt(){
+            if(empty($this->active_cpts)) return;
+            foreach($this->active_cpts as $cpt){
+                $module_args = array(
+                    'cpt'       => $cpt /* CPT Name */,
+                    'menu_name' => $cpt /* Overide the name above */,
+                    'supports'  => array(
+                        'title',
+                        'page-attributes',
+                        'thumbnail',
+                        'editor'
+                    ) /* specify which metaboxes you want displayed. See Codex for more info*/,
+                );
+                $module      = new wfcfw($module_args);
+            }
         }
     }
 
