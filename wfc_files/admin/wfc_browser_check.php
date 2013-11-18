@@ -1,27 +1,15 @@
 <?php
     /**
-     * Checks the browser and diplays alerts
      *
      * @package scf-framework
      * @author Steve
-     * @since 3/12/13
-     */
-
-
-    /**
-     * Constants
+     * @date 3/12/13
      */
     define('WFC_MINUTE_IN_SECONDS', 60);
     define('WFC_HOUR_IN_SECONDS', 60 * WFC_MINUTE_IN_SECONDS);
     define('WFC_DAY_IN_SECONDS', 24 * WFC_HOUR_IN_SECONDS);
     define('WFC_WEEK_IN_SECONDS', 7 * WFC_DAY_IN_SECONDS);
     define('WFC_YEAR_IN_SECONDS', 365 * WFC_DAY_IN_SECONDS);
-
-    /**
-     * Checks if a wfc_browser_check exists
-     * If empty, fill it in the footer 
-     * 
-     */
     function wfc_cookie_management(){
         if( !isset($_COOKIE['wfc_browser_check']) ){
             return;
@@ -30,13 +18,10 @@
             add_action( 'wp_footer', 'wfc_check_browser_version' );
         }
     }
-    wfc_cookie_management();
 
-    /**
-     * Applies filter and displays an alert 
-     * if the browser is too old or insecure. 
-     * 
-     */
+    add_action( 'wp_head', 'wfc_check_browser_version' );
+    //wfc_cookie_management();
+    // Display Browser Nag Meta Box
     function wfc_dashboard_browser_nag(){
         $notice   = '';
         $response = wfc_check_browser_version();
@@ -90,34 +75,33 @@
             return false;
         }
         $key = md5( $_SERVER['HTTP_USER_AGENT'] );
-        if( false === ($response = get_site_transient( 'browser_'.$key )) ){
-            global $wp_version;
-            $options  = array(
-                'body'       => array('useragent' => $_SERVER['HTTP_USER_AGENT']),
-                'user-agent' => 'WordPress/'.$wp_version.'; '.home_url()
-            );
-            $response = wp_remote_post( 'http://api.wordpress.org/core/browse-happy/1.0/', $options );
-            if( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) ){
-                return false;
-            }
-            /**
-             * Response should be an array with:
-             *  'name' - string - A user friendly browser name
-             *  'version' - string - The most recent version of the browser
-             *  'current_version' - string - The version of the browser the user is using
-             *  'upgrade' - boolean - Whether the browser needs an upgrade
-             *  'insecure' - boolean - Whether the browser is deemed insecure
-             *  'upgrade_url' - string - The url to visit to upgrade
-             *  'img_src' - string - An image representing the browser
-             *  'img_src_ssl' - string - An image (over SSL) representing the browser
-             */
-            $response = maybe_unserialize( wp_remote_retrieve_body( $response ) );
-            if( !is_array( $response ) ){
-                return false;
-            }
-            set_site_transient( 'browser_'.$key, $response, WFC_WEEK_IN_SECONDS );
+        //if( false === ($response = get_site_transient( 'browser_'.$key )) ){
+        global $wp_version;
+        $options = array(
+            'body'       => array('useragent' => $_SERVER['HTTP_USER_AGENT']),
+            'user-agent' => 'WordPress/'.$wp_version.'; '.home_url()
+        );
+        $response = wp_remote_post( 'http://api.wordpress.org/core/browse-happy/1.1/', $options );
+        if( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) ){
+            return false;
         }
-        //print_r($response);
+        /**
+         * Response should be an array with:
+         *  'name' - string - A user friendly browser name
+         *  'version' - string - The most recent version of the browser
+         *  'current_version' - string - The version of the browser the user is using
+         *  'upgrade' - boolean - Whether the browser needs an upgrade
+         *  'insecure' - boolean - Whether the browser is deemed insecure
+         *  'upgrade_url' - string - The url to visit to upgrade
+         *  'img_src' - string - An image representing the browser
+         *  'img_src_ssl' - string - An image (over SSL) representing the browser
+         */
+        $response = json_decode( wp_remote_retrieve_body( $response ), true );
+        if( !is_array( $response ) ){
+            return false;
+        }
+        set_site_transient( 'browser_'.$key, $response, WFC_WEEK_IN_SECONDS );
+        //}
         if( $response['version'] >= $response['current_version'] ){
             return false;
         }
@@ -138,12 +122,9 @@
                 # code...
                 break;
         }
-        print_r( $_COOKIE );
         if( $wfc_response ){
             ?>
-            <!--echo '<div id="wfc-old-browser">';
-            echo 'Our website is built for newer browsers. For the best experience, update your <a target="_blank" href="'.$response['url'].'">'.$response['name'].' browser here</a>.';
-            echo '</div>';-->
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
             <script>
                 jQuery(function ($) {
                     function getCookie(c_name) {
@@ -166,10 +147,9 @@
                     }
 
                     if (!getCookie("wfc_browser_check")) {
-                        warningMessage = '<div id="wfc-old-browser">Our website is built for newer browsers. For the best experience, update your <a target="_blank" href="<?php echo $wfc_response['url']; ?>"><?php echo $wfc_response['name'];?> browser here</a><div id="close"> XXX </div></div>';
+                        warningMessage = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close wfc-close-old-browser-warning" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Warning! </strong>Our website is built for newer browsers. For the best experience, update your <a target="_blank" href="<?php echo $wfc_response['url']; ?>"><?php echo $wfc_response['name'];?> browser here</a></div>';
                         $("body").prepend(warningMessage);
-                        $('#close').on('click', function () {
-                            $('#wfc-old-browser').slideUp();
+                        $('.wfc-close-old-browser-warning').on('click', function () {
                             document.cookie = 'wfc_browser_check=checkme;expires=Tue, 04 Mar 2014 22:10:26 GMT;path=/'
                         });
                     }
@@ -178,4 +158,3 @@
         <?php
         }
     }
-
