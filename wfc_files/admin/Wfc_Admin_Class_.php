@@ -22,7 +22,7 @@
             add_filter( 'manage_news_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_filter( 'manage_homepageboxes_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_filter( 'manage_subpagebanner_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
-            add_filter( 'manage_pages_custom_column', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
+            add_filter( 'manage_page_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_action(
                 'manage_campaign_posts_custom_column', array(
                                                             &$this,
@@ -34,7 +34,9 @@
                                                              &$this,
                                                              'wfc_display_post_thumbnail_column'
                                                         ), 5, 2 );
-            add_action( 'manage_pages_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
+            add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
+
+            //test commit
         }
 
         /**
