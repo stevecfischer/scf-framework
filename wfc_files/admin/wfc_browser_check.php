@@ -147,7 +147,7 @@
                     }
 
                     if (!getCookie("wfc_browser_check")) {
-                        warningMessage = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close wfc-close-old-browser-warning" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Warning! </strong>Our website is built for newer browsers. For the best experience, update your <a target="_blank" href="<?php echo $wfc_response['url']; ?>"><?php echo $wfc_response['name'];?> browser here</a></div>';
+                        warningMessage = '<div style="z-index:99999;position:relative;" class="alert alert-danger alert-dismissable"><button type="button" class="close wfc-close-old-browser-warning" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Warning! </strong>Our website is built for newer browsers. For the best experience, update your <a target="_blank" href="<?php echo $wfc_response['url']; ?>"><?php echo $wfc_response['name'];?> browser here</a></div>';
                         $("body").prepend(warningMessage);
                         $('.wfc-close-old-browser-warning').on('click', function () {
                             document.cookie = 'wfc_browser_check=checkme;expires=Tue, 04 Mar 2014 22:10:26 GMT;path=/'
