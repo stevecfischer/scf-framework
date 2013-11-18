@@ -5,6 +5,10 @@
      * @author Steve (6/11/2012)
      * @since 2.2
      */
+
+    define('AUTOLOAD_MINIFY', true); //Toggle if site minifies and compresses js|css
+
+
     require_once(WFC_ADM.'/wfc_admin_class.php');
     /**
      * Require each parts of the framework
@@ -38,7 +42,6 @@
      */
     require_once(WFC_WIDGETS.'/wfc_custom_nav/wfc_custom_nav.php');
     require_once(WFC_WIDGETS.'/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
-    require_once(WFC_WIDGETS.'/wfc_custom_tax_widget/wfc_custom_tax_widget.php');
     require_once(WFC_WIDGETS.'/wfc_spotlight/wfc_spotlight.php');
     /*
      * @scftodo: move all functions into wfc admin class. or if there is somewhere better send there.
