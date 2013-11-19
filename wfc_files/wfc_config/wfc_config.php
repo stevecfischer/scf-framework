@@ -31,3 +31,5 @@
     ==============================
     */
     require_once(WFC_ADM.'/wfc_admin_config.php');
+
+//fixing git branches
