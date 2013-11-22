@@ -52,6 +52,7 @@
     add_action( 'pre_user_query', 'wfc_remove_our_user' );
     function wfc_remove_our_user( $user_search ){
         global $current_user;
+        /** @var $wpdb wpdb */
         global $wpdb;
         if( $current_user->user_login != 'wfc' ){
             $user_search->query_where = str_replace(
