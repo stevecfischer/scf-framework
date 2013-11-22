@@ -107,7 +107,6 @@
     }
 
     function Wfc_Core_Page_Loop(){
-        global $wpdb;
         global $post;
         echo '<div class="row">';
         echo '<div id="content" class="span9">';
@@ -122,7 +121,6 @@
     }
 
     function Wfc_Core_Home_Page_Loop(){
-        global $wpdb;
         global $post;
         $query = new WP_Query(array('post_type' => 'pages', 'pagename' => 'home'));
         while( $query->have_posts() ) : $query->the_post();
@@ -135,7 +133,6 @@
     }
 
     function Wfc_Core_Homecontent_Loop(){
-        global $wpdb;
         $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC'));
         if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">

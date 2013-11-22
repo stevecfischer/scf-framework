@@ -46,7 +46,6 @@
          * @return array pages with a shortcut
          */
         private function get_shortcut_pages(){
-            global $wpdb;
             $args        = array(
                 'post_type'  => 'page',
                 'meta_query' => array(
@@ -79,7 +78,6 @@
          * @return array all the needed items
          */
         private function get_all_by_type( $type ){
-            global $wpdb;
             $arr = array();
             switch( $type ){
                 case 1: //Page
@@ -222,7 +220,6 @@
          * @return string $str string displayed on page edited
          */
         public function pages_with_shortcut(){
-            global $wpdb;
             $args           = array(
                 'post_type'  => 'page',
                 'meta_query' => array(
@@ -263,7 +260,6 @@
          * @return string $str string displayed on attachment edited
          */
         public function attachments_with_shortcut(){
-            global $wpdb;
             $str_permalinks = '';
             $i              = 0;
             $args           = array(
@@ -321,7 +317,6 @@
          */
         public function scf_page_link( $link ){
             global $post;
-            global $wpdb;
             $short_cut = intval( get_post_meta( $post->ID, 'wfc_page_type_shortcut', true ) );
             if( $short_cut > 0 ){
                 $link = $link.'&post_type=page&shortcut=true';

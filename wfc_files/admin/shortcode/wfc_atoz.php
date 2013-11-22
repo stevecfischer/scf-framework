@@ -1,7 +1,7 @@
 <?php
     /**
      * [wfc_atozindex] shortcode
-     * 
+     *
      * @package scf-framework
      * @author Steve (08/16/2012)
      * @since since 2.3
@@ -11,11 +11,12 @@
      * A TO Z INDEX tabs
      * used in wfc_get_atozindex()
      * to build the html structure
-     * 
+     *
      * @global $wpdb
      * @return string $str string to be displayed
      */
     function Wfc_a_to_z_tabs(){
+        /** @var $wpdb wpdb */
         global $wpdb;
         $get_id      =
             $wpdb->get_results( "SELECT DISTINCT post_title,post_name,ID FROM $wpdb->posts WHERE post_status = 'publish' and post_type='page' order by trim(post_title) ASC" );
@@ -53,7 +54,7 @@
      * A TO Z INDEX PAGES
      * used in Wfc_a_to_z_tabs()
      * to build the html structure
-     * 
+     *
      * @global $wpdb
      * @param $lettersArr
      * @param $numsArr
@@ -61,12 +62,10 @@
      * @return string $str string to be displayed
      */
     function Wfc_a_to_z_pages( $lettersArr, $numsArr, $allPosts ){
+        /** @var $wpdb wpdb */
         global $wpdb;
         $log_letters    = array();
-        $current_letter = '';
-        $current_number = '';
         $open_list      = false;
-        $column_flag    = 0;
         $counter        = 0;
         $return_pages   = '';
         $return_pages .= '<div id="atoz">';
@@ -118,7 +117,7 @@
     }
     /**
      * Fix url to include shortcuts
-     * 
+     *
      * @author Thibault Miclo
      * @since 5.2
      * @param integer $post_id id of the page
@@ -150,7 +149,7 @@
     /**
      * a_to_z shortcode function
      * called with add_shortcode()
-     * 
+     *
      * @return string $html the html to be displayed by the shortcode
      */
     function wfc_get_atozindex(){
