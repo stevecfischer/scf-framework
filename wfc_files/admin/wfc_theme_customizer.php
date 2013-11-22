@@ -243,6 +243,65 @@
                 <input name="reset" type="submit" value="Reset"/> <input type="hidden" name="action" value="reset"/>
             </p>
         </form>
+        <div class="rm_section">
+            <div class="rm_title"><h3>
+                    <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Theme Update
+                </h3>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="rm_options">
+                <div class="rm_input">
+                    <?php
+                        wfc_callsLeft();
+                        $monitor = new Monitor();
+                        $monitor->StartTimer();
+                        echo wfc_manage_update();
+                        $monitor->StopTimer();
+                        echo '<br />';
+                        wfc_DisplayMonitor( $monitor );
+                        wfc_print_api_limit();
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="rm_section">
+            <div class="rm_title"><h3>
+                    <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Fast backup
+                </h3>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="rm_options">
+                <div class="rm_input">
+                    <?php
+                        $fb=new FastBackup(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+                        if(isset($_GET['download_db']))
+                        {
+                            if(!$fb->downloadDB(bloginfo('name').date('d-m-Y_H-i-s')))
+                                echo $fb->getErrors();
+                        }
+                        elseif(isset($_FILES['restore'])&&$_FILES['restore']['size']>0)
+                        {
+                            if(!$fb->restoreDB($_FILES['restore']['tmp_name']))
+                                echo $fb->getErrors();
+                            else
+                                echo '<script type="text/javascript">location = location.href;location.reload();</script>';
+                        }
+                        elseif(isset($_GET['backup_db']))
+                            if(!$fb->backupDB(__DIR__.'/backups/'.bloginfo('name').date('d-m-Y_H-i-s')))
+                                echo $fb->getErrors();
+                   ?>
+                   <a href="admin.php?page=wfc_theme_customizer.php&download_db">Download database</a>
+                   <form method="POST" enctype="multipart/form-data" action="admin.php?page=wfc_theme_customizer.php">
+                    Restore database with a file :
+                        <input type="file" name="restore" /><br />
+                        <input type="submit" value="Restore"/>
+                   </form>
+                </div>
+            </div>
+        </div>
+
         </div>
     <?php
     }
