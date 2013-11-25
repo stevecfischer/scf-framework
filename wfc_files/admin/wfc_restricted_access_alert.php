@@ -55,7 +55,7 @@
                     false;
             if( $wfc_plugin_seal && $wfc_plugin_seal_confirm && $valid_nonce ){
                 $wfc_plugin_seal_option = get_option( 'wfc_plugin_seal' );
-                print_r( $wfc_plugin_seal_option );
+                //print_r( $wfc_plugin_seal_option );
                 if( $current_user->user_login != 'admin' ){
                     $user = get_user_by( 'login', 'admin' );
                 }
@@ -65,7 +65,6 @@
                 //print_r($user);
                 $this->Wfc_Update_Seal( $user );
                 $this->Wfc_Email_Broken_Seal();
-                die('erer');
             }
         }
 
@@ -107,6 +106,9 @@
          * Displays the HTML form for the seal
          */
         public function Wfc_Get_Seal_Form(){
+            global $current_user;
+            if($this->Wfc_Read_Seal()!=$current_user->ID)
+            {
             ?>
             <h3>Plugin Disclaimer</h3>
             <p>Warning - Please contact Web Full Circle before upgrading, installing, or deleting any plugins. Changing settings on these pages may cause problems with your website's functionality.</p>
@@ -122,7 +124,8 @@
                 </p>
             </form>
             <?php
-            die();
+            exit();
+            }
         }
 
         /**
@@ -131,11 +134,14 @@
          * 
          */
         private function Wfc_Email_Broken_Seal(){
+            global $current_user;
             $headers[] = 'From: Website Name <me@example.net>';
             $headers[] = 'Cc: steve fischer <steve.fischer@webfullcircle.com>';
             $to        = 'stevecfischer@gmail.com';
             $subject   = 'Website Plugin Seal Broken';
-            $message   = ' need to get information link date, time, user';
+            $message   = 'The user '.$current_user->user_login.' broke the plugin seal on the website : '.get_option('home').'\n
+                            \rDate : '.date('l jS \of F Y h:i:s A').'\n
+                            \rIP: '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_USER_AGENT'].')';
             wp_mail( $to, $subject, $message, $headers );
         }
     }
