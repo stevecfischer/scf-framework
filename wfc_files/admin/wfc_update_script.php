@@ -65,7 +65,7 @@ function wfc_callsLeft() {
     //Quick api rate check
     $limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
     if($limit->rate->remaining==0)
-        exit('<span style="color:red;font-size:25px;margin-top:25px;">0 call remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span><br /><br /><br />');
+        echo '<span style="color:red;font-size:25px;margin-top:25px;">0 call remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span><br /><br /><br />';
     else
         return $limit->rate->remaining;
 }
