@@ -49,8 +49,8 @@ define('IGNORE',serialize(array('.gitattributes','.gitignore','README.md','READM
 * 
 * @since 1.0
 */
-require_once WFC_ADM.'/monitor.class.php'; //Monitor class
-require_once WFC_ADM.'/grepo.class.php'; //GRepo Class
+require_once WFC_ADM.'/wfc_monitor_class.php'; //Monitor class
+require_once WFC_ADM.'/wfc_grepo_class.php'; //GRepo Class
 /**
 * Check if we still have some calls left in the github api
 * Since the script doesn't use auth, we have 60 calls each hour
