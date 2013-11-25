@@ -117,7 +117,7 @@ add_filter( 'the_title', 'Wfc_Limit_Title' );
  */
 function Wfc_Auto_Content( $content ){
     if( is_page() ){
-        if( $content == "" ){
+        if( $content == "" &&  get_option('wfc_default_content')===false){
             $content = '<div id="container">
 
         <div id="wfcContent">

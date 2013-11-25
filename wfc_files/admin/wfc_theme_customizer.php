@@ -57,6 +57,15 @@
                 "Yoast SEO"
             )
         ),
+         array(
+            "name"    => "WFC Default Content",
+            "desc"    => "Display default content in empty pages",
+            "id"      => $shortname."default_content",
+            "type"    => "checkbox",
+            "options" => array(
+                "Don't display default content"
+            )
+        ),
         array(
             "name" => "Custom CSS",
             "desc" => "Want to add any custom CSS code? Put in here, and the rest is taken care of. This overrides any other stylesheets. eg: a.button{color:green}",
