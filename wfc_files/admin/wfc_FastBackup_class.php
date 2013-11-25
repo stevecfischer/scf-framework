@@ -43,6 +43,11 @@ class FastBackup
         return $this->$name;
     }
 
+    public function clearDB()
+    {
+      $this->db=false;
+    }
+
     private function connectDB()
     {
         if($this->db)
@@ -51,10 +56,10 @@ class FastBackup
         {
             if(class_exists('PDO'))
             {
-                $dsn = 'mysql:dbname='.DB_NAME.';host='.DB_HOST;
+                $dsn = 'mysql:dbname='.$this->database.';host='.$this->hostname;
                 try
                 {
-                    $this->db = new PDO($dsn, DB_USER, DB_PASSWORD);
+                    $this->db = new PDO($dsn, $this->user, $this->password);
                     return true;
                 }
                 catch(PDOException $e)
@@ -114,9 +119,9 @@ class FastBackup
         return false;
     }
 
-    public function restoreDB($file)
+    public function restoreDB($file,$patterns=NULL)
     {
-        if(!empty($file))
+        if(!empty($file) && file_exists($file))
         {
             if($this->connectDB())
             {
@@ -124,7 +129,7 @@ class FastBackup
                 $sql_query = @fread(@fopen($file, 'r'), @filesize($file));
                 $sql_query = $this->remove_remarks($sql_query);
                 $sql_query = $this->split_sql_file($sql_query, ';');
-                foreach($sql_query as $sql)
+                foreach($sql_query as $sql) if($this->notIn($sql,$patterns))
                     $db->exec($sql);
                 return true;
             }
@@ -132,6 +137,21 @@ class FastBackup
         else
             $this->errors[]='FastBackup needs a file to restore the database.';
         return false;
+    }
+
+    private function notIn($str,$patterns)
+    {
+        foreach($patterns as $p)
+        {
+            if(strpos($str, $p)!==false)
+              return false;
+        }
+        return true;
+    }
+
+    public function getDBObject()
+    {
+        return $this->db;
     }
 
     private function remove_remarks($sql)

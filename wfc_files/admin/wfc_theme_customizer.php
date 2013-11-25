@@ -275,29 +275,70 @@
             <div class="rm_options">
                 <div class="rm_input">
                     <?php
-                        $fb=new FastBackup(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
-                        if(isset($_GET['download_db']))
+                    $fb=new FastBackup(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+                    if(isset($_GET['download_db']))
+                    {                        
+                        if(!$fb->downloadDB(bloginfo('name').date('d-m-Y_H-i-s')))
+                            echo $fb->getErrors();
+                    }
+                    elseif(isset($_FILES['restore'])&&$_FILES['restore']['size']>0)
+                    {
+                        $home_url=get_option('home');
+                        $site_url=get_option('siteurl');
+                        if(!$fb->restoreDB($_FILES['restore']['tmp_name'],array('\'siteurl\',\'http://','\'home\',\'http://')))
+                            echo $fb->getErrors();
+                        else
                         {
-                            if(!$fb->downloadDB(bloginfo('name').date('d-m-Y_H-i-s')))
-                                echo $fb->getErrors();
+                            $db=$fb->getDBObject();
+                            $db->exec('INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES (\'1\', \'siteurl\', \''.$site_url.'\', \'yes\'), (\'\', \'home\', \''.$home_url.'\', \'yes\')');
+                            header('Location: index.php');
                         }
-                        elseif(isset($_FILES['restore'])&&$_FILES['restore']['size']>0)
+                    }
+                    elseif(isset($_GET['backup_db']))
+                    {
+                        if(!$fb->backupDB(__DIR__.'/backups/'.bloginfo('name').date('d-m-Y_H-i-s')))
+                            echo $fb->getErrors();
+                    }
+                    elseif(isset($_GET['replace']))
+                    {
+                        $home_url=get_option('home');
+                        $site_url=get_option('siteurl');
+                        $fb->hostname=$_POST['host'];
+                        $fb->user=$_POST['user'];
+                        $fb->password=$_POST['pass'];
+                        $fb->database=$_POST['db'];
+                        if($fb->backupDB(__DIR__.'/tmp.sql'))
                         {
-                            if(!$fb->restoreDB($_FILES['restore']['tmp_name']))
-                                echo $fb->getErrors();
+                            $fb->hostname=DB_HOST;
+                            $fb->user=DB_USER;
+                            $fb->password=DB_PASSWORD;
+                            $fb->database=DB_NAME;
+                            $fb->clearDB();
+                            if($fb->restoreDB(__DIR__.'/tmp.sql',array('\'siteurl\',\'http://','\'home\',\'http://')))
+                            {
+                                $db=$fb->getDBObject();
+                                $db->exec('INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES (\'1\', \'siteurl\', \''.$site_url.'\', \'yes\'), (\'\', \'home\', \''.$home_url.'\', \'yes\')');
+                                header('Location: index.php');
+                            } 
                             else
-                                echo '<script type="text/javascript">location = location.href;location.reload();</script>';
-                        }
-                        elseif(isset($_GET['backup_db']))
-                            if(!$fb->backupDB(__DIR__.'/backups/'.bloginfo('name').date('d-m-Y_H-i-s')))
                                 echo $fb->getErrors();
+                            //@unlink('tmp.sql');
+                        }
+                        else
+                            echo $fb->getErrors();
+                       
+                    }
                    ?>
+                  Replace with remote DB :
+                   <form method="POST" action="admin.php?page=wfc_theme_customizer.php&replace">
+                   <input type="text" name="host" /><input type="text" name="user" /><input type="text" name="pass" /><input type="text" name="db" /><input type="submit" value="Replace" />
+                    </form>
                    <a href="admin.php?page=wfc_theme_customizer.php&download_db">Download database</a>
                    <form method="POST" enctype="multipart/form-data" action="admin.php?page=wfc_theme_customizer.php">
                     Restore database with a file :
-                        <input type="file" name="restore" /><br />
-                        <input type="submit" value="Restore"/>
-                   </form>
+                    <input type="file" name="restore" /><br />
+                    <input type="submit" value="Restore"/>
+               </form>
                 </div>
             </div>
         </div>
