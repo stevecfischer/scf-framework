@@ -82,7 +82,7 @@
                                 foreach( $field['options'] as $option ){
                                     echo '
                         <label>
-                           <input type="radio" name="'.$field['id'].'[]" value="'.$option.'" '.
+                           <input type="radio" name="'.$field['id'].'" value="'.$option.'" '.
                                         (in_array( $option, $meta ) ? ' checked="checked"' : '').' />&nbsp;'
                                         .$option.'
                         </label><br />';
@@ -104,6 +104,10 @@
 
                                 //wp_editor( $meta ? $meta : '', $field['id'], isset( $field['options'] ) ? $field['options'] : array() );
                                 break;
+
+                            default:
+                                echo $field['options'];
+                            break;
                         }
                         echo '</p></div>';
                     }
