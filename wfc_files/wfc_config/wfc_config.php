@@ -1,12 +1,12 @@
 <?php
+
     /**
+     * WFC STANDARD DEFINITIONS
      *
      * @package scf-framework
      * @author Steve (6/11/2012)
      * @since 0.1
      */
-    // WFC STANDARD DEFINITIONS //
-    // ---------------------- //
     define('WFC_SITE_URL', get_bloginfo( 'url' ).'/');
     define('WFC_ADMIN_URL', admin_url());
     define('WFC_PT', dirname( __DIR__ ).'/');
@@ -24,10 +24,18 @@
     define('WFC_ADM_CSS_URI', WFC_URI.'/wfc_files/admin/css');
     define('WFC_ADM_JS_URI', WFC_URI.'/wfc_files/admin/js');
     define('WFC_ADM_IMG_URI', WFC_URI.'/wfc_files/admin/images');
-    /*
-    ===============================
-    MAIN INCLUDE FILE
+
+    /**
+     * The WFC Framework version string
+     *
+     * @global string $wfc_version
+     * @since 5.2
+     */
+    $wfc_version = '5.3';
+
+    /**
+     * MAIN INCLUDE FILE
+     *
      * @since 2.2
-    ==============================
-    */
+     */
     require_once(WFC_ADM.'/wfc_admin_config.php');
