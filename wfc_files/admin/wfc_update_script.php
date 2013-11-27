@@ -496,7 +496,6 @@ function read_file($entry) {
 * @return string $max the highest version
 */
 function version_comparee($ver1,$ver2) {
-    $ver1=str_replace('<br />', '', $ver1);
     return version_compare($ver1,$ver2);
 }
 /**
