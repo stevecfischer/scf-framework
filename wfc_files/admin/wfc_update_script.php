@@ -104,8 +104,9 @@ function wfc_manage_update() {
 */
 function wfc_check_update() {
     $gr = new GRepo(GIT_USER, GIT_REPO);
+    $loc=get_local_version();
     echo 'Git : '.$git=get_git_version();
-    echo '<br />Local : '.$loc=get_local_version().'<br />';
+    echo '<br />Local : '.$loc.'<br />';
     if(!$git)
         echo 'A version file is missing on git, need to stop there.';
     else if(!$loc)
@@ -495,7 +496,6 @@ function read_file($entry) {
 * @return string $max the highest version
 */
 function version_comparee($ver1,$ver2) {
-    $ver1=str_replace('<br />', '', $ver1);
     return version_compare($ver1,$ver2);
 }
 /**
