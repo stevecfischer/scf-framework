@@ -213,7 +213,6 @@
                     <div class="rm_input rm_checkbox">
                         <?php foreach( $value['options'] as $option ){ ?>
                             <label>
-                                <?php //print_r(get_option( $value['id'] )); ?>
                                 <?php $checked = ""; ?>
                                 <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
                                     <?php if( in_array( $option, get_option( $value['id'] ) ) ){
@@ -252,120 +251,134 @@
                 <input name="reset" type="submit" value="Reset"/> <input type="hidden" name="action" value="reset"/>
             </p>
         </form>
-        <?php
-        if( wfc_is_dev() ){
-            ?>
-            <div class="rm_section">
-                <div class="rm_title"><h3>
-                        <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Fast backup
-                    </h3>
-                    </span>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="rm_options">
-                    <?php
-                        $fb = new FastBackup(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                        if( isset($_GET['download_db']) ){
-                            if( !$fb->downloadDB( bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
-                                echo $fb->getErrors();
-                            }
-                        } elseif( isset($_FILES['restore']) && $_FILES['restore']['size'] > 0 ){
-                            $home_url = get_option( 'home' );
-                            $site_url = get_option( 'siteurl' );
-                            if( !$fb->restoreDB(
-                                $_FILES['restore']['tmp_name'], array(
-                                                                     '\'siteurl\',\'http://',
-                                                                     '\'home\',\'http://'
-                                                                ) )
+        <div class="rm_section">
+            <div class="rm_title"><h3>
+                    <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Fast backup
+                </h3>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="rm_options">
+                <?php
+                    $fb = new FastBackup(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                    if( isset($_GET['download_db']) ){
+                        if( !$fb->downloadDB( bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
+                            echo $fb->getErrors();
+                        }
+                    } elseif( isset($_FILES['restore']) && $_FILES['restore']['size'] > 0 ){
+                        $home_url = get_option( 'home' );
+                        $site_url = get_option( 'siteurl' );
+                        if( !$fb->restoreDB(
+                            $_FILES['restore']['tmp_name'], array(
+                                                                 '\'siteurl\',\'http://',
+                                                                 '\'home\',\'http://'
+                                                            ) )
+                        ){
+                            echo $fb->getErrors();
+                        } else{
+                            $db = $fb->getDBObject();
+                            $db->exec(
+                                'INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES (\'1\', \'siteurl\', \''.
+                                $site_url.'\', \'yes\'), (\'\', \'home\', \''.$home_url.'\', \'yes\')' );
+                            header( 'Location: index.php' );
+                        }
+                    } elseif( isset($_GET['backup_db']) ){
+                        if( !$fb->backupDB( __DIR__.'/backups/'.bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
+                            echo $fb->getErrors();
+                        }
+                    } elseif( isset($_GET['replace']) ){
+                        $home_url     = get_option( 'home' );
+                        $site_url     = get_option( 'siteurl' );
+                        $fb->hostname = $_POST['host'];
+                        $fb->user     = $_POST['user'];
+                        $fb->password = $_POST['pass'];
+                        $fb->database = $_POST['db'];
+                        if( $fb->backupDB( __DIR__.'/tmp.sql' ) ){
+                            $fb->hostname = DB_HOST;
+                            $fb->user     = DB_USER;
+                            $fb->password = DB_PASSWORD;
+                            $fb->database = DB_NAME;
+                            $fb->clearDB();
+                            if( $fb->restoreDB(
+                                __DIR__.
+                                '/tmp.sql', array(
+                                                 '\'siteurl\',\'http://',
+                                                 '\'home\',\'http://'
+                                            ) )
                             ){
-                                echo $fb->getErrors();
-                            } else{
                                 $db = $fb->getDBObject();
                                 $db->exec(
                                     'INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES (\'1\', \'siteurl\', \''.
                                     $site_url.'\', \'yes\'), (\'\', \'home\', \''.$home_url.'\', \'yes\')' );
                                 header( 'Location: index.php' );
-                            }
-                        } elseif( isset($_GET['backup_db']) ){
-                            if( !$fb->backupDB( __DIR__.'/backups/'.bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
-                                echo $fb->getErrors();
-                            }
-                        } elseif( isset($_GET['replace']) ){
-                            $home_url     = get_option( 'home' );
-                            $site_url     = get_option( 'siteurl' );
-                            $fb->hostname = $_POST['host'];
-                            $fb->user     = $_POST['user'];
-                            $fb->password = $_POST['pass'];
-                            $fb->database = $_POST['db'];
-                            if( $fb->backupDB( __DIR__.'/tmp.sql' ) ){
-                                $fb->hostname = DB_HOST;
-                                $fb->user     = DB_USER;
-                                $fb->password = DB_PASSWORD;
-                                $fb->database = DB_NAME;
-                                $fb->clearDB();
-                                if( $fb->restoreDB(
-                                    __DIR__.
-                                    '/tmp.sql', array(
-                                                     '\'siteurl\',\'http://',
-                                                     '\'home\',\'http://'
-                                                ) )
-                                ){
-                                    $db = $fb->getDBObject();
-                                    $db->exec(
-                                        'INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES (\'1\', \'siteurl\', \''.
-                                        $site_url.'\', \'yes\'), (\'\', \'home\', \''.$home_url.'\', \'yes\')' );
-                                    header( 'Location: index.php' );
-                                } else{
-                                    echo $fb->getErrors();
-                                }
-                                //@unlink('tmp.sql');
                             } else{
                                 echo $fb->getErrors();
                             }
+                            //@unlink('tmp.sql');
+                        } else{
+                            echo $fb->getErrors();
                         }
-                    ?>
-                    <!--Replace with remote DB :-->
-                    <form method="POST" action="admin.php?page=wfc_theme_customizer.php&replace">
-                        <div class="rm_input rm_text">
-                            <label for="host">Host</label>
-                            <input type="text" name="host"/>
-                        </div>
-                        <div class="rm_input rm_text">
-                            <label for="user">User</label>
-                            <input type="text" name="user"/>
-                        </div>
-                        <div class="rm_input rm_text">
-                            <label for="pass">Password</label>
-                            <input type="text" name="pass"/>
-                        </div>
-                        <div class="rm_input rm_text">
-                            <label for="db">Database Name</label>
-                            <input type="text" name="db"/>
-                        </div>
-                        <div class="rm_input rm_text">
-                            <input type="submit" value="Replace"/>
-                        </div>
-                    </form>
+                    }
+                ?>
+                <!--Replace with remote DB :-->
+                <form method="POST" action="admin.php?page=wfc_theme_customizer.php&replace">
                     <div class="rm_input rm_text">
-                        <a href="admin.php?page=wfc_theme_customizer.php&download_db">Download database</a>
+                        <label for="host">Host</label>
+                        <input type="text" name="host"/>
                     </div>
-                    <form method="POST" enctype="multipart/form-data" action="admin.php?page=wfc_theme_customizer.php">
-                        <div class="rm_input rm_text">
-                            <label>Restore database with a file :</label>
-                            <input type="file" name="restore"/><br/>
-                        </div>
-                        <div class="rm_input rm_text">
-                            <input type="submit" value="Restore"/>
-                        </div>
-                    </form>
+                    <div class="rm_input rm_text">
+                        <label for="user">User</label>
+                        <input type="text" name="user"/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <label for="pass">Password</label>
+                        <input type="text" name="pass"/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <label for="db">Database Name</label>
+                        <input type="text" name="db"/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <input type="submit" value="Replace"/>
+                    </div>
+                </form>
+                <div class="rm_input rm_text">
+                    <a href="admin.php?page=wfc_theme_customizer.php&download_db">Download database</a>
+                </div>
+                <form method="POST" enctype="multipart/form-data" action="admin.php?page=wfc_theme_customizer.php">
+                    <div class="rm_input rm_text">
+                        <label>Restore database with a file :</label>
+                        <input type="file" name="restore"/><br/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <input type="submit" value="Restore"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="rm_section">
+            <div class="rm_title"><h3>
+                    <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Theme Update
+                </h3>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="rm_options">
+                <div class="rm_input">
+                    <?php
+                        wfc_callsLeft();
+                        $monitor = new Monitor();
+                        $monitor->StartTimer();
+                        echo wfc_manage_update();
+                        $monitor->StopTimer();
+                        echo '<br />';
+                        wfc_DisplayMonitor( $monitor );
+                        wfc_print_api_limit();
+                    ?>
                 </div>
             </div>
-
-        <?php } ?>
-
-
-
         </div>
+        </div><!-- //.rm_opts -->
     <?php
     }
 
