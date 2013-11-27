@@ -45,7 +45,7 @@
         public function listRepos(){
             $this->_request( sprintf( $this->src_userRepos, $this->user ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('Server error!'); // e.g
+                throw new Exception('GitHub server error...'); // e.g
             }
             return json_decode( $this->responseText );
         }
@@ -59,7 +59,7 @@
         public function getRepoDetails(){
             $this->_request( sprintf( $this->src_userRepoDetails, $this->user, $this->repo ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('Server error!'); // e.g
+                throw new Exception('GitHub server error...'); // e.g
             }
             return json_decode( $this->responseText );
         }
@@ -87,7 +87,7 @@
         public function getRepoTags(){
             $this->_request( sprintf( $this->src_userRepoDetails, $this->user, $this->repo ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('Server error!'); // e.g
+                throw new Exception('GitHub server error...'); // e.g
             }
             return json_decode( $this->responseText );
         }
@@ -101,7 +101,7 @@
         public function getRepoContents(){
             $this->_request( sprintf( $this->src_userRepoContents, $this->user, $this->repo ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('Server error!'); // e.g
+                throw new Exception('GitHub server error...'); // e.g
             }
             return json_decode( $this->responseText );
         }
