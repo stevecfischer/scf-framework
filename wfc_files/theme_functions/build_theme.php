@@ -64,7 +64,25 @@
     <link rel="pingback" href="<?php bloginfo( "pingback_url" ); ?>"/>
     <?php wp_head(); ?>
 </head>
-<body <?php body_class(); ?>>';
+<body <?php body_class(); ?>>
+<?php $wfc_main_nav_args = array(
+    "menu"            => "",
+    "container"       => "nav",
+    "container_class" => "navbar navbar-default",
+    "container_id"    => "",
+    "menu_class"      => "nav navbar-nav",
+    "menu_id"         => "",
+    "echo"            => true,
+    "fallback_cb"     => "wp_page_menu",
+    "before"          => "",
+    "after"           => "",
+    "link_before"     => "",
+    "link_after"      => "",
+    "depth"           => 1,
+    "walker"          => "",
+    "theme_location"  => ""
+);
+    wp_nav_menu( $wfc_main_nav_args );?>';
         $footer       = '
 <footer>
     <p class="pull-right">
