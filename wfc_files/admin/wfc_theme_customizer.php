@@ -308,7 +308,7 @@
                             } else{
                                 echo $fb->getErrors();
                             }
-                            @unlink('tmp.sql');
+                            @unlink(__DIR__.'/tmp.sql');
                         } else{
                             echo $fb->getErrors();
                         }
