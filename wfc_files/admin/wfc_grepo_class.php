@@ -45,7 +45,7 @@
         public function listRepos(){
             $this->_request( sprintf( $this->src_userRepos, $this->user ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('GitHub server error...'); // e.g
+                echo 'GitHub server error...'; // e.g
             }
             return json_decode( $this->responseText );
         }
@@ -59,7 +59,7 @@
         public function getRepoDetails(){
             $this->_request( sprintf( $this->src_userRepoDetails, $this->user, $this->repo ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('GitHub server error...'); // e.g
+                echo 'GitHub server error...'; // e.g
             }
             return json_decode( $this->responseText );
         }
@@ -73,7 +73,9 @@
          * @param string $url url to query
          */
         private function _request( $url ){
-            $contents           = @ file_get_contents( $url );
+            $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
+            $context  = stream_context_create($options);
+            $contents           = @ file_get_contents( $url ,false, $context);
             $this->responseCode = (false === $contents) ? 400 : 200;
             $this->responseText = $contents;
         }
@@ -87,7 +89,7 @@
         public function getRepoTags(){
             $this->_request( sprintf( $this->src_userRepoDetails, $this->user, $this->repo ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('GitHub server error...'); // e.g
+                echo 'GitHub server error...'; // e.g
             }
             return json_decode( $this->responseText );
         }
@@ -101,7 +103,7 @@
         public function getRepoContents(){
             $this->_request( sprintf( $this->src_userRepoContents, $this->user, $this->repo ) );
             if( $this->responseCode != 200 ){
-                throw new Exception('GitHub server error...'); // e.g
+                echo 'GitHub server error...'; // e.g
             }
             return json_decode( $this->responseText );
         }

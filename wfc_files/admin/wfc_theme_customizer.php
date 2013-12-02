@@ -367,14 +367,16 @@
             <div class="rm_options">
                 <div class="rm_input">
                     <?php
-                        wfc_callsLeft();
-                        $monitor = new Monitor();
-                        $monitor->StartTimer();
-                        echo wfc_manage_update();
-                        $monitor->StopTimer();
-                        echo '<br />';
-                        wfc_DisplayMonitor( $monitor );
-                        wfc_print_api_limit();
+                        if(wfc_callsLeft())
+                        {
+                            $monitor = new Monitor();
+                            $monitor->StartTimer();
+                            echo wfc_manage_update();
+                            $monitor->StopTimer();
+                            echo '<br />';
+                            wfc_DisplayMonitor( $monitor );
+                            wfc_print_api_limit();
+                        }
                     ?>
                 </div>
             </div>

@@ -63,9 +63,14 @@ require_once WFC_ADM.'/wfc_grepo_class.php'; //GRepo Class
 */
 function wfc_callsLeft() {
     //Quick api rate check
-    $limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
+    $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
+    $context  = stream_context_create($options);
+    $limit=json_decode(file_get_contents('https://api.github.com/rate_limit', false, $context));
     if($limit->rate->remaining==0)
+    {
         echo '<span style="color:red;font-size:25px;margin-top:25px;">0 call remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span><br /><br /><br />';
+        return 0;
+    }
     else
         return $limit->rate->remaining;
 }
@@ -116,7 +121,7 @@ function wfc_check_update() {
         $mostRecent=version_comparee($loc, $git);
         if($mostRecent==0)
             echo 'Both same version, we are fine !';
-        else if($mostRecent==-1)
+        else if($mostRecent>-1)
             echo 'Local has a higher version, someone has probably made changes, do not update.';
         else
             echo 'An update is available : <strong>Version '.$git.'</strong><br />
@@ -400,7 +405,9 @@ function wfc_doUpdate() {
 * @since 1.0
 */
 function wfc_print_api_limit() {
-    $limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
+    $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
+    $context  = stream_context_create($options);
+    $limit=json_decode(@file_get_contents('https://api.github.com/rate_limit',false,$context));
 
     echo '<div style="width:100%;text-align:center;"><span style="color:blue;font-size:15px;">'.$limit->rate->remaining.' calls remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span></div>';
 }
