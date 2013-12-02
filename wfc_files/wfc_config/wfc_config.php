@@ -1,7 +1,7 @@
 <?php
 
     /**
-     * WFC STANDARD DEFINITIONS
+     * WFC PATH/URL DEFINITIONS
      *
      * @package scf-framework
      * @author Steve (6/11/2012)
@@ -26,12 +26,21 @@
     define('WFC_ADM_IMG_URI', WFC_URI.'/wfc_files/admin/images');
 
     /**
+     * WFC FRAMEWORK CONFIGURATIONS
+     *
+     * @package scf-framework
+     * @author Steve (12/2/2013)
+     * @since 5.3.2
+     */
+    define('AUTOLOAD_MINIFY', false); //Toggle if site minifies and compresses js|css
+
+    /**
      * The WFC Framework version string
      *
      * @global string $wfc_version
      * @since 5.2
      */
-    $wfc_version = '5.3';
+    $wfc_version = '5.3.2';
 
     /**
      * MAIN INCLUDE FILE

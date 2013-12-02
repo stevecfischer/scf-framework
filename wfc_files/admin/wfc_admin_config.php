@@ -6,9 +6,6 @@
      * @since 2.2
      */
 
-    define('AUTOLOAD_MINIFY', true); //Toggle if site minifies and compresses js|css
-
-
     require_once(WFC_ADM.'/wfc_admin_class.php');
     /**
      * Require each parts of the framework
