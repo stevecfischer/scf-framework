@@ -41,7 +41,7 @@
      * @global string $wfc_version
      * @since 5.2
      */
-    $wfc_version = '5.3.2';
+    $wfc_version = '5.3.3';
 
     /**
      * MAIN INCLUDE FILE
