@@ -26,6 +26,7 @@
 *
 * @since 1.0
 */
+error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
 /**
 * Configure repo information there
 * - GIT_USER, a valid github user
@@ -63,9 +64,14 @@ require_once WFC_ADM.'/wfc_grepo_class.php'; //GRepo Class
 */
 function wfc_callsLeft() {
     //Quick api rate check
-    $limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
+    $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
+    $context  = stream_context_create($options);
+    $limit=json_decode(file_get_contents('https://api.github.com/rate_limit', false, $context));
     if($limit->rate->remaining==0)
+    {
         echo '<span style="color:red;font-size:25px;margin-top:25px;">0 call remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span><br /><br /><br />';
+        return 0;
+    }
     else
         return $limit->rate->remaining;
 }
@@ -88,10 +94,12 @@ function wfc_generateToken() {
 * @return function the function launched to display the content
 */
 function wfc_manage_update() {
-    if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true)
+    if(isset($_GET['force_update'])&&$_GET['force_update']==true&&!empty($_POST["update_url"]))
+        return wfc_force_update();
+    else if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true)
         return wfc_check_diffs();
     else if(isset($_GET['update']) && $_GET['update']==$token)
-        return wfc_doUpdate();
+        echo wfc_doUpdate();
     else
         return wfc_check_update();
 }
@@ -103,6 +111,7 @@ function wfc_manage_update() {
 * @since 1.1
 */
 function wfc_check_update() {
+    echo 'GitHub is broken ? Update from there : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_update=true"><input type="text" value="" name="update_url" /><input type="submit" value="Update" onclick="return confirm(\'Did you do a backup before ? Backup Manager can help you with that !\');" /></form>';
     $gr = new GRepo(GIT_USER, GIT_REPO);
     $loc=get_local_version();
     echo 'Git : '.$git=get_git_version();
@@ -116,7 +125,7 @@ function wfc_check_update() {
         $mostRecent=version_comparee($loc, $git);
         if($mostRecent==0)
             echo 'Both same version, we are fine !';
-        else if($mostRecent==-1)
+        else if($mostRecent>-1)
             echo 'Local has a higher version, someone has probably made changes, do not update.';
         else
             echo 'An update is available : <strong>Version '.$git.'</strong><br />
@@ -143,14 +152,19 @@ function wfc_check_diffs() {
         $loc=get_local_version();
         $exists=false;
         $return='';
-        foreach($tags as $tag) if($tag->name==$loc){
+        foreach($tags as $tag) if(substr($tag->name,1)==$loc){
             $return.='Found : '.$tag->zipball_url.'<br />';
             $exists=true;
-             $target_url = $tag->zipball_url;
-             $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
-             if(!file_exists(WFC_PT.'../working_directory'))
+            $target_url = $tag->zipball_url;
+            $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
+            if(!file_exists(WFC_PT.'../working_directory'))
+               mkdir(WFC_PT.'../working_directory');
+            else
+            {
+                rrmdir(WFC_PT.'../working_directory');
                 mkdir(WFC_PT.'../working_directory');
-             $file_zip = WFC_PT.'../working_directory/Ver_'.$tag->name.'.zip';
+            }
+             $file_zip = WFC_PT.'../working_directory/Ver_'.substr($tag->name,1).'.zip';
              //echo "<br>Starting<br>Target_url: $target_url";
              //echo "<br>Headers stripped out";
              // make the cURL request to $target_url
@@ -307,14 +321,14 @@ function wfc_doUpdate() {
             $loc=get_local_version();
             $exists=false;
             $return='';
-            foreach($tags as $tag) if($tag->name==$git){
+            foreach($tags as $tag) if(substr($tag->name,1)==$git){
                 $return.='Found : '.$tag->zipball_url.'<br />';
                 $exists=true;
                 $target_url = $tag->zipball_url;
                 $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
                 if(!file_exists(WFC_PT.'../working_directory'))
                     mkdir(WFC_PT.'../working_directory');
-                $file_zip = WFC_PT.'../working_directory/Ver_'.$tag->name.'.zip';
+                $file_zip = WFC_PT.'../working_directory/Ver_'.substr($tag->name,1).'.zip';
                 //echo "<br>Starting<br>Target_url: $target_url";
                 //echo "<br>Headers stripped out";
                 // make the cURL request to $target_url
@@ -395,12 +409,107 @@ function wfc_doUpdate() {
     return $result;
 }
 /**
+ * In case of a github failure, or API change 
+ * Grab $_POST['update_url'] from the form
+ * 
+ * Replace with the file from the url
+ * No other checking, use carefully
+ * @since 1.3
+ * @return string $return string to be displayed on the panel
+ */
+function wfc_force_update() {
+    $link=$_POST["update_url"];
+    $return='';
+    $folder_name='';
+   $path_to_current=WFC_PT.'../wfc_files/';
+    if(!file_exists(WFC_PT.'../working_directory'))
+        mkdir(WFC_PT.'../working_directory');
+    else
+    {
+        rrmdir(WFC_PT.'../working_directory');
+        mkdir(WFC_PT.'../working_directory');
+    }
+    $file_zip = WFC_PT.'../working_directory/Ver_force_update.zip';
+    //echo "<br>Starting<br>Target_url: $target_url";
+    //echo "<br>Headers stripped out";
+    // make the cURL request to $target_url
+    $ch = curl_init();
+    $fp = fopen($file_zip, "w+");
+    $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
+    curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+    curl_setopt($ch, CURLOPT_URL,$link);
+    curl_setopt($ch, CURLOPT_FAILONERROR, true);
+    curl_setopt($ch, CURLOPT_HEADER,0);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER,true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    $page = curl_exec($ch);
+    if (!$page) {
+       $return.= "<br />cURL error number:" .curl_errno($ch);
+       $return.= "<br />cURL error:" . curl_error($ch);
+       return $return;
+    }
+    curl_close($ch);
+     //echo "<br />Downloaded file: $target_url";
+     // echo "<br />Saved as file: $file_zip";
+     // echo "<br />About to unzip ...";
+     // Un zip the file
+    $zip = new ZipArchive;
+    if (! $zip) {
+        $return.="<br>Could not make ZipArchive object.";
+        return $return;
+    }
+    if($zip->open("$file_zip") != "true") {
+        $return.= "<br>Could not open $file_zip";
+        return $return;
+    }
+    $zip->extractTo(WFC_PT.'../working_directory/');
+    $zip->close();
+
+    $folder_name='';
+    if ($handle = opendir(WFC_PT.'../working_directory')) {
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != "." && $entry != "..") {
+                if(is_dir(WFC_PT.'../working_directory/'.$entry))
+                    $folder_name=$entry;
+            }
+        }
+        closedir($handle);
+    }
+    if($folder_name!='') {
+        $path_to_old=WFC_PT.'../working_directory/'.$folder_name.'/wfc_files';
+        //Time to delete all current files
+        rrmdir($path_to_current); //custom function, windows...
+        if(rename($path_to_old, $path_to_current)) {
+            //Do not forget to update version file !
+            unlink(WFC_PT.'../Ver_'.$loc.'.wfc');
+            $f=fopen(WFC_PT.'../Ver_1.force.update.wfc','w+');
+            fwrite($f,'VERSION FILE - DO NOT DELETE');
+            fclose($f);
+            $result='WFC theme is now up-to-date !';
+            unset($zip);
+            @chmod(WFC_PT.'../working_directory', 0777);
+            @chmod(WFC_PT.'../working_directory/Ver_force_update.zip', 0777);
+            rrmdir(WFC_PT.'../working_directory');
+        }
+        else
+            $result='Unable to replace old files.. Change permissions on wfc_files folder.';
+    }
+        $result='Unable to find new files.';
+}
+/**
 * Prints api calls left
 *
 * @since 1.0
 */
 function wfc_print_api_limit() {
-    $limit=json_decode(@file_get_contents('https://api.github.com/rate_limit'));
+    $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
+    $context  = stream_context_create($options);
+    $limit=json_decode(@file_get_contents('https://api.github.com/rate_limit',false,$context));
 
     echo '<div style="width:100%;text-align:center;"><span style="color:blue;font-size:15px;">'.$limit->rate->remaining.' calls remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span></div>';
 }

@@ -119,7 +119,7 @@ class FastBackup
         return false;
     }
 
-    public function restoreDB($file,$patterns=NULL)
+    public function restoreDB($file)
     {
         if(!empty($file) && file_exists($file))
         {
@@ -129,7 +129,7 @@ class FastBackup
                 $sql_query = @fread(@fopen($file, 'r'), @filesize($file));
                 $sql_query = $this->remove_remarks($sql_query);
                 $sql_query = $this->split_sql_file($sql_query, ';');
-                foreach($sql_query as $sql) if($this->notIn($sql,$patterns))
+                foreach($sql_query as $sql)
                     $db->exec($sql);
                 return true;
             }
@@ -137,16 +137,6 @@ class FastBackup
         else
             $this->errors[]='FastBackup needs a file to restore the database.';
         return false;
-    }
-
-    private function notIn($str,$patterns)
-    {
-        foreach($patterns as $p)
-        {
-            if(strpos($str, $p)!==false)
-              return false;
-        }
-        return true;
     }
 
     public function getDBObject()

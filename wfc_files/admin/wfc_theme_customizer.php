@@ -6,6 +6,11 @@
      * @date 1/5/13
      * @version 2.2
      */
+    $save_options=array('siteurl', //Wordpress URL
+        'home', //Index URL
+        'active_plugins', //List of active plugins
+        'template' //Active theme
+        ); 
     $themename = get_bloginfo( 'name' );
     $shortname = "wfc_";
     $categories = get_categories( 'hide_empty=0&orderby=name' );
@@ -129,7 +134,7 @@
     }
 
     function Wfc_Panel(){
-        global $themename, $shortname, $options;
+        global $themename, $shortname, $options, $save_options;
         $themename1 = !empty($themename) ? $themename : "Theme";
         $i          = 0;
         if( isset($_REQUEST['saved']) && $_REQUEST['saved'] ){
@@ -260,26 +265,22 @@
             </div>
             <div class="rm_options">
                 <?php
+                    $options_values=array();
+                    foreach($save_options as $opt){
+                        $options_values[$opt]=get_option($opt);
+                    }
                     $fb = new FastBackup(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
                     if( isset($_GET['download_db']) ){
                         if( !$fb->downloadDB( bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
                             echo $fb->getErrors();
                         }
                     } elseif( isset($_FILES['restore']) && $_FILES['restore']['size'] > 0 ){
-                        $home_url = get_option( 'home' );
-                        $site_url = get_option( 'siteurl' );
-                        if( !$fb->restoreDB(
-                            $_FILES['restore']['tmp_name'], array(
-                                                                 '\'siteurl\',\'http://',
-                                                                 '\'home\',\'http://'
-                                                            ) )
-                        ){
+                        if( !$fb->restoreDB($_FILES['restore']['tmp_name'])){
                             echo $fb->getErrors();
                         } else{
                             $db = $fb->getDBObject();
-                            $db->exec(
-                                'INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES (\'1\', \'siteurl\', \''.
-                                $site_url.'\', \'yes\'), (\'\', \'home\', \''.$home_url.'\', \'yes\')' );
+                            foreach($options_values as $n=>$v)
+                                $db->exec('UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'');
                             header( 'Location: index.php' );
                         }
                     } elseif( isset($_GET['backup_db']) ){
@@ -287,8 +288,6 @@
                             echo $fb->getErrors();
                         }
                     } elseif( isset($_GET['replace']) ){
-                        $home_url     = get_option( 'home' );
-                        $site_url     = get_option( 'siteurl' );
                         $fb->hostname = $_POST['host'];
                         $fb->user     = $_POST['user'];
                         $fb->password = $_POST['pass'];
@@ -299,22 +298,17 @@
                             $fb->password = DB_PASSWORD;
                             $fb->database = DB_NAME;
                             $fb->clearDB();
-                            if( $fb->restoreDB(
-                                __DIR__.
-                                '/tmp.sql', array(
-                                                 '\'siteurl\',\'http://',
-                                                 '\'home\',\'http://'
-                                            ) )
+                            if( $fb->restoreDB(__DIR__.'/tmp.sql')
                             ){
                                 $db = $fb->getDBObject();
-                                $db->exec(
-                                    'INSERT INTO `wp_options` (`option_id`, `option_name`, `option_value`, `autoload`) VALUES (\'1\', \'siteurl\', \''.
-                                    $site_url.'\', \'yes\'), (\'\', \'home\', \''.$home_url.'\', \'yes\')' );
+                                foreach($options_values as $n=>$v)
+                                    $db->exec('UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'');
+
                                 header( 'Location: index.php' );
                             } else{
                                 echo $fb->getErrors();
                             }
-                            //@unlink('tmp.sql');
+                            @unlink(__DIR__.'/tmp.sql');
                         } else{
                             echo $fb->getErrors();
                         }
@@ -339,6 +333,15 @@
                         <input type="text" name="db"/>
                     </div>
                     <div class="rm_input rm_text">
+                    Saved options :
+                        <?php 
+                        $msg='';
+                        foreach ($save_options as $value) {
+                            $msg.= $value.', ';
+                        }
+                        echo substr($msg,0,-2);
+                        ?>
+                        <br />
                         <input type="submit" value="Replace"/>
                     </div>
                 </form>
@@ -366,14 +369,16 @@
             <div class="rm_options">
                 <div class="rm_input">
                     <?php
-                        wfc_callsLeft();
-                        $monitor = new Monitor();
-                        $monitor->StartTimer();
-                        echo wfc_manage_update();
-                        $monitor->StopTimer();
-                        echo '<br />';
-                        wfc_DisplayMonitor( $monitor );
-                        wfc_print_api_limit();
+                        if(wfc_callsLeft())
+                        {
+                            $monitor = new Monitor();
+                            $monitor->StartTimer();
+                            wfc_manage_update();
+                            $monitor->StopTimer();
+                            echo '<br />';
+                            wfc_DisplayMonitor( $monitor );
+                            wfc_print_api_limit();
+                        }
                     ?>
                 </div>
             </div>
