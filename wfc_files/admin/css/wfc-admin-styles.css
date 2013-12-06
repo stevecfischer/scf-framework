@@ -665,12 +665,11 @@ body .ui-tooltip { border-width: 2px; }
     width: 60px;
     position: absolute;
     top: 0;
-    left: 0;
+    left: 24px;
     margin: 0;
     padding: 0;
     cursor: pointer;
     z-index: 100;
-    opacity: 0;
 }
 .wfc-input-checkbox label{
     height: 60px;
