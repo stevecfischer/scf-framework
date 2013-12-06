@@ -108,16 +108,19 @@
 
     function Wfc_Core_Page_Loop(){
         global $post;
-        echo '<div class="row">';
-        echo '<div id="content" class="span9">';
+        echo '<div class="container">';
+        echo '<div class="row row-offcanvas row-offcanvas-right">';
+        echo '<div class="col-xs-12 col-sm-9">';
         while( have_posts() ) : the_post();
             echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
             the_content();
         endwhile;
         wp_reset_query();
-        echo '</div><!-- //#content -->';
+        echo '</div><!-- //.col-xs-12.col-sm-9 -->';
+        echo '<div class="col-xs-6 col-sm-3 sidebar-offcanvas">';
         dynamic_sidebar();
-        echo '</div>';
+        echo '</div><!-- //.col-xs-6.col-sm-3.sidebar-offcanvas -->';
+        echo '</div><!-- //.container -->';
     }
 
     function Wfc_Core_Home_Page_Loop(){

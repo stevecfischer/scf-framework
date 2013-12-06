@@ -124,19 +124,25 @@
      * @return string $url real link
      */
     function Wfc_fix_atoz_url( $post_id ){
-       $short_cut     = get_post_meta( $post_id, 'wfc_page_type_shortcut', true );
-        if(intval($short_cut)>0)
+         $short_cut     = get_post_meta( $post_id, 'wfc_page_type_shortcut', true );
+        if($short_cut[0]!='none')
         {
-            switch($short_cut)
+            switch($short_cut[0])
             {
                 case 1:
-                    $short_cut =get_permalink(get_post_meta( $post_id, 'wfc_page_existing_pages', true ));
+                    $a=get_post_meta( $page->ID, 'wfc_page_existing_pages', true );
+                    $short_cut =get_permalink($a[0]);
                 break;
                 case 2:
-                    $short_cut=get_post_meta( $post_id, 'wfc_page_external_link', true );
+                    $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
                 break;
                 case 3:
-                     $short_cut=wp_get_attachment_url(get_post_meta( $post_id, 'wfc_page_existing_pdfs', true ));
+                    $a=get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true );
+                    $short_cut=wp_get_attachment_url($a[0]);
+                break;
+
+                default:
+                    return get_permalink($post_id);
                 break;
             }
             return $short_cut;

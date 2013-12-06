@@ -114,7 +114,8 @@ function wfc_check_update() {
     echo 'GitHub is broken ? Update from there : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_update=true"><input type="text" value="" name="update_url" /><input type="submit" value="Update" onclick="return confirm(\'Did you do a backup before ? Backup Manager can help you with that !\');" /></form>';
     $gr = new GRepo(GIT_USER, GIT_REPO);
     $loc=get_local_version();
-    echo 'Git : '.$git=get_git_version();
+    $git=get_git_version();
+    echo 'Git : '.$git.' - <a href="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_refresh">Refresh</a>';
     echo '<br />Local : '.$loc.'<br />';
     if(!$git)
         echo 'A version file is missing on git, need to stop there.';
@@ -551,18 +552,27 @@ function rrmdir($dir) {
 * @return string $version lastest version
 */
 function get_git_version() {
-     $gr = new GRepo(GIT_USER, GIT_REPO);
-    $ver_git='';
-    $all=$gr->getRepoContents('');
-    foreach($all as $f) if(substr($f->name,-3)=='wfc'){
-            $name=substr($f->name,0,-4);
-             $tempvar=explode('_',$name);
-             if($tempvar[0]=='Ver')
-                return $ver_git=$tempvar[1];
-            else
-                return false;
+    if(empty($_COOKIE['git_version']) || isset($_GET['force_refresh']))
+    {
+         $gr = new GRepo(GIT_USER, GIT_REPO);
+        $ver_git='';
+        $all=$gr->getRepoContents('');
+        foreach($all as $f) if(substr($f->name,-3)=='wfc'){
+                $name=substr($f->name,0,-4);
+                 $tempvar=explode('_',$name);
+                 if($tempvar[0]=='Ver')
+                    $ver_git=$tempvar[1];
+            }
+        if($ver_git!='')
+        {
+            setcookie('git_version',$ver_git,time()+3600*24);
+            return $ver_git;
         }
-    return ($ver_git!='') ? $ver_git : false;
+        else
+            return false;
+    }
+    else
+        return $_COOKIE['git_version'];
 }
 /**
 * Gets the local version
