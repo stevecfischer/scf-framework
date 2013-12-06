@@ -480,8 +480,6 @@ function wfc_force_update() {
         }
         closedir($handle);
     }
-    echo $folder_name;
-    /*
     if($folder_name!='') {
         $path_to_old=WFC_PT.'../working_directory/'.$folder_name.'/wfc_files';
         //Time to delete all current files
@@ -502,7 +500,6 @@ function wfc_force_update() {
             $result='Unable to replace old files.. Change permissions on wfc_files folder.';
     }
         $result='Unable to find new files.';
-    */
 }
 /**
 * Prints api calls left
