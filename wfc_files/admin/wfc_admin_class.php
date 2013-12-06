@@ -34,7 +34,17 @@
                                                                  &$this,
                                                                  'wfc_display_post_thumbnail_column'
                                                             ), 5, 2 );
+            add_action(
+                'manage_subpagebanner_posts_custom_column', array(
+                                                                 &$this,
+                                                                 'wfc_display_post_thumbnail_column'
+                                                            ), 5, 2 );
 
+            add_action(
+                'manage_page_posts_custom_column', array(
+                                                                 &$this,
+                                                                 'wfc_display_post_thumbnail_column'
+                                                            ), 5, 2 );
             /* @sftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             //add_action( 'init', array(&$this, 'wfc_init_cpt') );
