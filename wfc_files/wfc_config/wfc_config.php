@@ -18,9 +18,9 @@
     define('WFC_GLOBAL', WFC_PT.'/admin/global');
     define('WFC_URI', get_template_directory_uri());
     define('WFC_ADM', WFC_PT.'/admin');
-    define('WFC_CSS_URI', WFC_URI.'/wfc_files/css');
-    define('WFC_JS_URI', WFC_URI.'/wfc_files/js');
-    define('WFC_IMG_URI', WFC_URI.'/wfc_files/images');
+    define('WFC_CSS_URI', WFC_URI.'/css');
+    define('WFC_JS_URI', WFC_URI.'/js');
+    define('WFC_IMG_URI', WFC_URI.'/images');
     define('WFC_ADM_CSS_URI', WFC_URI.'/wfc_files/admin/css');
     define('WFC_ADM_JS_URI', WFC_URI.'/wfc_files/admin/js');
     define('WFC_ADM_IMG_URI', WFC_URI.'/wfc_files/admin/images');
