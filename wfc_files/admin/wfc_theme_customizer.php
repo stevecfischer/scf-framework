@@ -371,7 +371,7 @@
                         {
                             $monitor = new Monitor();
                             $monitor->StartTimer();
-                            echo wfc_manage_update();
+                            wfc_manage_update();
                             $monitor->StopTimer();
                             echo '<br />';
                             wfc_DisplayMonitor( $monitor );

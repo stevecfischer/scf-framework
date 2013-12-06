@@ -87,7 +87,7 @@
          * @return Object $obj api response
          */
         public function getRepoTags(){
-            $this->_request( sprintf( $this->src_userRepoDetails, $this->user, $this->repo ) );
+            $this->_request( sprintf( $this->src_userRepoTags, $this->user, $this->repo ) );
             if( $this->responseCode != 200 ){
                 echo 'GitHub server error...'; // e.g
             }
