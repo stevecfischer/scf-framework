@@ -334,7 +334,9 @@
                     </div>
                     <div class="rm_input rm_text">
                     Saved options :
-                        <?php foreach ($save_options as $value) {
+                        <?php 
+                        $msg='';
+                        foreach ($save_options as $value) {
                             $msg.= $value.', ';
                         }
                         echo substr($msg,0,-2);

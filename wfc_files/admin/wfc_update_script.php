@@ -26,6 +26,7 @@
 *
 * @since 1.0
 */
+error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
 /**
 * Configure repo information there
 * - GIT_USER, a valid github user
@@ -407,7 +408,15 @@ function wfc_doUpdate() {
         $result='Unable to update, the security token is outdated, make sure to make the diffs first !';
     return $result;
 }
-
+/**
+ * In case of a github failure, or API change 
+ * Grab $_POST['update_url'] from the form
+ * 
+ * Replace with the file from the url
+ * No other checking, use carefully
+ * @since 1.3
+ * @return string $return string to be displayed on the panel
+ */
 function wfc_force_update() {
     $link=$_POST["update_url"];
     $return='';
