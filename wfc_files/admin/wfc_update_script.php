@@ -111,7 +111,7 @@ function wfc_manage_update() {
 * @since 1.1
 */
 function wfc_check_update() {
-    echo 'GitHub is broken ? Update from there : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_update=true"><input type="text" value="" name="update_url" /><input type="submit" value="Update" /></form>';
+    echo 'GitHub is broken ? Update from there : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_update=true"><input type="text" value="" name="update_url" /><input type="submit" value="Update" onclick="return confirm(\'Did you do a backup before ? Backup Manager can help you with that !\');" /></form>';
     $gr = new GRepo(GIT_USER, GIT_REPO);
     $loc=get_local_version();
     echo 'Git : '.$git=get_git_version();
