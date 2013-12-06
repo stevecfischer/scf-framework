@@ -35,13 +35,20 @@
     // @sftodo: make this a site option.  remember to seperate theme logic from from framework logic
     define('AUTOLOAD_MINIFY', false); //Toggle if site minifies and compresses js|css
 
+
+    $_dir=__DIR__.'/../../';
+    $d=scandir($_dir);
+    $version=0;
+    foreach ($d as $e) if(substr($e,0,4)=='Ver_' && substr($e,-4)=='.wfc') {
+        $version=substr($e,4,-4);
+    }
     /**
      * The WFC Framework version string
      *
      * @global string $wfc_version
      * @since 5.2
      */
-    $wfc_version = '5.3.2';
+    $wfc_version = $version;
 
     /**
      * MAIN INCLUDE FILE

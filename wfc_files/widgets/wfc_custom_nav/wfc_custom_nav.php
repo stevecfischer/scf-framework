@@ -107,24 +107,33 @@
             }
             $css_class     =
                 implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
-            $short_cut     = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
-            if(intval($short_cut)>0)
+             $short_cut     = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
+            if($short_cut[0]!='none')
             {
-                switch($short_cut)
+                switch($short_cut[0])
                 {
                     case 1:
-                        $short_cut =get_permalink(get_post_meta( $page->ID, 'wfc_page_existing_pages', true ));
+                        $a=get_post_meta( $page->ID, 'wfc_page_existing_pages', true );
+                        $short_cut =get_permalink($a[0]);
                     break;
                     case 2:
                         $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
                     break;
                     case 3:
-                         $short_cut=wp_get_attachment_url(get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true ));
+                        $a=get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true );
+                        $short_cut=wp_get_attachment_url($a[0]);
+                    break;
+
+                    default:
+                        unset($short_cut);
                     break;
                 }
             }
-            $short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', false );
-            if( isset($short_cut) && !empty($short_cut) ){
+            else
+                unset($short_cut);
+           
+            if( isset($short_cut) && !empty($short_cut) ){ 
+                $short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', false );
                 if( isset($short_new_tab) && !empty($short_new_tab) ){
                     $output .=
                         $indent.'<li class="'.$css_class.'"><a target="_blank" href="'.$short_cut.'">'.$link_before.
