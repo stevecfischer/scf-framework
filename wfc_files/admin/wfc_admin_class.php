@@ -41,6 +41,22 @@
         }
 
         /**
+         * The WFC Framework version string
+         *
+         * @global string $wfc_version
+         * @since 5.2
+         */
+        public static function grab_version() {
+            $_dir=__DIR__.'/../../';
+            $d=scandir($_dir);
+            $version=0;
+            foreach ($d as $e) if(substr($e,0,4)=='Ver_' && substr($e,-4)=='.wfc') {
+                $version=substr($e,4,-4);
+            }
+            return $version;
+        }
+
+        /**
          * Get all active custom post types
          *
          * @since 5.1
@@ -195,3 +211,5 @@
      * @since 5.1
      */
     $GLOBALS['wfc_admin'] = new Wfc_Admin_Class();
+
+    $wfc_version=WFC_Admin_Class::grab_version();
