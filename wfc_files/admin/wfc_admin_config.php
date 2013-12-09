@@ -26,6 +26,7 @@
     require_once(WFC_THEME_FUNCTIONS.'/wfc_autoload_script_class.php'); //Auto theme builder
     require_once(WFC_ADM.'/wfc_admin_hooks.php'); //Auto theme builder
     require_once(WFC_ADM.'/wfc_fastbackup_class.php'); //Fast backup
+    require_once(WFC_PLUGINS.'/dragndrop/index.php'); //Drag&drop admin plugin
     /**
      * Includes WFC Shortcodes
      *
