@@ -32,7 +32,7 @@
 			define('MY_TEXTDOMAIN', 'dgdfi');
 
 			// Set default options
-			add_option('drag-drop-post-types', array('post', 'page'));
+			add_option('drag-drop-post-types', array('post', 'page','campaign','subpagebanner','news','homepageboxes','testimonial'));
 			add_option('drag-drop-file-types', array('jpg', 'jpeg', 'png', 'gif'));
 			add_option('drag-drop-user-capability', 'manage_options');
 			add_option('drag-drop-page-reload', 0);

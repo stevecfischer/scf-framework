@@ -47,26 +47,9 @@
 	
 	<div id="drag-to-feature-image" class="metabox-holder has-right-sidebar">
 		
-		<!-- Sidebar info -->
-		<div class="inner-sidebar">
-		
-			<div id="contact-me" class="postbox">
-				<h3><span><?php _e('Contact me', $this->plugin_locale); ?></span></h3>
-				<div class="inside">
-					<p><?php _e('If you have any questions regarding this plugin or have ideas on how to improve it then please dont hesitate to', $this->plugin_locale); ?> <a href="mailto:info@jonathanlundstrom.me"><?php _e('contact me', $this->plugin_locale); ?>.</a></p>
-					<div class="blobContainer contact-me">
-						<a href="mailto:info@jonathanlundstrom.me" title="<?php _e('Send me an email', $this->plugin_locale); ?>"><img src="<?php echo $this->plugin_directory; ?>assets/images/blob-email.png" alt="" /></a>
-						<a target="_blank" href="https://www.facebook.com/jonathanlundstrom" title="<?php _e('Find me on Facebook', $this->plugin_locale); ?>"><img src="<?php echo $this->plugin_directory; ?>assets/images/blob-facebook.png" alt="" /></a>
-						<a target="_blank" href="https://twitter.com/Plizzo" title="<?php _e('Find me on Twitter', $this->plugin_locale); ?>"><img src="<?php echo $this->plugin_directory; ?>assets/images/blob-twitter.png" alt="" /></a>
-						<a target="_blank" href="https://plus.google.com/111226368568418280015" title="<?php _e('Find me on Google+', $this->plugin_locale); ?>"><img class="last" src="<?php echo $this->plugin_directory; ?>assets/images/blob-googleplus.png" alt="" /></a>
-					</div>
-				</div>
-			</div>
-		
-		</div>
-		
+	
 		<div id="post-body">
-			<div id="post-body-content">
+			<div id="postbox-container">
 		
 				<!-- Meta box -->
 				<div id="manage-plugin-options" class="postbox">
