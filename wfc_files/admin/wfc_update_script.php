@@ -16,7 +16,7 @@
 *
 * @package WFC-framework
 * @author Thibault Miclo
-* @version 1.2
+* @version 1.4
 * @since 5.2
 */
 /**
@@ -69,7 +69,7 @@ function wfc_callsLeft() {
     $limit=json_decode(file_get_contents('https://api.github.com/rate_limit', false, $context));
     if($limit->rate->remaining==0)
     {
-        echo '<span style="color:red;font-size:25px;margin-top:25px;">0 call remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span><br /><br /><br />';
+        echo '<span style="display:block;color:red;font-size:25px;padding-top:25px;">0 call remaining, reset at '.date('h:i:s A',$limit->rate->reset).'</span><br /><br /><br />';
         return 0;
     }
     else
@@ -94,13 +94,14 @@ function wfc_generateToken() {
 * @return function the function launched to display the content
 */
 function wfc_manage_update() {
+    broken_github();
     if(isset($_GET['force_update'])&&$_GET['force_update']==true&&!empty($_POST["update_url"]))
         return wfc_force_update();
-    else if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true)
+    else if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true && wfc_callsLeft()>0)
         return wfc_check_diffs();
-    else if(isset($_GET['update']) && $_GET['update']==$token)
+    else if(isset($_GET['update']) && $_GET['update']==$token && wfc_callsLeft()>0)
         echo wfc_doUpdate();
-    else
+    else if(wfc_callsLeft()>0)
         return wfc_check_update();
 }
 /**
@@ -111,7 +112,6 @@ function wfc_manage_update() {
 * @since 1.1
 */
 function wfc_check_update() {
-    echo 'GitHub is broken ? Update from there : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_update=true"><input type="text" value="" name="update_url" /><input type="submit" value="Update" onclick="return confirm(\'Did you do a backup before ? Backup Manager can help you with that !\');" /></form>';
     $gr = new GRepo(GIT_USER, GIT_REPO);
     $loc=get_local_version();
     $git=get_git_version();
@@ -132,6 +132,15 @@ function wfc_check_update() {
             echo 'An update is available : <strong>Version '.$git.'</strong><br />
         <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&check_diffs=true"><input type="submit" value="Check diffs" /></form>';
     }
+}
+/**
+ * In case of github failure
+ * Enable force update form
+ * 
+ * @since 1.4
+ */
+function broken_github() {
+    echo 'GitHub is broken ? Update from there : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_update=true"><input type="text" value="" name="update_url" /><input type="submit" value="Update" onclick="return confirm(\'Did you do a backup before ? Backup Manager can help you with that !\');" /></form>';
 }
 /**
 * Diffs view for the update box - SECOND STEP

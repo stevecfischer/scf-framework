@@ -115,16 +115,20 @@
                 <?php get_footer(); ?>';
         $search       = '
                 <?php get_header(); ?>
-                if( have_posts() ) :
-                    while( have_posts() ) : the_post();
-                        the_title();
-                        the_content();
-                    endwhile; else:
-                    echo "There are no posts matching that search term.";
-                endif;
-                wp_reset_query();
+                <h2><?php printf( \'Search Results for: %s\',get_search_query() ); ?></h2>
+                <?php
+                   if( have_posts()):
+                   while ( have_posts() ) : the_post(); ?>
+                    <h3><a href="<?php the_permalink(); ?>">> <?php the_title(); ?></a></h3>
+                     <?php endwhile; 
+                    else:
+                        echo \'<p>No results.</p>\';
+                    endif;?>
                 <?php get_footer(); ?>';
-        $four_o_four  = 'echo "404 error."';
+        $four_o_four  = '<?php get_header(); ?>
+                <h2>404</h2>
+                The page you are looking for doesn\'t exists...
+                <?php get_footer(); ?>';
         $editor_style = "";
         $single       = "";
         $archive      = "";
@@ -155,6 +159,9 @@
                     fclose( $fp );
                 }
             }
+            rename(WFC_PT.'/images',WFC_PT.'/../images');
+            rename(WFC_PT.'/css',WFC_PT.'/../css');
+            rename(WFC_PT.'/js',WFC_PT.'/../js');
             echo 'Theme built successfully.';
         } else{
             ?>
@@ -164,6 +171,9 @@
                     The following files will be created automatically:<br/>
                     Header.php <br/>
                     Footer.php <br/>
+                    images/ <br/>
+                    css/ <br/>
+                    js/ <br/>
                     <br/>
                     <!-- Required since we check if header.php exists to know if we need to build out the theme -->
                     You can choose to build the following files or not:<br/>
@@ -180,7 +190,7 @@
                 </p>
                 <p class="submit">
                     <input name="build" type="submit" value="Build Out Theme"/>
-                </p>
+                </p>    
             </form>
         <?php
         }

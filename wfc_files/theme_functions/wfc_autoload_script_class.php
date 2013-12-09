@@ -28,7 +28,7 @@
 
         public function autoload( $ext ){
             $this->ext = $ext;
-            $dir       = WFC_PT.'/'.$ext;
+            $dir       = WFC_PT.'/../'.$ext;
             $directory = dir( $dir );
             $include   = array();
             while( false !== ($item = $directory->read()) ){
