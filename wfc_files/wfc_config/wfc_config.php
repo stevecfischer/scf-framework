@@ -22,9 +22,10 @@
     define('WFC_CSS_URI', WFC_URI.'/css');
     define('WFC_JS_URI', WFC_URI.'/js');
     define('WFC_IMG_URI', WFC_URI.'/images');
-    define('WFC_ADM_CSS_URI', WFC_URI.'/wfc_files/admin/css');
-    define('WFC_ADM_JS_URI', WFC_URI.'/wfc_files/admin/js');
-    define('WFC_ADM_IMG_URI', WFC_URI.'/wfc_files/admin/images');
+    define('WFC_ADMIN_URI',WFC_URI.'/wfc_files/admin');
+    define('WFC_ADM_CSS_URI', WFC_ADMIN_URI.'/css');
+    define('WFC_ADM_JS_URI', WFC_ADMIN_URI.'/js');
+    define('WFC_ADM_IMG_URI', WFC_ADMIN_URI.'/images');
     /**
      * WFC FRAMEWORK CONFIGURATIONS
      *

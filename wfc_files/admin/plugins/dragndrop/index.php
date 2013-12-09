@@ -51,7 +51,7 @@
 			$this->plugin_locale = MY_TEXTDOMAIN;
 			$this->plugin_options_slug = 'drag-drop-featured-image';
 			$this->plugin_dirname = dirname(plugin_basename(__FILE__));
-			$this->plugin_directory = WFC_PLUGINS.'/dragndrop/';
+			$this->plugin_directory = WFC_ADMIN_URI.'/plugins/dragndrop/';
 			$this->selected_post_types = get_option('drag-drop-post-types');
 			$this->selected_file_types = get_option('drag-drop-file-types');
 			$this->selected_user_capability = get_option('drag-drop-user-capability');
