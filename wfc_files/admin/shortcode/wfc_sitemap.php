@@ -60,7 +60,9 @@
         extract(
             shortcode_atts(
                 array(
-                     'exclude' => ''
+                     'exclude' => '',
+                     'class' => '',
+                     'children_class' => ''
                 ), $atts ) );
         if( $exclude != '' && !empty($exclude) ){
             $exclude_pages     = $exclude;
@@ -73,7 +75,7 @@
         $return = '';
         if( $result ){
             $return .= '<div class="sitemap_without_child">';
-            $return .= '<ul>';
+            $return .= '<ul class="'.$class.'">';
             foreach( $result as $res ){
                 $ancestor_id = $res->ID;
                 $args        = array(
@@ -91,34 +93,25 @@
                         $return .= "<li><a href='$link'>$res->post_title</a></li>";
                     }
                 }
-            }
-            $return .= '</ul>';
-            $return .= '</div>';
-            foreach( $result as $res ){
-                $ancestor_id = $res->ID;
-                $args        = array(
-                    'child_of' => $ancestor_id,
-                    'exclude'  => $exclude_pages,
-                    'title_li' => '',
-                    'echo'     => 0,
-                    'walker'   => new Wfc_Sitemap_Walker
-                );
-                $children    = wp_list_pages( $args );
-                if( $children ){
+                else
+                {
                     $return .= '<div class="sitemap_with_child">';
                     if( !in_array( $res->ID, $exclude_pages_Arr ) ){
                         //$link = get_permalink( $ancestor_id );
                         $link = Wfc_fix_sitemap_url( $ancestor_id );
-                        $return .= "<a dave href='$link'>$res->post_title</a><ul>";
+                        $return .= "<a href='$link'>$res->post_title</a><ul class='$children_class'>";
                         $return .= $children;
                         $return .= '</ul></div>';
                     } else{
-                        $return .= '<ul>';
+                        $return .= '<ul class="'.$children_class.'">';
                         $return .= $children;
                         $return .= '</ul></div>';
                     }
                 }
+
             }
+            $return .= '</ul>';
+            $return .= '</div>';
         }
         return $return;
     }
