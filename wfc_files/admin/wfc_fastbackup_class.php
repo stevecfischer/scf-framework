@@ -9,44 +9,22 @@
 *
 * @author Thibault Miclo 
 * @version 1.0
-* @since 5.3.3
 */
 
 ob_start();
-/**
- * FastBackup Class 
- * 
- * See commments at the beginning of the file for more informations
- */
+
 class FastBackup
 {
-  /**
-   * Database informations
-   */
     protected
         $hostname,
         $user,
         $password,
         $database;
 
-    /**
-    * Class internal use
-    */
     private
         $db=false,
         $errors=array();
 
-    /**
-     * Constructor
-     * You can send database informations when you instanciate the class
-     * Or assign them later using __set()
-     * 
-     * @since 1.0
-     * @param string $host db hostname
-     * @param string $user db username
-     * @param string $pass db password
-     * @param strgin $database db name
-     */
     public function __construct($host='',$user='',$pass='',$database='')
     {
         $this->hostname=$host;
@@ -55,50 +33,21 @@ class FastBackup
         $this->database=$database;
     }
 
-    /**
-     * Magic PHP setter 
-     * 
-     * @since 1.0
-     * @param string $name attribut name
-     * @param mixed $value attribut value
-     */
     public function __set($name,$value)
     {
         $this->$name=$value;
     }
 
-    /**
-     * Magic PHP getter 
-     * 
-     * @since 1.0
-     * @param string $name attribut name
-     * @return mixed $value attribut value 
-     */
     public function __get($name)
     {
         return $this->$name;
     }
 
-    /**
-     * Force another database connection
-     * Useful when you want to connect to another database
-     * Just set the new hostname, user, password, database
-     * Then clearDB()
-     * 
-     * @since 1.0
-     */ 
     public function clearDB()
     {
       $this->db=false;
     }
 
-    /**
-     * Connexion to the database
-     * Connect once then store the PDO object in the class
-     * 
-     * @since 1.0
-     * @return boolean connected or not
-     */ 
     private function connectDB()
     {
         if($this->db)
@@ -127,21 +76,11 @@ class FastBackup
         return false;
     }
 
-    /**
-     * Download an sql file
-     * Send the name to the method and a .sql will be append
-     * You can reach other folder by doing $fb->downloadDB('../folder/file');
-     * Echo appropriated headers to initiate the download
-     * 
-     * @since 1.0
-     * @param string $name path to file without extension
-     * @return boolean success or not
-     */ 
     public function downloadDB($name)
     {
         if(!empty($name))
         {
-            if($this->connectDB() && file_exists($name.'.sql'))
+            if($this->connectDB())
             {
                 $str = $this->generateString();
                 ob_clean();
@@ -158,15 +97,6 @@ class FastBackup
         return false;
     }
 
-    /**
-     * Backup the database in a path/file, without extension
-     * Make sure the folder already exists
-     * The method won't create any folder
-     * 
-     * @since 1.0
-     * @param string $path path/to/file whitout .sql
-     * @return boolean success or not
-     */ 
     public function backupDB($path)
     {
         if(!empty($path))
@@ -174,7 +104,7 @@ class FastBackup
             if($this->connectDB())
             {
                 $str = $this->generateString();
-                if($f=fopen($path.'.sql','w+'))
+                if($f=fopen($path,'w+'))
                 {
                     fwrite($f,$str);
                     fclose($f);
@@ -189,13 +119,6 @@ class FastBackup
         return false;
     }
 
-    /**
-     * Restore database from a file
-     * $file must be a valid path with the extension
-     * 
-     * @since 1.0
-     * @return boolean success or not
-     */ 
     public function restoreDB($file)
     {
         if(!empty($file) && file_exists($file))
@@ -216,32 +139,11 @@ class FastBackup
         return false;
     }
 
-    /**
-     * Send the PDO database object
-     * You can then use it in your own script
-     * 
-     * @since 1.0
-     * @return PDO $db a pdo object
-     */ 
     public function getDBObject()
     {
-        if($this->db)
-            return $this->db;
-        else
-        {
-            $this->connectDB();
-            return $this->db;
-        }
+        return $this->db;
     }
 
-    /**
-     * Remove remarks at then end of sql statements
-     * Used to clean files before restore
-     * 
-     * @since 1.0
-     * @param string $sql sql file content
-     * @return string $output sql file content without remarks
-     */ 
     private function remove_remarks($sql)
     {
        $lines = explode("\n", $sql);
@@ -262,15 +164,6 @@ class FastBackup
        return $output;
     }
 
-    /**
-     * Split sql statements into array so we can execute them one by one
-     * Useful for restore
-     * 
-     * @since 1.0
-     * @param string $sql sql file clean content
-     * @param string $delimeter end of sql statement, usually ;
-     * @return array $output array of sql statements
-     */ 
     private function split_sql_file($sql, $delimiter)
     {
        $tokens = explode($delimiter, trim($sql));
@@ -320,13 +213,6 @@ class FastBackup
        return $output;
     }
 
-    /**
-     * Generate the content of an sql file from a database
-     * Useful for download and backup
-     * 
-     * @since 1.0
-     * @return string $content content to be put in an sql file
-     */ 
     private function generateString()
     {
         $db=$this->db;
@@ -358,11 +244,6 @@ class FastBackup
         return $return;
     }
 
-    /**
-     * Print errors occured while using the class
-     * 
-     * @since 1.0
-     */ 
     public function getErrors()
     {
         foreach ($this->errors as $e)

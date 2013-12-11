@@ -25,21 +25,21 @@ jQuery(function ($) {
     }
 
     $('#wfc_page_type_shortcut').change(function () {
-        var s=$('#wfc_page_type_shortcut option:selected').val();
+        var s=parseInt($('#wfc_page_type_shortcut option:selected').val());
         switch(s)
         {
-            case 'Page':
+            case 1:
                 $('#wfc_page_existing_pages').show(600);
                 $('#wfc_page_external_link').hide(600);
                 $('#wfc_page_existing_pdfs').hide(600);
             break;
-            case 'External Link':
+            case 2:
                 $('#wfc_page_existing_pages').hide(600);
                 $('#wfc_page_external_link').show(600);
                 $('#wfc_page_existing_pdfs').hide(600);
                 $('wfc_page_new_tab_option[]').prop('checked', true);
             break;
-            case 'PDF':
+            case 3:
                 $('#wfc_page_existing_pages').hide(600);
                 $('#wfc_page_external_link').hide(600);
                 $('#wfc_page_existing_pdfs').show(600);
