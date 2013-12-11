@@ -98,7 +98,7 @@ function wfc_manage_update() {
     if(isset($_GET['force_update'])&&$_GET['force_update']==true&&!empty($_POST["update_url"]))
         return wfc_force_update();
     else if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true && wfc_callsLeft()>0)
-        return wfc_check_diffs();
+        echo wfc_check_diffs();
     else if(isset($_GET['update']) && $_GET['update']==$token && wfc_callsLeft()>0)
         echo wfc_doUpdate();
     else if(wfc_callsLeft()>0)
@@ -428,6 +428,7 @@ function wfc_doUpdate() {
  * @return string $return string to be displayed on the panel
  */
 function wfc_force_update() {
+    $loc=get_local_version();
     $link=$_POST["update_url"];
     $return='';
     $folder_name='';
@@ -495,9 +496,12 @@ function wfc_force_update() {
         //Time to delete all current files
         rrmdir($path_to_current); //custom function, windows...
         if(rename($path_to_old, $path_to_current)) {
+            $new=substr($link,0,-4);
+            $new=substr($new,strrpos($new,'/'),strlen($new));
+            $new=substr($new,15);
             //Do not forget to update version file !
             unlink(WFC_PT.'../Ver_'.$loc.'.wfc');
-            $f=fopen(WFC_PT.'../Ver_1.force.update.wfc','w+');
+            $f=fopen(WFC_PT.'../Ver_'.$new.'.wfc','w+');
             fwrite($f,'VERSION FILE - DO NOT DELETE');
             fclose($f);
             $result='WFC theme is now up-to-date !';
