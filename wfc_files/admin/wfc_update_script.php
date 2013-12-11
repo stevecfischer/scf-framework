@@ -96,7 +96,7 @@ function wfc_generateToken() {
 function wfc_manage_update() {
     broken_github();
     if(isset($_GET['force_update'])&&$_GET['force_update']==true&&!empty($_POST["update_url"]))
-        return wfc_force_update();
+        echo wfc_force_update();
     else if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true && wfc_callsLeft()>0)
         echo wfc_check_diffs();
     else if(isset($_GET['update']) && $_GET['update']==$token && wfc_callsLeft()>0)
@@ -504,16 +504,18 @@ function wfc_force_update() {
             $f=fopen(WFC_PT.'../Ver_'.$new.'.wfc','w+');
             fwrite($f,'VERSION FILE - DO NOT DELETE');
             fclose($f);
-            $result='WFC theme is now up-to-date !';
+            $return='WFC theme is now up-to-date !';
             unset($zip);
             @chmod(WFC_PT.'../working_directory', 0777);
             @chmod(WFC_PT.'../working_directory/Ver_force_update.zip', 0777);
             rrmdir(WFC_PT.'../working_directory');
         }
         else
-            $result='Unable to replace old files.. Change permissions on wfc_files folder.';
+            $return='Unable to replace old files.. Change permissions on wfc_files folder.';
     }
-        $result='Unable to find new files.';
+        $return='Unable to find new files.';
+
+    return $return;
 }
 /**
 * Prints api calls left
