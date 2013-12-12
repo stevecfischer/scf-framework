@@ -96,9 +96,9 @@ function wfc_generateToken() {
 function wfc_manage_update() {
     broken_github();
     if(isset($_GET['force_update'])&&$_GET['force_update']==true&&!empty($_POST["update_url"]))
-        return wfc_force_update();
+        echo wfc_force_update();
     else if(isset($_GET['check_diffs'])&&$_GET['check_diffs']==true && wfc_callsLeft()>0)
-        return wfc_check_diffs();
+        echo wfc_check_diffs();
     else if(isset($_GET['update']) && $_GET['update']==$token && wfc_callsLeft()>0)
         echo wfc_doUpdate();
     else if(wfc_callsLeft()>0)
@@ -136,7 +136,7 @@ function wfc_check_update() {
 /**
  * In case of github failure
  * Enable force update form
- * 
+ *
  * @since 1.4
  */
 function broken_github() {
@@ -419,9 +419,9 @@ function wfc_doUpdate() {
     return $result;
 }
 /**
- * In case of a github failure, or API change 
+ * In case of a github failure, or API change
  * Grab $_POST['update_url'] from the form
- * 
+ *
  * Replace with the file from the url
  * No other checking, use carefully
  * @since 1.3
