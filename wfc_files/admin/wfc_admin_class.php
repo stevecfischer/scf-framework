@@ -212,4 +212,5 @@
      */
     $GLOBALS['wfc_admin'] = new Wfc_Admin_Class();
 
+    // @sftodo: not the best but it will work for now.
     $wfc_version=WFC_Admin_Class::grab_version();
