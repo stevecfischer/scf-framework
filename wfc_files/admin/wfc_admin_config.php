@@ -77,12 +77,8 @@
      */
     add_action( 'login_head', 'wfc_login_logo' );
     function wfc_login_logo(){
-        echo '<style type="text/css">.login h1 a{background-size:250px 49px !important;}h1 a { background-image:url('.
+        echo '<style type="text/css">.login h1 a{background-size:250px 49px !important;width:250px;}h1 a { background-image:url('.
             WFC_ADM_IMG_URI.'/wfc_logo.png) !important;}</style>';
-        echo '<script type="text/javascript">
-            jQuery(function($){
-                $("a:first").addClass("external").attr({ target: "_blank" });
-            });</script>';
     }
 
     /**
