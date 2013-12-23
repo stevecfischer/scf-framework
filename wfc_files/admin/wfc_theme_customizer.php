@@ -10,7 +10,7 @@
         'home', //Index URL
         'active_plugins', //List of active plugins
         'template' //Active theme
-        ); 
+        );
     $themename = get_bloginfo( 'name' );
     $shortname = "wfc_";
     $categories = get_categories( 'hide_empty=0&orderby=name' );
@@ -87,21 +87,15 @@
         ),
         array("type" => "close"),
         array(
-            "name" => "Easter Eggs",
+            "name" => "WFC Caching",
             "type" => "section"
         ),
         array("type" => "open"),
         array(
-            "name" => "Easter Egg Video",
-            "desc" => "enter url to video",
-            "id"   => $shortname."easter_egg_video",
-            "type" => "text"
-        ),
-        array("type" => "close"),
-        array(
             "name" => "To Rebuild WFC Cached Javascript and CSS click the button <a href='admin.php?wfc_renew_cache=renew' target='_blank'>Renew</a>",
-            "type" => "title"
+            "type" => "information"
         ),
+        array("type" => "close")
     );
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
@@ -165,6 +159,10 @@
                 case "title":
                     ?>
                     <p><?php echo $value['name']; ?></p>
+                    <?php break;
+                case "information":
+                    ?>
+                    <p><div class="rm_input rm_information"><?php echo $value['name']; ?></div></p>
                     <?php break;
                 case 'text':
                     ?>
@@ -334,7 +332,7 @@
                     </div>
                     <div class="rm_input rm_text">
                     Saved options :
-                        <?php 
+                        <?php
                         $msg='';
                         foreach ($save_options as $value) {
                             $msg.= $value.', ';

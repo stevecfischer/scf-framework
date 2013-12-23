@@ -136,7 +136,7 @@
     }
 
     function Wfc_Core_Homecontent_Loop(){
-        $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC'));
+        $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC', 'orderby' =>'menu_order'));
         if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">
                 <h2><?php echo get_the_title(); ?></h2>
