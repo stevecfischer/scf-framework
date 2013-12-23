@@ -46,7 +46,7 @@
          * @global string $wfc_version
          * @since 5.2
          */
-        public static function grab_version() {
+        public static function wfc_grab_version() {
             $_dir=__DIR__.'/../../';
             $d=scandir($_dir);
             $version=0;
@@ -213,4 +213,4 @@
     $GLOBALS['wfc_admin'] = new Wfc_Admin_Class();
 
     // @sftodo: not the best but it will work for now.
-    $wfc_version=WFC_Admin_Class::grab_version();
+    $wfc_version=WFC_Admin_Class::wfc_grab_version();
