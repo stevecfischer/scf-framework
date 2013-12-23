@@ -185,17 +185,3 @@ function wfc_img_url(){
     return WFC_IMG_URI;
 }
 add_shortcode( 'wfcimg', 'wfc_img_url' );
-
-/**a
- * Filter to add edit link on pages/posts when connected
- *
- * @param string $content content before
- * @return string $content content after
- * @since 5.2
- */
-function add_edit_link($content)
-{
-    global $wfc_admin;
-    $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.3.7', 'Current method to use: edit_post_link() directly in template file' );
-}
-add_filter('the_content','add_edit_link');
