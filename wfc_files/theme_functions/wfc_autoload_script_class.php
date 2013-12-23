@@ -29,8 +29,12 @@
         public function autoload( $ext ){
             $this->ext = $ext;
             $dir       = WFC_PT.'/../'.$ext;
+            if(! is_dir($dir) ){
+                return "Directory does not exist.";
+            }
             $directory = dir( $dir );
             $include   = array();
+
             while( false !== ($item = $directory->read()) ){
                 if( $item != '.' && $item != '..' && !preg_match( '/excl/', $item ) ){
                     $info = pathinfo( $dir."/".$item );

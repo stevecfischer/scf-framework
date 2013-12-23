@@ -2,7 +2,7 @@
 /**
  * Displays a pagination
  * To be used in template
- * 
+ *
  */
 function Wfc_Pagination(){
     echo '<div class="pagination">';
@@ -20,7 +20,7 @@ function Wfc_Pagination(){
 
 /**
 * Customized excerpt lenght
-* 
+*
 * @param int $length excerpt lenght in chars
 */
 function Wfc_Print_Excerpt( $length = 55 ){
@@ -50,7 +50,7 @@ function Wfc_Print_Excerpt( $length = 55 ){
 /**
  * Searches the last position of $needle in $haystack
  * Return $haystack from char 0 to last postion+$trail
- * 
+ *
  * @param string $haystack string to search in
  * @param string $needle string we search for
  * @param int $trail numbers of caracters we want after ($needle - 1)
@@ -62,7 +62,7 @@ function Wfc_Reverse_Strrchr( $haystack, $needle, $trail ){
 
 /**
  * Filters the excerpt to return only 56 chars
- * 
+ *
  * @param string $content content before
  * @return string $excerpt content after
  */
@@ -77,7 +77,7 @@ add_filter( 'the_excerpt', 'Wfc_Limit_Excerpt' );
 
 /**
  * Changes the excerpt length
- * 
+ *
  * @param int $length new length
  * @return int $length new length
  */
@@ -90,7 +90,7 @@ add_filter( 'excerpt_length', 'wfc_excerpt_length', 999 );
  * Limits the title length :
  * - 33 chars for news
  * - 30 chars for spotlight
- * 
+ *
  * @param string $title title before
  * @return string $title title after
  */
@@ -109,11 +109,11 @@ add_filter( 'the_title', 'Wfc_Limit_Title' );
 /**
  * If a page has no content
  * Displays a default one
- * 
+ *
  * @package scf-framework
  * @author Steve (12/10/2012)
  * @param string $content content before
- * @return string $content content after 
+ * @return string $content content after
  */
 function Wfc_Auto_Content( $content ){
     if( is_page() ){
@@ -186,20 +186,16 @@ function wfc_img_url(){
 }
 add_shortcode( 'wfcimg', 'wfc_img_url' );
 
-/**
+/**a
  * Filter to add edit link on pages/posts when connected
- * 
+ *
  * @param string $content content before
  * @return string $content content after
  * @since 5.2
  */
 function add_edit_link($content)
 {
-    if(current_user_can('edit_pages') && is_page())
-        return $content.'<br /><br /><a href="'.admin_url().'post.php?post='.get_the_ID().'&action=edit">Edit this page</a>';
-    if(current_user_can('edit_posts') && is_post())
-        return $content.'<br /><br /><a href="'.admin_url().'post.php?post='.get_the_ID().'&action=edit">Edit this post</a>';
-    else
-        return $content;
+    global $wfc_admin;
+    $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.3.7', 'Current method to use: edit_post_link() directly in template file' );
 }
 add_filter('the_content','add_edit_link');

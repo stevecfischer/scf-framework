@@ -80,6 +80,9 @@
             wp_enqueue_script( "extended_assets_compressed" );
         } else{
             $all_js = new wfc_auto_load_assets();
+            if(! is_array($all_js->autoload( 'js' ))){
+                die($all_js->autoload( 'js' ));
+            }
             foreach( $all_js->autoload( 'js' ) as $k => $v ){
                 wp_register_script( $k, WFC_JS_URI.'/'.$v, array('jquery'), '', true );
                 wp_enqueue_script( $k );
@@ -99,6 +102,9 @@
             wp_enqueue_style( "extended_assets_compressed" );
         } else{
             $all_css = new wfc_auto_load_assets();
+            if(! is_array($all_css->autoload( 'css' ))){
+                die($all_css->autoload( 'css' ));
+            }
             foreach( $all_css->autoload( 'css' ) as $k => $v ){
                 wp_register_style( $k, WFC_CSS_URI.'/'.$v );
                 wp_enqueue_style( $k );
