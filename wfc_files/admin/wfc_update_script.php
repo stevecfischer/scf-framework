@@ -428,6 +428,7 @@ function wfc_doUpdate() {
  * @return string $return string to be displayed on the panel
  */
 function wfc_force_update() {
+    $loc=get_local_version();
     $link=$_POST["update_url"];
     $return='';
     $folder_name='';
@@ -495,21 +496,26 @@ function wfc_force_update() {
         //Time to delete all current files
         rrmdir($path_to_current); //custom function, windows...
         if(rename($path_to_old, $path_to_current)) {
+            $new=substr($link,0,-4);
+            $new=substr($new,strrpos($new,'/'),strlen($new));
+            $new=substr($new,15);
             //Do not forget to update version file !
             unlink(WFC_PT.'../Ver_'.$loc.'.wfc');
-            $f=fopen(WFC_PT.'../Ver_1.force.update.wfc','w+');
+            $f=fopen(WFC_PT.'../Ver_'.$new.'.wfc','w+');
             fwrite($f,'VERSION FILE - DO NOT DELETE');
             fclose($f);
-            $result='WFC theme is now up-to-date !';
+            $return='WFC theme is now up-to-date !';
             unset($zip);
             @chmod(WFC_PT.'../working_directory', 0777);
             @chmod(WFC_PT.'../working_directory/Ver_force_update.zip', 0777);
             rrmdir(WFC_PT.'../working_directory');
         }
         else
-            $result='Unable to replace old files.. Change permissions on wfc_files folder.';
+            $return='Unable to replace old files.. Change permissions on wfc_files folder.';
     }
-        $result='Unable to find new files.';
+        $return='Unable to find new files.';
+
+    return $return;
 }
 /**
 * Prints api calls left
