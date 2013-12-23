@@ -120,6 +120,7 @@
         while( have_posts() ) : the_post();
             echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
             the_content();
+            edit_post_link('Edit', '<span class="wfc-edit-link">', '</span>' );
         endwhile;
         wp_reset_query();
         echo '</div><!-- //.col-xs-12.col-sm-9 -->';
