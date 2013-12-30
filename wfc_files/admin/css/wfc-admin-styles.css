@@ -660,7 +660,7 @@ body .ui-tooltip { border-width: 2px; }
 .img_shortcut img {
     width:150px;
 }
-.wfc-metabox-checkbox{
+.wfc-metabox-checkbox-img{
     height: 60px;
     width: 60px;
     position: absolute;
@@ -672,7 +672,7 @@ body .ui-tooltip { border-width: 2px; }
     z-index: 100;
     opacity: 0;
 }
-.wfc-input-checkbox label{
+.wfc-input-checkbox-img label{
     height: 60px;
     width: 60px;
     overflow: hidden;
@@ -680,15 +680,15 @@ body .ui-tooltip { border-width: 2px; }
     position: relative;
     display:inline-block;
 }
-input.wfc-metabox-checkbox:checked + img {
+input.wfc-metabox-checkbox-img:checked + img {
     opacity: 1;
     background-color: #ED8732;
 }
-input.wfc-metabox-checkbox + img {
+input.wfc-metabox-checkbox-img + img {
     opacity: 0.25;
     background-color: transparent;
 }
-.wfc-input-checkbox img {
+.wfc-input-checkbox-img img {
     -webkit-transition: opacity 500ms ease;
     -moz-transition: opacity 500ms ease;
     -o-transition: opacity 500ms ease;

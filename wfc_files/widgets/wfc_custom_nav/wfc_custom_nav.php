@@ -21,7 +21,6 @@
             $post_ancestors = (isset($post->ancestors)) ? $post->ancestors :
                 get_post_ancestors( $post ); //get the current page's ancestors either from existing value or by executing function
             $top_page       = $post_ancestors ? end( $post_ancestors ) : $post->ID; //get the top page id
-            $thedepth       = 0; //initialize default variable"<h2>"s
             $ancestors_me   = implode( ',', $post_ancestors ).','.$post->ID;
             //exclude pages not in direct hierarchy
             foreach( $post_ancestors as $anc_id ){
@@ -40,9 +39,9 @@
             // show parent title
             echo $before_widget;
             $wfc_custom_nav                = array();
-            $wfc_custom_nav['before_menu'] = '<ul class="nav nav-list affix-top">';
+            $wfc_custom_nav['before_menu'] = '<ul class=" '.$instance['menu_class'].' nav nav-list affix-top">';
             $wfc_custom_nav['the_menu']    =
-                '<li class="previous"><a class="return" href="'.get_permalink( $post->post_parent ).'">'.
+                '<li class="previous"><a href="'.get_permalink( $post->post_parent ).'">'.
                 get_the_title( $post->post_parent ).'</a></li>';
             $wfc_custom_nav['the_menu'] .= wp_list_pages(
                 array(
@@ -60,19 +59,18 @@
         }
 
         function update( $new_instance, $old_instance ){
-            $instance         = $old_instance;
-            $instance['side'] =
-                (in_array( $new_instance['side'], array('left', 'right') )) ? $new_instance['side'] : 'left';
+            $instance               = $old_instance;
+            $instance['menu_class']      = strip_tags( $new_instance['menu_class'] );
             return $instance;
         }
 
+
         function form( $instance ){
-            $instance = wp_parse_args( (array)$instance, array('side' => false) );
+            $instance             = wp_parse_args( (array)$instance, array('menu_class' => '') );
+            $wfc_menu_class           = esc_attr( $instance['menu_class'] );
             ?>
-            <p>
-                <label for="<?php echo $this->get_field_id( 'side' ); ?>">
-                    <?php _e( 'Menu Orientation:' ); ?>
-                </label>
+            <p><label for="<?php echo $this->get_field_id( 'menu_class' ); ?>"><?php _e( 'Menu Class:' ); ?></label>
+                <input class="widefat" id="<?php echo $this->get_field_id( 'menu_class' ); ?>" name="<?php echo $this->get_field_name( 'menu_class' ); ?>" type="text" value="<?php echo $wfc_menu_class; ?>"/>
             </p>
         <?php
         }
@@ -80,79 +78,3 @@
 
     //EOC
     add_action( 'widgets_init', create_function( '', 'return register_widget("WFC_Custom_Nav_Widget");' ) );
-    class Wfc_Custom_Nav_Walker
-        extends Walker_page
-    {
-        function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ){
-            if( $depth ){
-                $indent = str_repeat( "\t", $depth );
-            } else{
-                $indent = '';
-            }
-            extract( $args, EXTR_SKIP );
-            $css_class = array('page_item', 'page-item-'.$page->ID);
-            if( !empty($current_page) ){
-                $_current_page = get_post( $current_page );
-                get_post_ancestors( $_current_page );
-                if( isset($_current_page->ancestors) && in_array( $page->ID, (array)$_current_page->ancestors ) ){
-                    $css_class[] = 'current_page_ancestor';
-                }
-                if( $page->ID == $current_page ){
-                    $css_class[] = 'current_page_item';
-                } elseif( $_current_page && $page->ID == $_current_page->post_parent ){
-                    $css_class[] = 'current_page_parent';
-                }
-            } elseif( $page->ID == get_option( 'page_for_posts' ) ){
-                $css_class[] = 'current_page_parent';
-            }
-            $css_class     =
-                implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
-             $short_cut     = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
-            if($short_cut[0]!='none')
-            {
-                switch($short_cut[0])
-                {
-                    case 1:
-                        $a=get_post_meta( $page->ID, 'wfc_page_existing_pages', true );
-                        $short_cut =get_permalink($a[0]);
-                    break;
-                    case 2:
-                        $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
-                    break;
-                    case 3:
-                        $a=get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true );
-                        $short_cut=wp_get_attachment_url($a[0]);
-                    break;
-
-                    default:
-                        unset($short_cut);
-                    break;
-                }
-            }
-            else
-                unset($short_cut);
-           
-            if( isset($short_cut) && !empty($short_cut) ){ 
-                $short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', false );
-                if( isset($short_new_tab) && !empty($short_new_tab) ){
-                    $output .=
-                        $indent.'<li class="'.$css_class.'"><a target="_blank" href="'.$short_cut.'">'.$link_before.
-                        apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
-                } else{
-                    $output .= $indent.'<li class="'.$css_class.'"><a href="'.$short_cut.'">'.$link_before.
-                        apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
-                }
-            } else{
-                $output .= $indent.'<li class="'.$css_class.'"><a href="'.get_permalink( $page->ID ).'">'.$link_before.
-                    apply_filters( 'the_title', $page->post_title, $page->ID ).$link_after.'</a>';
-            }
-            if( !empty($show_date) ){
-                if( 'modified' == $show_date ){
-                    $time = $page->post_modified;
-                } else{
-                    $time = $page->post_date;
-                }
-                $output .= " ".mysql2date( $date_format, $time );
-            }
-        }
-    }

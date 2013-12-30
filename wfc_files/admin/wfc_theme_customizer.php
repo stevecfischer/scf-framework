@@ -68,7 +68,7 @@
             "id"      => $shortname."default_content",
             "type"    => "checkbox",
             "options" => array(
-                "Don't display default content"
+                "Do not display default content"
             )
         ),
         array(
@@ -216,7 +216,9 @@
                     <div class="rm_input rm_checkbox">
                         <?php foreach( $value['options'] as $option ){ ?>
                             <label>
-                                <?php $checked = ""; ?>
+                                <?php
+                                    //print_r(get_option( $value['id']));
+                                    $checked = ""; ?>
                                 <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
                                     <?php if( in_array( $option, get_option( $value['id'] ) ) ){
                                         $checked = "checked=\"checked\"";
@@ -440,6 +442,15 @@
                     array(
                         'field_title' => 'Checkbox Test: ',
                         'type_of_box' => 'checkbox',
+                        'options'     => array(
+                            'one'   => "Checkbox One",
+                            'two'   => "Checkbox Two",
+                            'three' => "Checkbox Three"
+                        ),
+                    ),
+                    array(
+                        'field_title' => 'Checkbox Test Images as values: ',
+                        'type_of_box' => 'checkbox-img',
                         'options'     => array(
                             'one'   => "<img src='http://lorempixel.com/75/75/nightlife/1' />",
                             'two'   => "<img src='http://lorempixel.com/75/75/nightlife/2' />",
