@@ -15,7 +15,6 @@
     define('WFC_THEME_FUNCTIONS', WFC_PT.'/theme_functions');
     define('WFC_WIDGETS', WFC_PT.'/widgets');
     define('WFC_SHORTCODE', WFC_PT.'/admin/shortcode');
-    define('WFC_GLOBAL', WFC_PT.'/admin/global');
     define('WFC_URI', get_template_directory_uri());
     define('WFC_ADM', WFC_PT.'/admin');
     define('WFC_PLUGINS',WFC_PT.'/admin/plugins');
