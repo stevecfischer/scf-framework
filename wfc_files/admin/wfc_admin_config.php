@@ -14,7 +14,7 @@
      */
     require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
     require_once(WFC_ADM.'/wfc_post_type_manager.php'); //CPT / Tax / Metabox Class
-    require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
+    require_once(WFC_ADM.'/wfc_global_config.php'); //Global hooks/functions
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
     require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
     require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers
