@@ -79,6 +79,7 @@
                 WFC_URI.'/comp_assets/extended_assets_compressed.js', array('jquery'), '', true );
             wp_enqueue_script( "extended_assets_compressed" );
         } else{
+            if(get_option('wfc_autoload_assets')){
             $all_js = new wfc_auto_load_assets();
             if(! is_array($all_js->autoload( 'js' ))){
                 die($all_js->autoload( 'js' ));
@@ -86,6 +87,7 @@
             foreach( $all_js->autoload( 'js' ) as $k => $v ){
                 wp_register_script( $k, WFC_JS_URI.'/'.$v, array('jquery'), '', true );
                 wp_enqueue_script( $k );
+            }
             }
         }
     }
@@ -101,6 +103,7 @@
             wp_register_style( "extended_assets_compressed", WFC_URI.'/comp_assets/extended_assets_compressed.css' );
             wp_enqueue_style( "extended_assets_compressed" );
         } else{
+            if(get_option('wfc_autoload_assets')){
             $all_css = new wfc_auto_load_assets();
             if(! is_array($all_css->autoload( 'css' ))){
                 die($all_css->autoload( 'css' ));
@@ -108,6 +111,7 @@
             foreach( $all_css->autoload( 'css' ) as $k => $v ){
                 wp_register_style( $k, WFC_CSS_URI.'/'.$v );
                 wp_enqueue_style( $k );
+            }
             }
         }
     }
@@ -120,7 +124,6 @@
         while( have_posts() ) : the_post();
             echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
             the_content();
-            edit_post_link('Edit', '<span class="wfc-edit-link">', '</span>' );
         endwhile;
         wp_reset_query();
         echo '</div><!-- //.col-xs-12.col-sm-9 -->';

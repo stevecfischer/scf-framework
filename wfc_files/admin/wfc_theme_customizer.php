@@ -6,11 +6,12 @@
      * @date 1/5/13
      * @version 2.2
      */
-    $save_options=array('siteurl', //Wordpress URL
+    $save_options = array(
+        'siteurl', //Wordpress URL
         'home', //Index URL
         'active_plugins', //List of active plugins
         'template' //Active theme
-        );
+    );
     $themename = get_bloginfo( 'name' );
     $shortname = "wfc_";
     $categories = get_categories( 'hide_empty=0&orderby=name' );
@@ -72,6 +73,15 @@
             )
         ),
         array(
+            "name"    => "Autoload Assests",
+            "desc"    => "Automatically enqueue all CSS and JS files",
+            "id"      => $shortname."autoload_assets",
+            "type"    => "checkbox",
+            "options" => array(
+                "Enable Autoload"
+            )
+        ),
+        array(
             "name" => "Custom CSS",
             "desc" => "Want to add any custom CSS code? Put in here, and the rest is taken care of. This overrides any other stylesheets. eg: a.button{color:green}",
             "id"   => $shortname."custom_css",
@@ -94,6 +104,54 @@
         array(
             "name" => "To Rebuild WFC Cached Javascript and CSS click the button <a href='admin.php?wfc_renew_cache=renew' target='_blank'>Renew</a>",
             "type" => "information"
+        ),
+        array("type" => "close"),
+        array(
+            "name" => "Mail Settings",
+            "type" => "section"
+        ),
+        array("type" => "open"),
+        array(
+            "name" => "Smtp Host",
+            "id"   => $shortname."mail_smtp_host",
+            "type" => "text"
+        ),
+        array(
+            "name" => "Smtp Port",
+            "id"   => $shortname."mail_smtp_port",
+            "type" => "text"
+        ),
+        array(
+            "name" => "Smtp Smtpsecure",
+            "id"   => $shortname."mail_smtp_smtpsecure",
+            "type" => "text"
+        ),
+        array(
+            "name" => "Smtp Smtpauth",
+            "id"   => $shortname."mail_smtp_smtpauth",
+            "type" => "text"
+        ),
+        array(
+            "name" => "Smtp User",
+            "id"   => $shortname."mail_smtp_user",
+            "type" => "text"
+        ),
+        array(
+            "name" => "Smtp Password",
+            "id"   => $shortname."mail_smtp_password",
+            "type" => "text"
+        ),
+        array(
+            "name" => "From Name",
+            "desc" => "Enter the name you want emails to come from instead of the default WordPress",
+            "id"   => $shortname."mail_from_name",
+            "type" => "text"
+        ),
+        array(
+            "name" => "From Email",
+            "desc" => "Enter the email you want emails to come from instead of the default wordpress@sitename",
+            "id"   => $shortname."mail_from_email",
+            "type" => "text"
         ),
         array("type" => "close")
     );
@@ -162,7 +220,8 @@
                     <?php break;
                 case "information":
                     ?>
-                    <p><div class="rm_input rm_information"><?php echo $value['name']; ?></div></p>
+                    <p>
+                    <div class="rm_input rm_information"><?php echo $value['name']; ?></div></p>
                     <?php break;
                 case 'text':
                     ?>
@@ -265,9 +324,9 @@
             </div>
             <div class="rm_options">
                 <?php
-                    $options_values=array();
-                    foreach($save_options as $opt){
-                        $options_values[$opt]=get_option($opt);
+                    $options_values = array();
+                    foreach( $save_options as $opt ){
+                        $options_values[$opt] = get_option( $opt );
                     }
                     $fb = new FastBackup(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
                     if( isset($_GET['download_db']) ){
@@ -275,12 +334,13 @@
                             echo $fb->getErrors();
                         }
                     } elseif( isset($_FILES['restore']) && $_FILES['restore']['size'] > 0 ){
-                        if( !$fb->restoreDB($_FILES['restore']['tmp_name'])){
+                        if( !$fb->restoreDB( $_FILES['restore']['tmp_name'] ) ){
                             echo $fb->getErrors();
                         } else{
                             $db = $fb->getDBObject();
-                            foreach($options_values as $n=>$v)
-                                $db->exec('UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'');
+                            foreach( $options_values as $n => $v ){
+                                $db->exec( 'UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'' );
+                            }
                             header( 'Location: index.php' );
                         }
                     } elseif( isset($_GET['backup_db']) ){
@@ -298,17 +358,17 @@
                             $fb->password = DB_PASSWORD;
                             $fb->database = DB_NAME;
                             $fb->clearDB();
-                            if( $fb->restoreDB(__DIR__.'/tmp.sql')
+                            if( $fb->restoreDB( __DIR__.'/tmp.sql' )
                             ){
                                 $db = $fb->getDBObject();
-                                foreach($options_values as $n=>$v)
-                                    $db->exec('UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'');
-
+                                foreach( $options_values as $n => $v ){
+                                    $db->exec( 'UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'' );
+                                }
                                 header( 'Location: index.php' );
                             } else{
                                 echo $fb->getErrors();
                             }
-                            @unlink(__DIR__.'/tmp.sql');
+                            @unlink( __DIR__.'/tmp.sql' );
                         } else{
                             echo $fb->getErrors();
                         }
@@ -333,15 +393,15 @@
                         <input type="text" name="db"/>
                     </div>
                     <div class="rm_input rm_text">
-                    Saved options :
+                        Saved options :
                         <?php
-                        $msg='';
-                        foreach ($save_options as $value) {
-                            $msg.= $value.', ';
-                        }
-                        echo substr($msg,0,-2);
+                            $msg = '';
+                            foreach( $save_options as $value ){
+                                $msg .= $value.', ';
+                            }
+                            echo substr( $msg, 0, -2 );
                         ?>
-                        <br />
+                        <br/>
                         <input type="submit" value="Replace"/>
                     </div>
                 </form>
