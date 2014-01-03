@@ -41,3 +41,10 @@
      * @since 2.2
      */
     require_once(WFC_ADM.'/wfc_admin_config.php');
+
+    /**
+    * Auto link to none upon image upload
+    *
+    * @since 5.3.9
+    */
+    update_option('image_default_link_type','none');

@@ -43,7 +43,7 @@
                                 <?php the_post_thumbnail( 'thumbnail' ); ?>
                                 <div class="post-widget-article">
                                     <span class="post-widget-title"><?php echo get_the_title(); ?></span>
-                                    <?php wfc_get_excerpt( 55 ); ?>
+                                    <?php the_excerpt(); ?>
                                 </div>
                             </a>
                             </li>
