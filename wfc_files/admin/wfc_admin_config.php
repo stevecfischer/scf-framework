@@ -6,9 +6,6 @@
      * @since 2.2
      */
 
-    define('AUTOLOAD_MINIFY', true); //Toggle if site minifies and compresses js|css
-
-
     require_once(WFC_ADM.'/wfc_admin_class.php');
     /**
      * Require each parts of the framework
@@ -20,14 +17,22 @@
     require_once(WFC_GLOBAL.'/wfc_global_config.php'); //Global hooks/functions
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
     require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
-    require_once(WFC_THEME_FUNCTIONS.'/wfc_helper_functions.php'); //Small Helper Functions
     require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers
     require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Site Options Panel
-    //require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Beta not ready for release
+    require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Beta not ready for release
     require_once(WFC_ADM.'/wfc_update_script.php'); //Update from github
     require_once(WFC_THEME_FUNCTIONS.'/build_theme.php'); //Auto theme builder
     require_once(WFC_THEME_FUNCTIONS.'/wfc_autoload_script_class.php'); //Auto theme builder
     require_once(WFC_ADM.'/wfc_admin_hooks.php'); //Auto theme builder
+    require_once(WFC_ADM.'/wfc_fastbackup_class.php'); //Fast backup
+
+    /**
+     * WFC Walker for navigation menus.  Created to support the shortcut functionality
+     *
+     * @since 2.0
+     */
+    require_once(WFC_ADM.'/wfc_nav_walker.php');
+
     /**
      * Includes WFC Shortcodes
      *
@@ -43,8 +48,9 @@
     require_once(WFC_WIDGETS.'/wfc_custom_nav/wfc_custom_nav.php');
     require_once(WFC_WIDGETS.'/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
     require_once(WFC_WIDGETS.'/wfc_spotlight/wfc_spotlight.php');
+
     /*
-     * @scftodo: move all functions into wfc admin class. or if there is somewhere better send there.
+     * @sftodo: move all functions into wfc admin class. or if there is somewhere better send there.
      */
     /**
      * Includes JS into WP head
@@ -79,12 +85,8 @@
      */
     add_action( 'login_head', 'wfc_login_logo' );
     function wfc_login_logo(){
-        echo '<style type="text/css">.login h1 a{background-size:250px 49px !important;}h1 a { background-image:url('.
+        echo '<style type="text/css">.login h1 a{background-size:250px 49px !important;width:250px;}h1 a { background-image:url('.
             WFC_ADM_IMG_URI.'/wfc_logo.png) !important;}</style>';
-        echo '<script type="text/javascript">
-            jQuery(function($){
-                $("a:first").addClass("external").attr({ target: "_blank" });
-            });</script>';
     }
 
     /**

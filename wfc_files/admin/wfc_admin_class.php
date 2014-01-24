@@ -13,8 +13,11 @@
         public $active_cpts = array();
 
         public function Wfc_Admin_Class(){
+            $this->wfc_shortcode_widget();
             $this->get_active_cpts();
             add_action( 'admin_head', array(&$this, 'wfc_framework_variables') );
+            add_action( 'the_content', array(&$this, 'wfc_auto_content') );
+            add_shortcode( 'wfcimg', array(&$this, 'wfc_img_url') );
             add_action( 'wfc_footer', array(&$this, 'wfc_framework_variables') );
             add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
@@ -35,9 +38,25 @@
                                                                  'wfc_display_post_thumbnail_column'
                                                             ), 5, 2 );
 
-            /* @scftodo: working on moving cpt registering to here from wfc_theme_customizer. */
+            /* @sftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             //add_action( 'init', array(&$this, 'wfc_init_cpt') );
+        }
+
+        /**
+         * The WFC Framework version string
+         *
+         * @global string $wfc_version
+         * @since 5.2
+         */
+        public static function wfc_grab_version() {
+            $_dir=__DIR__.'/../../';
+            $d=scandir($_dir);
+            $version=0;
+            foreach ($d as $e) if(substr($e,0,4)=='Ver_' && substr($e,-4)=='.wfc') {
+                $version=substr($e,4,-4);
+            }
+            return $version;
         }
 
         /**
@@ -187,6 +206,46 @@
                 $module      = new wfcfw($module_args);
             }
         }
+
+        /**
+         * ENABLE SHORTCODES INSIDE TEXT WIDGETS
+         *
+         * @since 5.4
+         */
+        public function wfc_shortcode_widget(){
+            add_filter( 'widget_text', 'do_shortcode' );
+        }
+
+    public function wfc_img_url(){
+            return WFC_IMG_URI;
+        }
+
+
+        /**
+         * If a page has no content
+         * Displays a default one
+         *
+         * @package scf-framework
+         * @author Steve (12/10/2012)
+         * @param string $content content before
+         * @return string $content content after
+         */
+        public function wfc_auto_content( $content ){
+            if( is_page() ){
+                $wfc_option = get_option('wfc_default_content');
+                if( $content =='' && empty($wfc_option) ){
+                    $content = '<div id="container"><h1>HTML Ipsum Presents</h1>
+            <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
+            <h2>Header Level 2</h2>
+            <ol><li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li><li>Aliquam tincidunt mauris eu risus.</li></ol>
+            <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
+            <h3>Header Level 3</h3>
+            <ul><li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li><li>Aliquam tincidunt mauris eu risus.</li></ul></div><!--end #container-->';
+                    return $content;
+                }
+            }
+            return $content;
+        }
     }
 
     /*
@@ -195,3 +254,6 @@
      * @since 5.1
      */
     $GLOBALS['wfc_admin'] = new Wfc_Admin_Class();
+
+    // @sftodo: not the best but it will work for now.
+    $wfc_version=WFC_Admin_Class::wfc_grab_version();

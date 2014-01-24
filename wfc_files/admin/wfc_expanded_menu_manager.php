@@ -46,7 +46,6 @@
          * @return array pages with a shortcut
          */
         private function get_shortcut_pages(){
-            global $wpdb;
             $args        = array(
                 'post_type'  => 'page',
                 'meta_query' => array(
@@ -79,7 +78,6 @@
          * @return array all the needed items
          */
         private function get_all_by_type( $type ){
-            global $wpdb;
             $arr = array();
             switch( $type ){
                 case 1: //Page
@@ -129,12 +127,24 @@
          */
         private function build_shortcut_meta_box(){
             if( $this->pages_with_shortcut() === 'No shortcut' ){
+                $subpage_banner_meta_boxes_args = array(
+                    'cpt'      => 'Page' /* CPT Name */,
+                    'meta_box' => array(
+                        'title'     => 'Subpage Banner Options',
+                        'new_boxes' => array(
+                            array(
+                                'field_title' => 'Opt Out',
+                                'type_of_box' => 'checkbox',
+                                'desc'        => 'Check to remove banner from this page', /* optional */
+                            )
+                        )
+                    ),
+                );
+                $subpage_banner_meta_boxes = new wfc_meta_box_class($subpage_banner_meta_boxes_args);
                 $page_shortcut_args = array(
                     'cpt'      => 'page' /* CPT Name */,
                     'meta_box' => array(
-                        'handler'   => '_additional_page_short_cut_options',
                         'title'     => 'Shortcut Page',
-                        'cpt'       => 'page',
                         'new_boxes' => array(
                             array(
                                 'field_title' => 'Inbound Shortcuts',
@@ -178,9 +188,7 @@
                 $page_shortcut_args = array(
                     'cpt'      => 'page' /* CPT Name */,
                     'meta_box' => array(
-                        'handler'   => '_additional_page_short_cut_options',
                         'title'     => 'Shortcut Page',
-                        'cpt'       => 'page',
                         'new_boxes' => array(
                             array(
                                 'field_title' => 'Inbound Shortcuts',
@@ -196,9 +204,7 @@
             $attachment_shortcut_args = array(
                 'cpt'      => 'attachment' /* CPT Name */,
                 'meta_box' => array(
-                    'handler'   => '_additional_page_short_cut_options',
                     'title'     => 'Shortcuts',
-                    'cpt'       => 'attachment',
                     'new_boxes' => array(
                         array(
                             'field_title' => 'Inbound Shortcuts',
@@ -222,7 +228,6 @@
          * @return string $str string displayed on page edited
          */
         public function pages_with_shortcut(){
-            global $wpdb;
             $args           = array(
                 'post_type'  => 'page',
                 'meta_query' => array(
@@ -257,13 +262,12 @@
         /**
          * Get all the shortcuts going to an attachment
          * When you edit an attachment which has shortcuts linked on it
-         * Diplay them
+         * Display them
          *
          * @access public
          * @return string $str string displayed on attachment edited
          */
         public function attachments_with_shortcut(){
-            global $wpdb;
             $str_permalinks = '';
             $i              = 0;
             $args           = array(

@@ -1,4 +1,4 @@
-    <?php
+<?php
         /**
          *
          * @package scf-framework
@@ -72,7 +72,12 @@
                         <select name="'.$field['id'].'" id="'.$field['id'].'">
                            <option value="none" >None</option>';
                                 foreach( $field['options'] as $option_k => $option_v ){
-                                    $val = is_int( $option_k ) ? $option_v : $option_k;
+                                    // @scftodo: make this better.  I needed this if statement to fix the shortcut module
+                                    if( $field['id'] == 'wfc_page_existing_pdfs'){
+                                        $val = $option_k;
+                                    }else{
+                                        $val = is_int( $option_k ) ? $option_v : $option_k;
+                                    }
                                     echo'<option value="'.$val.'" '.($val == $meta ? ' selected="selected"' : '').' >'.
                                         $option_v.'</option>';
                                 }
@@ -82,7 +87,7 @@
                                 foreach( $field['options'] as $option ){
                                     echo '
                         <label>
-                           <input type="radio" name="'.$field['id'].'[]" value="'.$option.'" '.
+                           <input type="radio" name="'.$field['id'].'" value="'.$option.'" '.
                                         (in_array( $option, $meta ) ? ' checked="checked"' : '').' />&nbsp;'
                                         .$option.'
                         </label><br />';
@@ -104,6 +109,10 @@
 
                                 //wp_editor( $meta ? $meta : '', $field['id'], isset( $field['options'] ) ? $field['options'] : array() );
                                 break;
+
+                            default:
+                                echo $field['options'];
+                            break;
                         }
                         echo '</p></div>';
                     }

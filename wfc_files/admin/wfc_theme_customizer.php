@@ -6,6 +6,11 @@
      * @date 1/5/13
      * @version 2.2
      */
+    $save_options=array('siteurl', //Wordpress URL
+        'home', //Index URL
+        'active_plugins', //List of active plugins
+        'template' //Active theme
+        );
     $themename = get_bloginfo( 'name' );
     $shortname = "wfc_";
     $categories = get_categories( 'hide_empty=0&orderby=name' );
@@ -58,6 +63,15 @@
             )
         ),
         array(
+            "name"    => "WFC Default Content",
+            "desc"    => "Display default content in empty pages",
+            "id"      => $shortname."default_content",
+            "type"    => "checkbox",
+            "options" => array(
+                "Do not display default content"
+            )
+        ),
+        array(
             "name" => "Custom CSS",
             "desc" => "Want to add any custom CSS code? Put in here, and the rest is taken care of. This overrides any other stylesheets. eg: a.button{color:green}",
             "id"   => $shortname."custom_css",
@@ -73,21 +87,15 @@
         ),
         array("type" => "close"),
         array(
-            "name" => "Easter Eggs",
+            "name" => "WFC Caching",
             "type" => "section"
         ),
         array("type" => "open"),
         array(
-            "name" => "Easter Egg Video",
-            "desc" => "enter url to video",
-            "id"   => $shortname."easter_egg_video",
-            "type" => "text"
-        ),
-        array("type" => "close"),
-        array(
             "name" => "To Rebuild WFC Cached Javascript and CSS click the button <a href='admin.php?wfc_renew_cache=renew' target='_blank'>Renew</a>",
-            "type" => "title"
+            "type" => "information"
         ),
+        array("type" => "close")
     );
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
@@ -120,9 +128,9 @@
     }
 
     function Wfc_Panel(){
-        global $themename, $shortname, $options;
+        global $themename, $shortname, $options, $save_options;
         $themename1 = !empty($themename) ? $themename : "Theme";
-        $i = 0;
+        $i          = 0;
         if( isset($_REQUEST['saved']) && $_REQUEST['saved'] ){
             echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings saved.</strong></p></div>';
@@ -151,6 +159,10 @@
                 case "title":
                     ?>
                     <p><?php echo $value['name']; ?></p>
+                    <?php break;
+                case "information":
+                    ?>
+                    <p><div class="rm_input rm_information"><?php echo $value['name']; ?></div></p>
                     <?php break;
                 case 'text':
                     ?>
@@ -204,8 +216,9 @@
                     <div class="rm_input rm_checkbox">
                         <?php foreach( $value['options'] as $option ){ ?>
                             <label>
-                                <?php //print_r(get_option( $value['id'] )); ?>
-                                <?php $checked = ""; ?>
+                                <?php
+                                    //print_r(get_option( $value['id']));
+                                    $checked = ""; ?>
                                 <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
                                     <?php if( in_array( $option, get_option( $value['id'] ) ) ){
                                         $checked = "checked=\"checked\"";
@@ -243,7 +256,131 @@
                 <input name="reset" type="submit" value="Reset"/> <input type="hidden" name="action" value="reset"/>
             </p>
         </form>
+        <div class="rm_section">
+            <div class="rm_title"><h3>
+                    <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Fast backup
+                </h3>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="rm_options">
+                <?php
+                    $options_values=array();
+                    foreach($save_options as $opt){
+                        $options_values[$opt]=get_option($opt);
+                    }
+                    $fb = new FastBackup(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                    if( isset($_GET['download_db']) ){
+                        if( !$fb->downloadDB( bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
+                            echo $fb->getErrors();
+                        }
+                    } elseif( isset($_FILES['restore']) && $_FILES['restore']['size'] > 0 ){
+                        if( !$fb->restoreDB($_FILES['restore']['tmp_name'])){
+                            echo $fb->getErrors();
+                        } else{
+                            $db = $fb->getDBObject();
+                            foreach($options_values as $n=>$v)
+                                $db->exec('UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'');
+                            header( 'Location: index.php' );
+                        }
+                    } elseif( isset($_GET['backup_db']) ){
+                        if( !$fb->backupDB( __DIR__.'/backups/'.bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
+                            echo $fb->getErrors();
+                        }
+                    } elseif( isset($_GET['replace']) ){
+                        $fb->hostname = $_POST['host'];
+                        $fb->user     = $_POST['user'];
+                        $fb->password = $_POST['pass'];
+                        $fb->database = $_POST['db'];
+                        if( $fb->backupDB( __DIR__.'/tmp.sql' ) ){
+                            $fb->hostname = DB_HOST;
+                            $fb->user     = DB_USER;
+                            $fb->password = DB_PASSWORD;
+                            $fb->database = DB_NAME;
+                            $fb->clearDB();
+                            if( $fb->restoreDB(__DIR__.'/tmp.sql')
+                            ){
+                                $db = $fb->getDBObject();
+                                foreach($options_values as $n=>$v)
+                                    $db->exec('UPDATE `wp_options` SET `option_value`=\''.$v.'\' WHERE `option_name`=\''.$n.'\'');
+
+                                header( 'Location: index.php' );
+                            } else{
+                                echo $fb->getErrors();
+                            }
+                            @unlink(__DIR__.'/tmp.sql');
+                        } else{
+                            echo $fb->getErrors();
+                        }
+                    }
+                ?>
+                <!--Replace with remote DB :-->
+                <form method="POST" action="admin.php?page=wfc_theme_customizer.php&replace">
+                    <div class="rm_input rm_text">
+                        <label for="host">Host</label>
+                        <input type="text" name="host"/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <label for="user">User</label>
+                        <input type="text" name="user"/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <label for="pass">Password</label>
+                        <input type="text" name="pass"/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <label for="db">Database Name</label>
+                        <input type="text" name="db"/>
+                    </div>
+                    <div class="rm_input rm_text">
+                    Saved options :
+                        <?php
+                        $msg='';
+                        foreach ($save_options as $value) {
+                            $msg.= $value.', ';
+                        }
+                        echo substr($msg,0,-2);
+                        ?>
+                        <br />
+                        <input type="submit" value="Replace"/>
+                    </div>
+                </form>
+                <div class="rm_input rm_text">
+                    <a href="admin.php?page=wfc_theme_customizer.php&download_db">Download database</a>
+                </div>
+                <form method="POST" enctype="multipart/form-data" action="admin.php?page=wfc_theme_customizer.php">
+                    <div class="rm_input rm_text">
+                        <label>Restore database with a file :</label>
+                        <input type="file" name="restore"/><br/>
+                    </div>
+                    <div class="rm_input rm_text">
+                        <input type="submit" value="Restore"/>
+                    </div>
+                </form>
+            </div>
         </div>
+        <div class="rm_section">
+            <div class="rm_title"><h3>
+                    <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Theme Update
+                </h3>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="rm_options">
+                <div class="rm_input">
+                    <?php
+                        $monitor = new Monitor();
+                        $monitor->StartTimer();
+                        wfc_manage_update();
+                        $monitor->StopTimer();
+                        echo '<br />';
+                        wfc_DisplayMonitor( $monitor );
+                        wfc_print_api_limit();
+                    ?>
+                </div>
+            </div>
+        </div>
+        </div><!-- //.rm_opts -->
     <?php
     }
 
@@ -267,7 +404,7 @@
 
     /* Example of all Custom Metabox Options */
     if( getActiveCPT( "EXAMPLE_CPT" ) ){
-        $campaign_module_args = array(
+        $campaign_module_args     = array(
             'cpt'       => 'Example' /* CPT Name */,
             'menu_name' => 'Example Menu Overide' /* Overide the name above */,
             'supports'  => array(
@@ -277,7 +414,7 @@
                 'editor'
             ) /* specify which metaboxes you want displayed. See Codex for more info*/,
         );
-        $campaign_module      = new wfcfw($campaign_module_args);
+        $campaign_module          = new wfcfw($campaign_module_args);
         $campaign_meta_boxes_args = array(
             'cpt'      => 'example' /* CPT Name */,
             'meta_box' => array(
@@ -306,9 +443,18 @@
                         'field_title' => 'Checkbox Test: ',
                         'type_of_box' => 'checkbox',
                         'options'     => array(
+                            'one'   => "Checkbox One",
+                            'two'   => "Checkbox Two",
+                            'three' => "Checkbox Three"
+                        ),
+                    ),
+                    array(
+                        'field_title' => 'Checkbox Test Images as values: ',
+                        'type_of_box' => 'checkbox-img',
+                        'options'     => array(
                             'one'   => "<img src='http://lorempixel.com/75/75/nightlife/1' />",
                             'two'   => "<img src='http://lorempixel.com/75/75/nightlife/2' />",
-                            'three'   => "<img src='http://lorempixel.com/75/75/nightlife/3' />"
+                            'three' => "<img src='http://lorempixel.com/75/75/nightlife/3' />"
                         ),
                     ),
                     array(

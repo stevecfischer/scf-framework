@@ -1,7 +1,7 @@
 <?php
     /**
      * Framework configuration
-     * 
+     *
      * @package scf-framework
      * @author Steve (6/11/2012)
      * @since 2.2
@@ -9,7 +9,7 @@
 
     /**
     * Load our JS scripts
-    * 
+    *
     * @since 1.0
     */
     function wfc_load_js_scripts(){
@@ -26,9 +26,9 @@
 
     /**
     * Load our CSS files
-    * 
+    *
     * @since 1.0
-    */    
+    */
     function wfc_load_css_styles(){
         wp_register_style( 'ideagallery-style', WFC_ADM_CSS_URI.'/style.css' );
         wp_register_style( 'lightbox-style', WFC_ADM_CSS_URI.'/lightbox.css' );
@@ -40,7 +40,7 @@
 
     /**
     * Disable RSS feeds
-    * 
+    *
     * @since 1.8
     */
     function wfc_disable_feed(){
@@ -55,7 +55,7 @@
 
     /**
     * Close comments everywhere
-    * 
+    *
     * @since 1.0
     */
     function wfc_close_comments( $data ){
@@ -66,7 +66,7 @@
 
     /**
     * Remove items from admin bar
-    * 
+    *
     * @since 1.8
     */
     function wfc_remove_admin_bar_items(){
@@ -83,7 +83,7 @@
 
    /**
     * Remove admin bar on user profile
-    * 
+    *
     * @since 1.8
     */
     function wfc_hide_admin_bar_prefs(){
@@ -93,7 +93,7 @@
 
    /**
     * Remove dashboard widgets
-    * 
+    *
     * @since 2.0
     */
     function wfc_custom_dashboard_widgets(){
@@ -111,7 +111,7 @@
 
     /**
     * Show favicon
-    * 
+    *
     * @since 1.1
     */
     function wfc_fw_favicon(){
@@ -127,6 +127,7 @@
      * @return array
      */
     function wfc_imgurl_to_postid( $image_src ){
+        /** @var $wpdb wpdb */
         global $wpdb;
         $new_img_src  = explode( 'uploads/', $image_src );
         $query        = "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value ='$new_img_src[1]'";

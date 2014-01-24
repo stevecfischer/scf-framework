@@ -1,7 +1,7 @@
 <?php
     /**
      * [wfc_atozindex] shortcode
-     * 
+     *
      * @package scf-framework
      * @author Steve (08/16/2012)
      * @since since 2.3
@@ -11,11 +11,12 @@
      * A TO Z INDEX tabs
      * used in wfc_get_atozindex()
      * to build the html structure
-     * 
+     *
      * @global $wpdb
      * @return string $str string to be displayed
      */
     function Wfc_a_to_z_tabs(){
+        /** @var $wpdb wpdb */
         global $wpdb;
         $get_id      =
             $wpdb->get_results( "SELECT DISTINCT post_title,post_name,ID FROM $wpdb->posts WHERE post_status = 'publish' and post_type='page' order by trim(post_title) ASC" );
@@ -53,7 +54,7 @@
      * A TO Z INDEX PAGES
      * used in Wfc_a_to_z_tabs()
      * to build the html structure
-     * 
+     *
      * @global $wpdb
      * @param $lettersArr
      * @param $numsArr
@@ -61,12 +62,10 @@
      * @return string $str string to be displayed
      */
     function Wfc_a_to_z_pages( $lettersArr, $numsArr, $allPosts ){
+        /** @var $wpdb wpdb */
         global $wpdb;
         $log_letters    = array();
-        $current_letter = '';
-        $current_number = '';
         $open_list      = false;
-        $column_flag    = 0;
         $counter        = 0;
         $return_pages   = '';
         $return_pages .= '<div id="atoz">';
@@ -118,26 +117,32 @@
     }
     /**
      * Fix url to include shortcuts
-     * 
+     *
      * @author Thibault Miclo
      * @since 5.2
      * @param integer $post_id id of the page
      * @return string $url real link
      */
     function Wfc_fix_atoz_url( $post_id ){
-       $short_cut     = get_post_meta( $post_id, 'wfc_page_type_shortcut', true );
-        if(intval($short_cut)>0)
+         $short_cut     = get_post_meta( $post_id, 'wfc_page_type_shortcut', true );
+        if($short_cut[0]!='none')
         {
-            switch($short_cut)
+            switch($short_cut[0])
             {
                 case 1:
-                    $short_cut =get_permalink(get_post_meta( $post_id, 'wfc_page_existing_pages', true ));
+                    $a=get_post_meta( $page->ID, 'wfc_page_existing_pages', true );
+                    $short_cut =get_permalink($a[0]);
                 break;
                 case 2:
-                    $short_cut=get_post_meta( $post_id, 'wfc_page_external_link', true );
+                    $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
                 break;
                 case 3:
-                     $short_cut=wp_get_attachment_url(get_post_meta( $post_id, 'wfc_page_existing_pdfs', true ));
+                    $a=get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true );
+                    $short_cut=wp_get_attachment_url($a[0]);
+                break;
+
+                default:
+                    return get_permalink($post_id);
                 break;
             }
             return $short_cut;
@@ -150,7 +155,7 @@
     /**
      * a_to_z shortcode function
      * called with add_shortcode()
-     * 
+     *
      * @return string $html the html to be displayed by the shortcode
      */
     function wfc_get_atozindex(){

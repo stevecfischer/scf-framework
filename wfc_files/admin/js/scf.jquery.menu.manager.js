@@ -7,39 +7,39 @@ jQuery(function ($) {
     var newBtn = '<a class="add-new-h2" href="'+href_link+'/post-new.php?post_type=page&shortcut=true">Add Shortcut</a>';
     $(newBtn).appendTo($('.add-new-h2').parent());
 
-    var s=parseInt($('#wfc_page_type_shortcut option:selected').val());
+    var s= $('#wfc_page_type_shortcut option:selected').val();
     $('#wfc_page_existing_pages').hide(600);
     $('#wfc_page_external_link').hide(600);
     $('#wfc_page_existing_pdfs').hide(600);
     switch(s)
     {
-        case 1:
+        case 'Page':
             $('#wfc_page_existing_pages').show(600);
         break;
-        case 2:
+        case 'External Link':
              $('#wfc_page_external_link').show(600);
         break;
-        case 3:
+        case 'PDF':
             $('#wfc_page_existing_pdfs').show(600);
         break;
     }
 
     $('#wfc_page_type_shortcut').change(function () {
-        var s=parseInt($('#wfc_page_type_shortcut option:selected').val());
+        var s= $('#wfc_page_type_shortcut option:selected').val();
         switch(s)
         {
-            case 1:
+            case 'Page':
                 $('#wfc_page_existing_pages').show(600);
                 $('#wfc_page_external_link').hide(600);
                 $('#wfc_page_existing_pdfs').hide(600);
             break;
-            case 2:
+            case 'External Link':
                 $('#wfc_page_existing_pages').hide(600);
                 $('#wfc_page_external_link').show(600);
                 $('#wfc_page_existing_pdfs').hide(600);
                 $('wfc_page_new_tab_option[]').prop('checked', true);
             break;
-            case 3:
+            case 'PDF':
                 $('#wfc_page_existing_pages').hide(600);
                 $('#wfc_page_external_link').hide(600);
                 $('#wfc_page_existing_pdfs').show(600);

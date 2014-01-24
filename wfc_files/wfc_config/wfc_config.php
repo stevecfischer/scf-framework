@@ -1,12 +1,12 @@
 <?php
+
     /**
+     * WFC PATH/URL DEFINITIONS
      *
      * @package scf-framework
      * @author Steve (6/11/2012)
      * @since 0.1
      */
-    // WFC STANDARD DEFINITIONS //
-    // ---------------------- //
     define('WFC_SITE_URL', get_bloginfo( 'url' ).'/');
     define('WFC_ADMIN_URL', admin_url());
     define('WFC_PT', dirname( __DIR__ ).'/');
@@ -18,18 +18,26 @@
     define('WFC_GLOBAL', WFC_PT.'/admin/global');
     define('WFC_URI', get_template_directory_uri());
     define('WFC_ADM', WFC_PT.'/admin');
-    define('WFC_CSS_URI', WFC_URI.'/wfc_files/css');
-    define('WFC_JS_URI', WFC_URI.'/wfc_files/js');
-    define('WFC_IMG_URI', WFC_URI.'/wfc_files/images');
+    define('WFC_CSS_URI', WFC_URI.'/css');
+    define('WFC_JS_URI', WFC_URI.'/js');
+    define('WFC_IMG_URI', WFC_URI.'/images');
     define('WFC_ADM_CSS_URI', WFC_URI.'/wfc_files/admin/css');
     define('WFC_ADM_JS_URI', WFC_URI.'/wfc_files/admin/js');
     define('WFC_ADM_IMG_URI', WFC_URI.'/wfc_files/admin/images');
-    /*
-    ===============================
-    MAIN INCLUDE FILE
-     * @since 2.2
-    ==============================
-    */
-    require_once(WFC_ADM.'/wfc_admin_config.php');
 
-//fixing git branches
+    /**
+     * WFC FRAMEWORK CONFIGURATIONS
+     *
+     * @package scf-framework
+     * @author Steve (12/2/2013)
+     * @since 5.3.2
+     */
+    // @sftodo: make this a site option.  remember to seperate theme logic from from framework logic
+    define('AUTOLOAD_MINIFY', false); //Toggle if site minifies and compresses js|css
+
+    /**
+     * MAIN INCLUDE FILE
+     *
+     * @since 2.2
+     */
+    require_once(WFC_ADM.'/wfc_admin_config.php');

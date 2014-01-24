@@ -80,6 +80,9 @@
             wp_enqueue_script( "extended_assets_compressed" );
         } else{
             $all_js = new wfc_auto_load_assets();
+            if(! is_array($all_js->autoload( 'js' ))){
+                die($all_js->autoload( 'js' ));
+            }
             foreach( $all_js->autoload( 'js' ) as $k => $v ){
                 wp_register_script( $k, WFC_JS_URI.'/'.$v, array('jquery'), '', true );
                 wp_enqueue_script( $k );
@@ -99,6 +102,9 @@
             wp_enqueue_style( "extended_assets_compressed" );
         } else{
             $all_css = new wfc_auto_load_assets();
+            if(! is_array($all_css->autoload( 'css' ))){
+                die($all_css->autoload( 'css' ));
+            }
             foreach( $all_css->autoload( 'css' ) as $k => $v ){
                 wp_register_style( $k, WFC_CSS_URI.'/'.$v );
                 wp_enqueue_style( $k );
@@ -107,22 +113,24 @@
     }
 
     function Wfc_Core_Page_Loop(){
-        global $wpdb;
         global $post;
-        echo '<div class="row">';
-        echo '<div id="content" class="span9">';
+        echo '<div class="container">';
+        echo '<div class="row row-offcanvas row-offcanvas-right">';
+        echo '<div class="col-xs-12 col-sm-9">';
         while( have_posts() ) : the_post();
             echo '<h2 id="wfc-the-title">'.get_the_title().'</h2>';
             the_content();
+            edit_post_link('Edit', '<span class="wfc-edit-link">', '</span>' );
         endwhile;
         wp_reset_query();
-        echo '</div><!-- //#content -->';
+        echo '</div><!-- //.col-xs-12.col-sm-9 -->';
+        echo '<div class="col-xs-6 col-sm-3 sidebar-offcanvas">';
         dynamic_sidebar();
-        echo '</div>';
+        echo '</div><!-- //.col-xs-6.col-sm-3.sidebar-offcanvas -->';
+        echo '</div><!-- //.container -->';
     }
 
     function Wfc_Core_Home_Page_Loop(){
-        global $wpdb;
         global $post;
         $query = new WP_Query(array('post_type' => 'pages', 'pagename' => 'home'));
         while( $query->have_posts() ) : $query->the_post();
@@ -135,8 +143,7 @@
     }
 
     function Wfc_Core_Homecontent_Loop(){
-        global $wpdb;
-        $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC'));
+        $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC', 'orderby' =>'menu_order'));
         if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">
                 <h2><?php echo get_the_title(); ?></h2>
