@@ -325,7 +325,8 @@
          */
         public function scf_page_link( $link ){
             global $post;
-            $short_cut = intval( get_post_meta( $post->ID, 'wfc_page_type_shortcut', true ) [0]);
+            $tab=get_post_meta( $post->ID, 'wfc_page_type_shortcut', true );
+            $short_cut = intval($tab[0]);
             if( $short_cut != 'none' ){
                 $link = $link.'&post_type=page&shortcut=true';
             }
