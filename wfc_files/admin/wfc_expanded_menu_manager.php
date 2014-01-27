@@ -140,8 +140,8 @@
                         )
                     ),
                 );
-                $subpage_banner_meta_boxes = new wfc_meta_box_class($subpage_banner_meta_boxes_args);
-                $page_shortcut_args = array(
+                $subpage_banner_meta_boxes      = new wfc_meta_box_class($subpage_banner_meta_boxes_args);
+                $page_shortcut_args             = array(
                     'cpt'      => 'page' /* CPT Name */,
                     'meta_box' => array(
                         'title'     => 'Shortcut Page',
@@ -251,9 +251,10 @@
                 $str_permalinks .= get_the_title().'<br />';
             endwhile;endif;
             wp_reset_query();
-            if( $i > 0 )
+            if( $i > 0 ){
                 return $i.' page'.($i > 1 ? 's' : '').' ha'.($i > 1 ? 've' : 's').' a shortcut to this page :<br />'.
                 $str_permalinks;
+            }
             else{
                 return 'No shortcut';
             }
@@ -325,9 +326,7 @@
          */
         public function scf_page_link( $link ){
             global $post;
-            $sc = get_post_meta( $post->ID, 'wfc_page_type_shortcut', true );
-            $short_cut = intval( $sc[0] );
-            if( $short_cut != 'none' ){
+            if( $this->wfc_get_the_shortcut($post->ID) ){
                 $link = $link.'&post_type=page&shortcut=true';
             }
             return $link;
@@ -385,24 +384,60 @@
                     echo $post->menu_order;
                     break;
                 case 'scf_shortcut_link':
-                    $metas = get_post_meta( $post->ID );
-                    if( !empty($metas['wfc_page_type_shortcut']) )
-                        switch( $metas['wfc_page_type_shortcut'][0] ){
-                            case 1:
-                                if( $metas['wfc_page_existing_pages'][0] != 'none' )
-                                    echo 'Page: '.get_the_title( $metas['wfc_page_existing_pages'][0] );
-                                break;
-                            case 2:
-                                if( $metas['wfc_page_external_link'][0] != '' )
-                                    echo 'Link: '.$metas['wfc_page_external_link'][0];
-                                break;
-                            case 3:
-                                if( $metas['wfc_page_existing_pdfs'][0] != 'none' )
-                                    echo 'PDF: '.get_the_title( $metas['wfc_page_existing_pdfs'][0] );
-                                break;
-                        }
+                    $this->wfc_the_shortcut($post->ID);
                     break;
             }
+        }
+
+        /**
+         * @param int $id
+         *
+         * @return string|false
+         */
+        static function wfc_the_shortcut($id){
+            $short_cut = get_post_meta( $id, 'wfc_page_type_shortcut', true );
+            if( $short_cut != 'none' ){
+                switch( $short_cut ){
+                    case 'Page':
+                        $short_cut_destination_object    = get_page_by_title( get_post_meta( $id, 'wfc_page_existing_pages', true ) );
+                        $short_cut_destination_permalink = get_permalink( ($short_cut_destination_object->ID) );
+                        echo $short_cut_destination_permalink;
+                        break;
+                    case 'External Link':
+                        $short_cut_destination_permalink = get_post_meta( $id, 'wfc_page_external_link', true );
+                        echo $short_cut_destination_permalink;
+                        break;
+                    case 'PDF':
+                        $a                               = get_post_meta( $id, 'wfc_page_existing_pdfs', true );
+                        $short_cut_destination_permalink = wp_get_attachment_url( $a );
+                        echo $a;
+                        break;
+                }
+            }
+            return false;
+        }
+
+        static function wfc_get_the_shortcut($id){
+            $short_cut = get_post_meta( $id, 'wfc_page_type_shortcut', true );
+            if( $short_cut != 'none' ){
+                switch( $short_cut ){
+                    case 'Page':
+                        $short_cut_destination_object    = get_page_by_title( get_post_meta( $id, 'wfc_page_existing_pages', true ) );
+                        $short_cut_destination_permalink = get_permalink( ($short_cut_destination_object->ID) );
+                        return $short_cut_destination_permalink;
+                        break;
+                    case 'External Link':
+                        $short_cut_destination_permalink = get_post_meta( $id, 'wfc_page_external_link', true );
+                        return $short_cut_destination_permalink;
+                        break;
+                    case 'PDF':
+                        $a                               = get_post_meta( $id, 'wfc_page_existing_pdfs', true );
+                        $short_cut_destination_permalink = wp_get_attachment_url( $a );
+                        return $a;
+                        break;
+                }
+            }
+            return false;
         }
     }
 
