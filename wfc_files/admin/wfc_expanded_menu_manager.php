@@ -228,12 +228,13 @@
          * @return string $str string displayed on page edited
          */
         public function pages_with_shortcut(){
+            global $post;
             $args           = array(
                 'post_type'  => 'page',
                 'meta_query' => array(
                     array(
                         'key'     => 'wfc_page_type_shortcut',
-                        'value'   => 1, //page
+                        'value'   => "Page", //page
                         'compare' => '='
                     ),
                     array(
@@ -248,7 +249,9 @@
             $i              = 0;
             if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
                 $i++;
-                $str_permalinks .= get_the_title().'<br />';
+                $str_permalinks .= get_the_title().' ';
+                $str_permalinks .= ' <a href="'.get_permalink().'">View</a> | ';
+                $str_permalinks .= ' <a href="'.WFC_ADMIN_URL.'post.php?post='.get_the_ID().'&action=edit&post_type=page&shortcut=true">Edit</a>';
             endwhile;endif;
             wp_reset_query();
             if( $i > 0 ){
@@ -277,7 +280,7 @@
                     'relation' => 'AND',
                     array(
                         'key'     => 'wfc_page_type_shortcut',
-                        'value'   => 3, //PDF
+                        'value'   => "PDF", //PDF
                         'compare' => '='
                     ),
                     array(
