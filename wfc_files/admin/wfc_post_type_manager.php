@@ -72,21 +72,19 @@
                 }
                 if( !empty($var['tax']) ){
                     foreach( $var['tax'] as $single_tax ){
+                        $set_taxonomy_label = !empty($single_tax['menu_name']) ? $single_tax['menu_name'] : $single_tax['tax_label'];
                         $tax_labels = array(
-                            'name'              => _x(
-                                !empty($single_tax['menu_name']) ? $single_tax['menu_name'] :
-                                    $single_tax['tax_label'], 'taxonomy general name' ),
+                            'name'              => _x($set_taxonomy_label, 'taxonomy general name' ),
                             'singular_name'     => _x( $single_tax['tax_label'], 'taxonomy singular name' ),
-                            'search_items'      => __( 'Search '.$single_tax['tax_label'] ),
-                            'all_items'         => __( 'All '.$single_tax['tax_label'] ),
-                            'parent_item'       => __( 'Parent '.$single_tax['tax_label'] ),
-                            'parent_item_colon' => __( 'Parent '.$single_tax['tax_label'].':' ),
-                            'edit_item'         => __( 'Edit '.$single_tax['tax_label'] ),
-                            'update_item'       => __( 'Update '.$single_tax['tax_label'] ),
-                            'add_new_item'      => __( 'Add New '.$single_tax['tax_label'] ),
-                            'new_item_name'     => __( 'New Genre '.$single_tax['tax_label'] ),
-                            'menu_name'         => !empty($single_tax['menu_name']) ? $single_tax['menu_name'] :
-                                $single_tax['tax_label']
+                            'search_items'      => __( 'Search '.$set_taxonomy_label ),
+                            'all_items'         => __( 'All '.$set_taxonomy_label ),
+                            'parent_item'       => __( 'Parent '.$set_taxonomy_label ),
+                            'parent_item_colon' => __( 'Parent '.$set_taxonomy_label.':' ),
+                            'edit_item'         => __( 'Edit '.$set_taxonomy_label ),
+                            'update_item'       => __( 'Update '.$set_taxonomy_label ),
+                            'add_new_item'      => __( 'Add New '.$set_taxonomy_label ),
+                            'new_item_name'     => __( 'New Genre '.$set_taxonomy_label ),
+                            'menu_name'         => $set_taxonomy_label
                         );
                         /* added ability to 'share' custom taxonomies across post types */
                         $obj_type = isset($var['object_type']) ? $var['object_type'] : strtolower( $var['cpt'] );
