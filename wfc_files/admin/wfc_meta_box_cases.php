@@ -1,4 +1,4 @@
-<?php
+    <?php
         /**
          *
          * @package scf-framework
@@ -73,7 +73,7 @@
                            <option value="none" >None</option>';
                                 foreach( $field['options'] as $option_k => $option_v ){
                                     // @scftodo: make this better.  I needed this if statement to fix the shortcut module
-                                    if( $field['id'] == 'wfc_page_existing_pdfs'){
+                                    if( $field['id'] == 'wfc_page_existing_pdfs' || $field['id'] == 'wfc_page_existing_pages'){
                                         $val = $option_k;
                                     }else{
                                         $val = is_int( $option_k ) ? $option_v : $option_k;
@@ -112,7 +112,7 @@
 
                             default:
                                 echo $field['options'];
-                            break;
+                                break;
                         }
                         echo '</p></div>';
                     }
