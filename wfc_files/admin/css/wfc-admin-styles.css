@@ -508,6 +508,7 @@ body .ui-tooltip { border-width: 2px; }
     white-space : normal;
     height      : 49px;
     margin-left : 10px;
+    line-height: 12px;
 }
 #sortable{
     list-style-type : none;
