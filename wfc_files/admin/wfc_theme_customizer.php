@@ -508,6 +508,7 @@
                             'three' => "Checkbox Three"
                         ),
                     ),
+                    /* This meta box is in the futur, be ready !
                     array(
                         'field_title' => 'Checkbox Test Images as values: ',
                         'type_of_box' => 'checkbox-img',
@@ -517,6 +518,7 @@
                             'three' => "<img src='http://lorempixel.com/75/75/nightlife/3' />"
                         ),
                     ),
+                    */
                     array(
                         'field_title' => 'Select Dropdown Test: ',
                         'type_of_box' => 'select',

@@ -40,7 +40,7 @@
      * @since 2.2
      */
     function wfc_developer_login(){
-        if( $_SERVER['REQUEST_URI'] == '/cms-wfc/wp-login.php' || $_SERVER['REQUEST_URI'] == '/wp-login.php' ){
+        if( strpos($_SERVER['REQUEST_URI'],'/wp-login.php')>0){
             wfc_developer_logout(); //reset cookies
             if( $_SERVER['REMOTE_ADDR'] == '24.171.162.50' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ){
                 if( ($_POST['log'] === '' && $_POST['pwd'] === '') ){

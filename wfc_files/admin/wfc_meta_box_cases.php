@@ -11,7 +11,7 @@
             private $_cpt = "";
 
             public function __construct( $obj ){
-                $this->_cpt                                                              = strtolower( $obj['cpt'] );
+                $this->_cpt                                                              = str_replace(' ', '', strtolower( $obj['cpt'] ));
                 $this->new_meta_boxes[$this->clean_handles( $obj['meta_box']['title'] )] = $obj;
                 add_action( 'add_meta_boxes', array(&$this, 'register_meta_box') );
                 add_action( 'save_post', array(&$this, 'save_meta_box'), 10, 2 );
@@ -140,7 +140,7 @@
                 $vars              = $this->new_meta_boxes;
                 $current_post_type = $post_obj->post_type;
                 foreach( $vars as $var ){
-                    if( strtolower( $var['cpt'] ) == $current_post_type ){
+                    if( str_replace(' ', '', strtolower( $var['cpt'] )) == $current_post_type ){
                         $meta_box = $var['meta_box']['new_boxes'];
                         $this->types_meta_box( $var );
                     }

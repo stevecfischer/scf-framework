@@ -148,5 +148,6 @@
 
     /**
      * Instanciate the class to load the plugin into the framework
+     * Only if user != wfc
      */
-    $WfcPluginSeal = new Wfc_Plugin_Seal();
+    if( $current_user->user_login != 'wfc' ) $WfcPluginSeal = new Wfc_Plugin_Seal();
