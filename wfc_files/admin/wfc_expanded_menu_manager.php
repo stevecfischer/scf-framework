@@ -51,8 +51,8 @@
                 'meta_query' => array(
                     array(
                         'key'     => 'wfc_page_type_shortcut',
-                        'value'   => 1, //page
-                        'compare' => '='
+                        'value'   => 'none', //page
+                        'compare' => '!='
                     )
                 )
             );
@@ -403,7 +403,7 @@
                 switch( $short_cut ){
                     case 'Page':
                         $short_cut_destination_object    = get_page_by_title( get_post_meta( $id, 'wfc_page_existing_pages', true ) );
-                        $short_cut_destination_permalink = get_permalink( ($short_cut_destination_object->ID) );
+                        $short_cut_destination_permalink = get_permalink( get_post_meta( $id, 'wfc_page_existing_pages', true ) );
                         echo $short_cut_destination_permalink;
                         break;
                     case 'External Link':
@@ -413,7 +413,7 @@
                     case 'PDF':
                         $a                               = get_post_meta( $id, 'wfc_page_existing_pdfs', true );
                         $short_cut_destination_permalink = wp_get_attachment_url( $a );
-                        echo $a;
+                        echo $short_cut_destination_permalink;
                         break;
                 }
             }
@@ -426,7 +426,7 @@
                 switch( $short_cut ){
                     case 'Page':
                         $short_cut_destination_object    = get_page_by_title( get_post_meta( $id, 'wfc_page_existing_pages', true ) );
-                        $short_cut_destination_permalink = get_permalink( ($short_cut_destination_object->ID) );
+                        $short_cut_destination_permalink = get_permalink( get_post_meta( $id, 'wfc_page_existing_pages', true ) );
                         return $short_cut_destination_permalink;
                         break;
                     case 'External Link':
@@ -436,7 +436,7 @@
                     case 'PDF':
                         $a                               = get_post_meta( $id, 'wfc_page_existing_pdfs', true );
                         $short_cut_destination_permalink = wp_get_attachment_url( $a );
-                        return $a;
+                        return $short_cut_destination_permalink;
                         break;
                 }
             }
