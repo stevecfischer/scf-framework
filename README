@@ -74,3 +74,14 @@ Bug fixes
 
 = 5.3 =
 * in development
+
+= 5.4 =
+See Roadmap Here [a link](https://github.com/stevecfischer/scf-framework/issues?milestone=5)
+* New Features:
+    - Real Time Checklist issue #56
+    - Fully integrate SMPT Support Via Site Options
+    - Expand on filters making it easier to customize the framework via functions.php
+    - Auto customize new sites issue #37
+* Minor Updates:
+    - Add templates for a Blog
+    - Improved Walker Navigation coding issue #31
