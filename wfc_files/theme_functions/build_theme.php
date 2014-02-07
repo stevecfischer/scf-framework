@@ -104,7 +104,7 @@
 <?php wp_footer(); ?>
 <?php wfc_footer(); ?>
 </body>
-</html';
+</html>';
         $page         = '
                 <?php get_header(); ?>
                 <?php Wfc_Core_Page_Loop(); ?>
@@ -120,7 +120,7 @@
                    if( have_posts()):
                    while ( have_posts() ) : the_post(); ?>
                     <h3><a href="<?php the_permalink(); ?>">> <?php the_title(); ?></a></h3>
-                     <?php endwhile; 
+                     <?php endwhile;
                     else:
                         echo \'<p>No results.</p>\';
                     endif;?>
@@ -190,7 +190,7 @@
                 </p>
                 <p class="submit">
                     <input name="build" type="submit" value="Build Out Theme"/>
-                </p>    
+                </p>
             </form>
         <?php
         }
