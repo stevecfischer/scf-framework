@@ -27,12 +27,12 @@
         $return_tabs .= '<ul id="az_tabs">';
         foreach( $get_id as $this_post ){
             $current_char = ucfirst( substr( trim( $this_post->post_title ), 0, 1 ) );
-            if( is_numeric( $current_char ) ){
+            if( is_numeric( $current_char ) || $current_char == "$" ){
                 if( !in_array( $current_char, $log_num ) ){
                     $log_num[] = $current_char;
                 }
             }
-            if( !is_numeric( $current_char ) ){
+            if( !is_numeric( $current_char )  && $current_char != "$"){
                 if( !in_array( $current_char, $log_letters ) ){
                     $log_letters[] = $current_char;
                 }
@@ -80,7 +80,7 @@
             $return_pages .= '<ul id="list_0" class="inactive">';
             foreach( $allPosts as $this_post ){
                 $current_number = substr( trim( $this_post->post_title ), 0, 1 );
-                if( is_numeric( $current_number ) ){
+                if( is_numeric( $current_number ) || $current_number == "$"){
                     $return_pages .= '<li><a href="'.$this_post->post_title.'" >'.$this_post->post_title.'</a></li>';
                 }
             }
@@ -120,35 +120,33 @@
      *
      * @author Thibault Miclo
      * @since 5.2
-     * @param integer $post_id id of the page
+     * @param integer $page_id id of the page
      * @return string $url real link
      */
-    function Wfc_fix_atoz_url( $post_id ){
-         $short_cut     = get_post_meta( $post_id, 'wfc_page_type_shortcut', true );
-        if($short_cut[0]!='none')
-        {
-            switch($short_cut[0])
-            {
-                case 1:
-                    $a=get_post_meta( $page->ID, 'wfc_page_existing_pages', true );
-                    $short_cut =get_permalink($a[0]);
-                break;
-                case 2:
-                    $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
-                break;
-                case 3:
-                    $a=get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true );
-                    $short_cut=wp_get_attachment_url($a[0]);
-                break;
+    function Wfc_fix_atoz_url( $page_id ){
+        $short_cut     = get_post_meta( $page_id, 'wfc_page_type_shortcut', true );
+        if( $short_cut != 'none' ){
+            switch( $short_cut ){
+                case 'Page':
+                    $short_cut_destination_object    = get_page_by_title( get_post_meta( $page_id, 'wfc_page_existing_pages', true ) );
+                    $short_cut_destination_permalink = get_permalink( get_post_meta( $page_id, 'wfc_page_existing_pages', true ) );
+                    break;
+                case 'External Link':
+                    $short_cut_destination_permalink = get_post_meta( $page_id, 'wfc_page_external_link', true );
+                    break;
+                case 'PDF':
+                    $a                               = get_post_meta( $page_id, 'wfc_page_existing_pdfs', true );
+                    $short_cut_destination_permalink = wp_get_attachment_url( $a );
+                    break;
 
                 default:
-                    return get_permalink($post_id);
-                break;
+                    $short_cut_destination_permalink = get_permalink($page_id);
+                    break;
             }
-            return $short_cut;
+            return $short_cut_destination_permalink;
         }
         else
-            return get_permalink( $post_id );
+            return get_permalink( $page_id );
     }
 
 
