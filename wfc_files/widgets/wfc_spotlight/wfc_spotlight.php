@@ -76,4 +76,3 @@ class wfc_spotlight
 }
 
 register_widget( 'wfc_spotlight' );
-?>

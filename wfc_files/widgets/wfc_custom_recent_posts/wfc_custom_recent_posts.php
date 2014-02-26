@@ -114,5 +114,5 @@
         }
     }
 
-    add_action( 'widgets_init', create_function( '', 'return register_widget("WFC_Widget_Recent_Posts");' ) );
+    register_widget( 'WFC_Widget_Recent_Posts' );
 

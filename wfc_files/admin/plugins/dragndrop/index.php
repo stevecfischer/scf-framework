@@ -38,8 +38,10 @@
 			add_option('drag-drop-page-reload', 0);
 
 			// Bind plugin actions
-			add_action('admin_menu', array(&$this, 'add_admin_menu_page'));
-			add_action('admin_head', array(&$this, 'print_header_post_id'));
+			if(wfc_is_dev()){
+                add_action('admin_menu', array(&$this, 'add_admin_menu_page'));
+            }
+            add_action('admin_head', array(&$this, 'print_header_post_id'));
 			add_action('plugins_loaded', array(&$this, 'load_textdomain'));
 			add_action('add_meta_boxes', array(&$this, 'toggle_meta_box_functionality'));
 			add_action('admin_enqueue_scripts', array(&$this, 'handle_plugin_script_loading'));

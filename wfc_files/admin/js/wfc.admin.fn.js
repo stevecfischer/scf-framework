@@ -76,4 +76,8 @@ jQuery(function ($) {
         $(this).next('.description').toggle();
         return false;
     });
+
+    $('#develop_checklist,  #seo_checklist').find($('.good, .bad')).each(function(){
+        $('input', this).hide();
+    });
 });

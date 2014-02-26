@@ -76,5 +76,4 @@
         }
     }
 
-    //EOC
-    add_action( 'widgets_init', create_function( '', 'return register_widget("WFC_Custom_Nav_Widget");' ) );
+    register_widget( 'WFC_Custom_Nav_Widget' );

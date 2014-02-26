@@ -31,12 +31,16 @@
         ),
         array("type" => "open"),
         array(
+            "name" => "Click to peform auto settings check <a href='admin.php?wfc_update_settings=update'>Update Settings</a><br /><br />**WARNING by performing this action a query will update select settings per WFC Standards. It will undo any custom settings.<br /><br />See here for <a target='_blank' href='https://github.com/stevecfischer/scf-framework/wiki/Default-Settings'>list of settings that will be updated.</a>",
+            "type" => "information"
+        ),
+        array(
             "name"    => "WFC Core CPT",
             "desc"    => "Select the CPT you want to activate",
             "id"      => $shortname."activate_cpt",
             "type"    => "checkbox",
             "options" => array(
-                "steve" => "EXAMPLE_CPT",
+                "EXAMPLE_CPT",
                 "CAMPAIGN_CPT",
                 "SUBPAGE_BANNER_CPT",
                 "HOME_BOXES_CPT",
@@ -45,6 +49,17 @@
                 "PORTFOLIO_CPT"
             ),
             "std"     => "EXAMPLE_CPT"
+        ),
+        array(
+            "name"    => "WFC Widgets",
+            "desc"    => "Select which widgets to disable",
+            "id"      => $shortname."disabled_widgets",
+            "type"    => "checkbox",
+            "options" => array(
+                "WFC_Custom_Nav_Widget"   => "WFC Custom Nav",
+                "wfc_spotlight"           => "WFC Spotlight",
+                "WFC_Widget_Recent_Posts" => "WFC Recent Posts"
+            )
         ),
         array(
             "name"    => "WFC Client Admin menu",
@@ -95,14 +110,8 @@
             "type" => "textarea",
             "std"  => ""
         ),
-        array("type" => "close"),
         array(
-            "name" => "WFC Caching",
-            "type" => "section"
-        ),
-        array("type" => "open"),
-        array(
-            "name" => "To Rebuild WFC Cached Javascript and CSS click the button <a href='admin.php?wfc_renew_cache=renew' target='_blank'>Renew</a>",
+            "name" => "Reset Theme Options <a href='admin.php?page=wfc_theme_customizer.php&action=reset'>RESET THEME OPTIONS</a>",
             "type" => "information"
         ),
         array("type" => "close"),
@@ -122,14 +131,16 @@
             "type" => "text"
         ),
         array(
-            "name" => "Smtp Smtpsecure",
-            "id"   => $shortname."mail_smtp_smtpsecure",
-            "type" => "text"
+            "name"    => "Smtp Smtpsecure",
+            "id"      => $shortname."mail_smtp_smtpsecure",
+            "type"    => "select",
+            "options" => array('None', 'tls', 'ssl')
         ),
         array(
-            "name" => "Smtp Smtpauth",
-            "id"   => $shortname."mail_smtp_smtpauth",
-            "type" => "text"
+            "name"    => "Smtp Smtpauth",
+            "id"      => $shortname."mail_smtp_smtpauth",
+            "type"    => "select",
+            "options" => array('true', 'false')
         ),
         array(
             "name" => "Smtp User",
@@ -153,11 +164,24 @@
             "id"   => $shortname."mail_from_email",
             "type" => "text"
         ),
+        array(
+            "name" => "Test to Email",
+            "desc" => "Enter email address to send a test to.",
+            "id"   => $shortname."test_email_address",
+            "type" => "text"
+        ),
+        array(
+            "name" => "<a href='admin.php?page=wfc_theme_customizer.php&wfc_smtp_action=sendtest'>Send Test Email</a>",
+            "type" => "information"
+        ),
         array("type" => "close")
     );
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
         $themename1 = !empty($themename) ? $themename : "Theme Settings";
+        if( isset($_GET['wfc_smtp_action']) && $_GET['wfc_smtp_action'] == "sendtest" ){
+            new wfc_email();
+        }
         if( isset($_GET['page']) && $_GET['page'] == basename( __FILE__ ) ){
             if( isset($_REQUEST['action']) && 'save' == $_REQUEST['action'] ){
                 foreach( $options as $value ){
@@ -173,7 +197,7 @@
                 header( "Location: admin.php?page=wfc_theme_customizer.php&saved=true" );
                 die;
             } else{
-                if( isset($_REQUEST['action']) && 'reset' == $_REQUEST['action'] ){
+                if( isset($_GET['action']) && 'reset' == $_GET['action'] ){
                     foreach( $options as $value ){
                         delete_option( $value['id'] );
                     }
@@ -192,6 +216,10 @@
         if( isset($_REQUEST['saved']) && $_REQUEST['saved'] ){
             echo '<div id="message" class="updated fade"><p><strong>'.$themename.
                 ' settings saved.</strong></p></div>';
+        }
+        if( isset($_REQUEST['settings_updated']) && $_REQUEST['settings_updated'] ){
+            echo '<div id="message" class="updated fade"><p><strong>'.$themename.
+                ' WordPress Settings Updated.</strong></p></div>';
         }
         if( isset($_REQUEST['reset']) && $_REQUEST['reset'] ){
             echo '<div id="message" class="updated fade"><p><strong>'.$themename.
@@ -220,8 +248,13 @@
                     <?php break;
                 case "information":
                     ?>
-                    <p>
-                    <div class="rm_input rm_information"><?php echo $value['name']; ?></div></p>
+                    <div class="rm_input rm_information">
+                        <p><?php echo $value['name']; ?></p>
+                        <p>
+                            <small><?php echo $value['desc']; ?></small>
+                        </p>
+                    </div>
+
                     <?php break;
                 case 'text':
                     ?>
@@ -273,18 +306,17 @@
                 case "checkbox":
                     ?>
                     <div class="rm_input rm_checkbox">
-                        <?php foreach( $value['options'] as $option ){ ?>
+                        <?php foreach( $value['options'] as $option_k => $option_v ){ ?>
                             <label>
-                                <?php
-                                    //print_r(get_option( $value['id']));
-                                    $checked = ""; ?>
+                                <?php $val = is_int( $option_k ) ? $option_v : $option_k; ?>
+                                <?php $checked = ""; ?>
                                 <?php if( is_array( get_option( $value['id'] ) ) ){ ?>
-                                    <?php if( in_array( $option, get_option( $value['id'] ) ) ){
+                                    <?php if( in_array( $val, get_option( $value['id'] ) ) ){
                                         $checked = "checked=\"checked\"";
                                     } ?>
-                                <?php } ?>
-                                <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $option; ?>" <?php echo $checked; ?> />
-                                <?php echo $option; ?>
+                                <?php }                                ?>
+                                <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $val; ?>" <?php echo $checked; ?> />
+                                <?php echo $option_v; ?>
                             </label>
                             <br/>
                         <?php } ?>
@@ -310,11 +342,7 @@
         ?>
         <input type="hidden" name="action" value="save"/>
         </form>
-        <form method="post">
-            <p class="submit">
-                <input name="reset" type="submit" value="Reset"/> <input type="hidden" name="action" value="reset"/>
-            </p>
-        </form>
+
         <div class="rm_section">
             <div class="rm_title"><h3>
                     <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Fast backup
@@ -419,6 +447,7 @@
                 </form>
             </div>
         </div>
+        <br/>
         <div class="rm_section">
             <div class="rm_title"><h3>
                     <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Theme Update

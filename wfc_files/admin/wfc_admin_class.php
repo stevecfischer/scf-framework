@@ -13,11 +13,14 @@
         public $active_cpts = array();
 
         public function Wfc_Admin_Class(){
+            if($_GET['wfc_update_settings'] == "update") $this->wfc_update_settings();
             $this->wfc_shortcode_widget();
             $this->get_active_cpts();
             add_action( 'admin_head', array(&$this, 'wfc_framework_variables') );
+            add_action( 'widgets_init',array(&$this,  'wfc_manage_widgets' ));
             add_action( 'the_content', array(&$this, 'wfc_auto_content') );
-            add_shortcode( 'wfcimg', array(&$this, 'wfc_img_url') );
+            add_shortcode( 'wfcimg', array(&$this, 'wfc_img_uri_deprecated') );
+            add_shortcode( 'wfc_img_uri', array(&$this, 'wfc_img_uri') );
             add_action( 'wfc_footer', array(&$this, 'wfc_framework_variables') );
             add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
@@ -28,15 +31,15 @@
             add_filter( 'manage_page_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_action(
                 'manage_campaign_posts_custom_column', array(
-                                                            &$this,
-                                                            'wfc_display_post_thumbnail_column'
-                                                       ), 5, 2 );
+                &$this,
+                'wfc_display_post_thumbnail_column'
+            ), 5, 2 );
             add_action( 'manage_news_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             add_action(
                 'manage_homepageboxes_posts_custom_column', array(
-                                                                 &$this,
-                                                                 'wfc_display_post_thumbnail_column'
-                                                            ), 5, 2 );
+                &$this,
+                'wfc_display_post_thumbnail_column'
+            ), 5, 2 );
 
             /* @sftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
@@ -216,10 +219,34 @@
             add_filter( 'widget_text', 'do_shortcode' );
         }
 
-    public function wfc_img_url(){
+        /**
+         * use image contstant in shortcode
+         *
+         * @since 5.1
+         *
+         * @param int $deprecated Not Used.
+         *
+         * @return string uri to theme image folder
+         */
+        public function wfc_img_uri_deprecated($deprecated = ''){
+            global $wfc_admin;
+            if( empty($deprecated) ){
+                $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.4', 'Current shortcode to use: WFC_IMG_URI' );
+            }
             return WFC_IMG_URI;
         }
 
+        /**
+         * use image contstant in shortcode
+         *
+         * @since 5.4
+         *
+         *
+         * @return string uri to theme image folder
+         */
+        public function wfc_img_uri(){
+            return WFC_IMG_URI;
+        }
 
         /**
          * If a page has no content
@@ -273,6 +300,45 @@
                 }
             }
             return $content;
+        }
+
+        public function wfc_update_settings(){
+            /*
+             * General
+             * ===================
+             * blogdescription -string
+             * timezone_string -string
+             * image_default_link_type -string
+             *
+             *
+             * General > Discussion
+             * ====================
+             * comment_registration -boolean
+             * require_name_email -boolean
+             * default_comment_status -boolean
+             * comment_moderation -boolean
+             */
+            $wfc_settings_array = array(
+                'comment_registration' => 1,
+                'require_name_email' => 1,
+                'default_comment_status' => 1,
+                'comment_moderation' => 1,
+                'timezone_string' => "America/New_York",
+                'blogdescription' => "",
+                'image_default_link_type' => "none"
+            );
+            foreach( $wfc_settings_array as $setting_i => $setting_v ){
+                update_option($setting_i,$setting_v);
+            }
+            header( "Location: admin.php?page=wfc_theme_customizer.php&settings_updated=true" );
+        }
+
+        public function wfc_manage_widgets(){
+            $disable_widgets = get_option( 'wfc_disabled_widgets' );
+            if(!is_array($disable_widgets)) return;
+            foreach( $disable_widgets as $disable ){
+                unregister_widget( $disable );
+            }
         }
     }
 

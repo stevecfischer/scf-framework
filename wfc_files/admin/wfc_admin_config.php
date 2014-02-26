@@ -14,6 +14,7 @@
      */
     require_once(WFC_CONFIG.'/wfc_developer_login.php'); //Auto login inside WFC IP Address
     require_once(WFC_ADM.'/wfc_post_type_manager.php'); //CPT / Tax / Metabox Class
+    require_once(WFC_ADM.'/wfc_smtp.php'); // SMTP Class
     require_once(WFC_ADM.'/wfc_global_config.php'); //Global hooks/functions
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
     require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
@@ -26,7 +27,7 @@
     require_once(WFC_ADM.'/wfc_admin_hooks.php'); //Auto theme builder
     require_once(WFC_ADM.'/wfc_fastbackup_class.php'); //Fast backup
     require_once(WFC_PLUGINS.'/dragndrop/index.php'); //Drag&drop admin plugin
-    require_once(WFC_ADM.'/wfc_smtp.php'); // SMTP Class
+    require_once(WFC_ADM.'/wfc_dashboard_checklist.php'); // SMTP Class
 
     /**
      * WFC Walker for navigation menus.  Created to support the shortcut functionality
