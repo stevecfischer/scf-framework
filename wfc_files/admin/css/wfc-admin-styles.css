@@ -1709,12 +1709,20 @@ input.wfc-metabox-checkbox-img + img{
     -ms-transition:opacity 500ms ease;
     transition:opacity 500ms ease;
 }
-.good{
+.wfc-checklist-valid{
     background-color:#7DC242;
-    color:#FFFFFF;
 }
 
-.bad{
+.wfc-checklist-invalid{
     background-color:#FF0000;
+}
+.wfc-dashboard-checklist-item{
+    padding:2px 5px;
+    margin:3px 0;
+    line-height:35px;
     color:#FFFFFF;
+    display:inline-block;
+}
+.wfc-dashboard-checklist-item .wfc-dashboard-checkbox{
+    display:none;
 }

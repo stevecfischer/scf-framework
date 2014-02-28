@@ -1,4 +1,5 @@
 <?php
+
     /**
      *
      * @package scf-framework
@@ -23,10 +24,10 @@
             $wfc_number           = isset($instance['number']) ? absint( $instance['number'] ) : 5;
             $wfc_recent_post_type = isset($instance['post_type']) ? trim( $instance['post_type'] ) : 'news';
             $r                    = new WP_Query(array(
-                                                      'posts_per_page' => $wfc_number,
-                                                      'post_status'    => 'publish',
-                                                      'post_type'      => $wfc_recent_post_type
-                                                 ));
+                'posts_per_page' => $wfc_number,
+                'post_status'    => 'publish',
+                'post_type'      => $wfc_recent_post_type
+            ));
             if( $r->have_posts() ) :
 
                 echo $before_widget;
@@ -57,7 +58,8 @@
                     <?php endwhile; ?>
                 </ul>
                 <?php echo $after_widget;
-                wp_reset_postdata(); else:
+                wp_reset_postdata();
+            else:
                 echo 'No Posts for post type '.$wfc_recent_post_type;
             endif;
         }

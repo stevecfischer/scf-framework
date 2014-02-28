@@ -59,7 +59,6 @@
         ),
     );
     $campaign_meta_boxes = new wfc_meta_box_class($campaign_meta_boxes_args);
-
     /**
      * AUTO ENQUEUE ALL JS FILES THAT ARE IN THE JS FOLDER.  TO EXCLUDE A FILE ADD `EXCL` TO THE FILENAME
      *
@@ -79,15 +78,15 @@
                 WFC_URI.'/comp_assets/extended_assets_compressed.js', array('jquery'), '', true );
             wp_enqueue_script( "extended_assets_compressed" );
         } else{
-            if(get_option('wfc_autoload_assets')){
-            $all_js = new wfc_auto_load_assets();
-            if(! is_array($all_js->autoload( 'js' ))){
-                die($all_js->autoload( 'js' ));
-            }
-            foreach( $all_js->autoload( 'js' ) as $k => $v ){
-                wp_register_script( $k, WFC_JS_URI.'/'.$v, array('jquery'), '', true );
-                wp_enqueue_script( $k );
-            }
+            if( get_option( 'wfc_autoload_assets' ) ){
+                $all_js = new wfc_auto_load_assets();
+                if( !is_array( $all_js->autoload( 'js' ) ) ){
+                    die($all_js->autoload( 'js' ));
+                }
+                foreach( $all_js->autoload( 'js' ) as $k => $v ){
+                    wp_register_script( $k, WFC_JS_URI.'/'.$v, array('jquery'), '', true );
+                    wp_enqueue_script( $k );
+                }
             }
         }
     }
@@ -103,15 +102,15 @@
             wp_register_style( "extended_assets_compressed", WFC_URI.'/comp_assets/extended_assets_compressed.css' );
             wp_enqueue_style( "extended_assets_compressed" );
         } else{
-            if(get_option('wfc_autoload_assets')){
-            $all_css = new wfc_auto_load_assets();
-            if(! is_array($all_css->autoload( 'css' ))){
-                die($all_css->autoload( 'css' ));
-            }
-            foreach( $all_css->autoload( 'css' ) as $k => $v ){
-                wp_register_style( $k, WFC_CSS_URI.'/'.$v );
-                wp_enqueue_style( $k );
-            }
+            if( get_option( 'wfc_autoload_assets' ) ){
+                $all_css = new wfc_auto_load_assets();
+                if( !is_array( $all_css->autoload( 'css' ) ) ){
+                    die($all_css->autoload( 'css' ));
+                }
+                foreach( $all_css->autoload( 'css' ) as $k => $v ){
+                    wp_register_style( $k, WFC_CSS_URI.'/'.$v );
+                    wp_enqueue_style( $k );
+                }
             }
         }
     }
@@ -146,7 +145,7 @@
     }
 
     function Wfc_Core_Homecontent_Loop(){
-        $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC', 'orderby' =>'menu_order'));
+        $query = new WP_Query(array('post_type' => 'homeboxes', 'order' => 'ASC', 'orderby' => 'menu_order'));
         if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post(); ?>
             <div id="block">
                 <h2><?php echo get_the_title(); ?></h2>
@@ -168,13 +167,13 @@
         function Wfc_Register_Sidebars(){
             register_sidebar(
                 array(
-                     'name'          => 'Right Sidebar',
-                     'id'            => 'sidebar-1',
-                     'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-                     'after_widget'  => "</aside>",
-                     'before_title'  => '<h3 class="widget-title">',
-                     'after_title'   => '</h3>',
-                     'description'   => ''
+                    'name'          => 'Right Sidebar',
+                    'id'            => 'sidebar-1',
+                    'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+                    'after_widget'  => "</aside>",
+                    'before_title'  => '<h3 class="widget-title">',
+                    'after_title'   => '</h3>',
+                    'description'   => ''
                 ) );
         }
     endif; // wfc_framework_setup

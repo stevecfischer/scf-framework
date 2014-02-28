@@ -1,4 +1,4 @@
 <?php
-    function wfc_footer() {
-        do_action('wfc_footer');
+    function wfc_footer(){
+        do_action( 'wfc_footer' );
     }

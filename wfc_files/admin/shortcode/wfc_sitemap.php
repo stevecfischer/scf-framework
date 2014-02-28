@@ -6,35 +6,34 @@
      * @author Steve (08/16/2012)
      * @since since 2.3
      */
-
     /**
      * Fix url to include shortcuts
      *
      * @author Thibault Miclo
      * @since 5.2
+     *
      * @param integer $id id of the element
+     *
      * @return string $url correct url
      */
     function Wfc_fix_sitemap_url( $ancestor_id ){
-        $short_cut     = get_post_meta( $ancestor_id, 'wfc_page_type_shortcut', true );
-        if(intval($short_cut)>0)
-        {
-            switch($short_cut)
-            {
+        $short_cut = get_post_meta( $ancestor_id, 'wfc_page_type_shortcut', true );
+        if( intval( $short_cut ) > 0 ){
+            switch( $short_cut ){
                 case 1:
-                    $short_cut =get_permalink(get_post_meta( $ancestor_id, 'wfc_page_existing_pages', true ));
-                break;
+                    $short_cut = get_permalink( get_post_meta( $ancestor_id, 'wfc_page_existing_pages', true ) );
+                    break;
                 case 2:
-                    $short_cut=get_post_meta( $ancestor_id, 'wfc_page_external_link', true );
-                break;
+                    $short_cut = get_post_meta( $ancestor_id, 'wfc_page_external_link', true );
+                    break;
                 case 3:
-                     $short_cut=wp_get_attachment_url(get_post_meta( $ancestor_id, 'wfc_page_existing_pdfs', true ));
-                break;
+                    $short_cut = wp_get_attachment_url( get_post_meta( $ancestor_id, 'wfc_page_existing_pdfs', true ) );
+                    break;
             }
             return $short_cut;
-        }
-        else
+        } else{
             return get_permalink( $ancestor_id );
+        }
     }
 
     /**
@@ -54,13 +53,14 @@
      * Build the HTML for the sitemap
      *
      * @param array $atts attributes sent through the shortcode
+     *
      * @return string $html html to be displayed instead of the shortcode
      */
     function wfc_get_sitemap( $atts ){
         extract(
             shortcode_atts(
                 array(
-                     'exclude' => ''
+                    'exclude' => ''
                 ), $atts ) );
         if( $exclude != '' && !empty($exclude) ){
             $exclude_pages     = $exclude;
@@ -122,6 +122,7 @@
         }
         return $return;
     }
+
     add_shortcode( 'wfc_sitemap', 'wfc_get_sitemap' );
 
     /**
@@ -132,9 +133,11 @@
      * @param $depth
      * @param $args
      * @param $current_page
+     *
      * @return string $html $output + additional html
      */
-    class Wfc_Sitemap_Walker extends Walker_page
+    class Wfc_Sitemap_Walker
+        extends Walker_page
     {
         function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ){
             if( $depth ){
@@ -160,32 +163,29 @@
             }
             $css_class =
                 implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
-             $short_cut     = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
-            if($short_cut[0]!='none')
-            {
-                switch($short_cut[0])
-                {
+            $short_cut = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
+            if( $short_cut[0] != 'none' ){
+                switch( $short_cut[0] ){
                     case 1:
-                        $a=get_post_meta( $page->ID, 'wfc_page_existing_pages', true );
-                        $short_cut =get_permalink($a[0]);
-                    break;
+                        $a         = get_post_meta( $page->ID, 'wfc_page_existing_pages', true );
+                        $short_cut = get_permalink( $a[0] );
+                        break;
                     case 2:
-                        $short_cut=get_post_meta( $page->ID, 'wfc_page_external_link', true );
-                    break;
+                        $short_cut = get_post_meta( $page->ID, 'wfc_page_external_link', true );
+                        break;
                     case 3:
-                        $a=get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true );
-                        $short_cut=wp_get_attachment_url($a[0]);
-                    break;
-
+                        $a         = get_post_meta( $page->ID, 'wfc_page_existing_pdfs', true );
+                        $short_cut = wp_get_attachment_url( $a[0] );
+                        break;
                     default:
                         unset($short_cut);
-                    break;
+                        break;
                 }
-            }
-            else
+            } else{
                 unset($short_cut);
-            if( isset($short_cut) && !empty($short_cut) )
-                {$short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', true );
+            }
+            if( isset($short_cut) && !empty($short_cut) ){
+                $short_new_tab = get_post_meta( $page->ID, 'wfc_page_new_tab_option', true );
                 if( isset($short_new_tab) && !empty($short_new_tab) ){
                     $output .=
                         $indent.'<li class="'.$css_class.'"><a target="_blank" href="'.$short_cut.'">'.$link_before.

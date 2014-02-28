@@ -85,14 +85,9 @@
     wp_nav_menu( $wfc_main_nav_args );?>';
         $footer       = '
 <footer>
-    <p class="pull-right">
-        <a href="#">Back to top</a>
-    </p>
     <div id="wfc-footer-links">
-        <p>
-            <a target="_blank" href="http://www.webfullcircle.com">Internet Marketing</a>
-            |
-            <a target="_blank" href="http://www.webfullcircle.com">Website Design</a>
+        <p>Copyright 2014 All Rights Reserved. Website Design by
+            <a href="http://www.webfullcircle.com" target="_blank">Webfullcircle.com</a>
         </p>
     </div>
 </footer>
@@ -159,9 +154,9 @@
                     fclose( $fp );
                 }
             }
-            rename(WFC_PT.'/images',WFC_PT.'/../images');
-            rename(WFC_PT.'/css',WFC_PT.'/../css');
-            rename(WFC_PT.'/js',WFC_PT.'/../js');
+            rename( WFC_PT.'/images', WFC_PT.'/../images' );
+            rename( WFC_PT.'/css', WFC_PT.'/../css' );
+            rename( WFC_PT.'/js', WFC_PT.'/../js' );
             echo 'Theme built successfully.';
         } else{
             ?>

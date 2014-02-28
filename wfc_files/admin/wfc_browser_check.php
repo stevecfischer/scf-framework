@@ -77,7 +77,7 @@
         $key = md5( $_SERVER['HTTP_USER_AGENT'] );
         //if( false === ($response = get_site_transient( 'browser_'.$key )) ){
         global $wp_version;
-        $options = array(
+        $options  = array(
             'body'       => array('useragent' => $_SERVER['HTTP_USER_AGENT']),
             'user-agent' => 'WordPress/'.$wp_version.'; '.home_url()
         );

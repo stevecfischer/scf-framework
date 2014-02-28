@@ -51,7 +51,7 @@
             "std"     => "EXAMPLE_CPT"
         ),
         array(
-            "name"    => "WFC Widgets",
+            "name"    => "WFC Sidebar Widgets",
             "desc"    => "Select which widgets to disable",
             "id"      => $shortname."disabled_widgets",
             "type"    => "checkbox",
@@ -59,6 +59,20 @@
                 "WFC_Custom_Nav_Widget"   => "WFC Custom Nav",
                 "wfc_spotlight"           => "WFC Spotlight",
                 "WFC_Widget_Recent_Posts" => "WFC Recent Posts"
+            )
+        ),
+        array(
+            "name"    => "WFC Dashboard Widgets",
+            "desc"    => "Select which dashboard widgets to disable",
+            "id"      => $shortname."dashboard_disabled_widgets",
+            "type"    => "checkbox",
+            "options" => array(
+                "dashboard_right_now"     => "At a Glance",
+                "dashboard_activity"      => "Activity",
+                "dashboard_primary"       => "WordPress News",
+                "dashboard_quick_press"   => "Quick Draft",
+                "wfc_develop_checklist"   => "WFC Developer Checklist (**BETA**)",
+                "wfc_developer_dashboard" => "WFC Developer Dashboard",
             )
         ),
         array(
@@ -89,7 +103,7 @@
         ),
         array(
             "name"    => "Autoload Assests",
-            "desc"    => "Automatically enqueue all CSS and JS files",
+            "desc"    => "Automatically enqueue all CSS and JS files (**BETA**)",
             "id"      => $shortname."autoload_assets",
             "type"    => "checkbox",
             "options" => array(
@@ -116,7 +130,7 @@
         ),
         array("type" => "close"),
         array(
-            "name" => "Mail Settings",
+            "name" => "Mail Settings (**RC 1)",
             "type" => "section"
         ),
         array("type" => "open"),
@@ -314,7 +328,7 @@
                                     <?php if( in_array( $val, get_option( $value['id'] ) ) ){
                                         $checked = "checked=\"checked\"";
                                     } ?>
-                                <?php }                                ?>
+                                <?php } ?>
                                 <input type="checkbox" name="<?php echo $value['id']; ?>[]" id="<?php echo $value['id']; ?>" value="<?php echo $val; ?>" <?php echo $checked; ?> />
                                 <?php echo $option_v; ?>
                             </label>

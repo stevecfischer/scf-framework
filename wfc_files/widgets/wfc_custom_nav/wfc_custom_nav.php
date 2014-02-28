@@ -1,4 +1,5 @@
 <?php
+
     /**
      *
      * @package scf-framework
@@ -45,12 +46,12 @@
                 get_the_title( $post->post_parent ).'</a></li>';
             $wfc_custom_nav['the_menu'] .= wp_list_pages(
                 array(
-                     'title_li' => '',
-                     'echo'     => 0,
-                     'depth'    => $thedepth,
-                     'child_of' => $top_page,
-                     'exclude'  => $exclude_list,
-                     'walker'   => new Wfc_Custom_Nav_Walker
+                    'title_li' => '',
+                    'echo'     => 0,
+                    'depth'    => $thedepth,
+                    'child_of' => $top_page,
+                    'exclude'  => $exclude_list,
+                    'walker'   => new Wfc_Custom_Nav_Walker
                 ) );
             $wfc_custom_nav['after_menu'] = '</ul>';
             $wfc_menu                     = apply_filters( 'wfc_before_menu', $wfc_custom_nav );
@@ -60,14 +61,13 @@
 
         function update( $new_instance, $old_instance ){
             $instance               = $old_instance;
-            $instance['menu_class']      = strip_tags( $new_instance['menu_class'] );
+            $instance['menu_class'] = strip_tags( $new_instance['menu_class'] );
             return $instance;
         }
 
-
         function form( $instance ){
-            $instance             = wp_parse_args( (array)$instance, array('menu_class' => '') );
-            $wfc_menu_class           = esc_attr( $instance['menu_class'] );
+            $instance       = wp_parse_args( (array)$instance, array('menu_class' => '') );
+            $wfc_menu_class = esc_attr( $instance['menu_class'] );
             ?>
             <p><label for="<?php echo $this->get_field_id( 'menu_class' ); ?>"><?php _e( 'Menu Class:' ); ?></label>
                 <input class="widefat" id="<?php echo $this->get_field_id( 'menu_class' ); ?>" name="<?php echo $this->get_field_name( 'menu_class' ); ?>" type="text" value="<?php echo $wfc_menu_class; ?>"/>

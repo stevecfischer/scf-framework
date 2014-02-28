@@ -6,7 +6,6 @@
      * @author Steve (08/16/2012)
      * @since since 2.3
      */
-
     /**
      * A TO Z INDEX tabs
      * used in wfc_get_atozindex()
@@ -19,7 +18,7 @@
         /** @var $wpdb wpdb */
         global $wpdb;
         $get_id      =
-            $wpdb->get_results( "SELECT DISTINCT post_title,post_name,ID FROM $wpdb->posts WHERE post_status = 'publish' and post_type='page' order by trim(post_title) ASC" );
+            $wpdb->get_results( "SELECT DISTINCT post_title,post_name,ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type='page' ORDER BY trim(post_title) ASC" );
         $log_letters = array();
         $log_num     = array();
         $return_tabs = '';
@@ -32,7 +31,7 @@
                     $log_num[] = $current_char;
                 }
             }
-            if( !is_numeric( $current_char )  && $current_char != "$"){
+            if( !is_numeric( $current_char ) && $current_char != "$" ){
                 if( !in_array( $current_char, $log_letters ) ){
                     $log_letters[] = $current_char;
                 }
@@ -56,18 +55,20 @@
      * to build the html structure
      *
      * @global $wpdb
+     *
      * @param $lettersArr
      * @param $numsArr
      * @param $allPosts
+     *
      * @return string $str string to be displayed
      */
     function Wfc_a_to_z_pages( $lettersArr, $numsArr, $allPosts ){
         /** @var $wpdb wpdb */
         global $wpdb;
-        $log_letters    = array();
-        $open_list      = false;
-        $counter        = 0;
-        $return_pages   = '';
+        $log_letters  = array();
+        $open_list    = false;
+        $counter      = 0;
+        $return_pages = '';
         $return_pages .= '<div id="atoz">';
         $get_page_titles = $wpdb->get_results(
             "SELECT post_title, post_name, ID
@@ -80,7 +81,7 @@
             $return_pages .= '<ul id="list_0" class="inactive">';
             foreach( $allPosts as $this_post ){
                 $current_number = substr( trim( $this_post->post_title ), 0, 1 );
-                if( is_numeric( $current_number ) || $current_number == "$"){
+                if( is_numeric( $current_number ) || $current_number == "$" ){
                     $return_pages .= '<li><a href="'.$this_post->post_title.'" >'.$this_post->post_title.'</a></li>';
                 }
             }
@@ -89,7 +90,7 @@
         foreach( $get_page_titles as $this_post ){
             $current_letter        = ucfirst( substr( trim( $this_post->post_title ), 0, 1 ) );
             $get_page_letter_tally =
-                $wpdb->get_results( "SELECT count(*) as tally FROM $wpdb->posts WHERE post_title LIKE '$current_letter%' AND post_status = 'publish' and post_type='page' order by trim(post_title) ASC" );
+                $wpdb->get_results( "SELECT count(*) AS tally FROM $wpdb->posts WHERE post_title LIKE '$current_letter%' AND post_status = 'publish' AND post_type='page' ORDER BY trim(post_title) ASC" );
             $column_flag           = ceil( $get_page_letter_tally[0]->tally / 2 );
             if( !is_numeric( $current_letter ) ){
                 if( !in_array( $current_letter, $log_letters ) ){
@@ -115,16 +116,19 @@
         $return_pages .= '</div><!-- //#atoz -->';
         return $return_pages;
     }
+
     /**
      * Fix url to include shortcuts
      *
      * @author Thibault Miclo
      * @since 5.2
+     *
      * @param integer $page_id id of the page
+     *
      * @return string $url real link
      */
     function Wfc_fix_atoz_url( $page_id ){
-        $short_cut     = get_post_meta( $page_id, 'wfc_page_type_shortcut', true );
+        $short_cut = get_post_meta( $page_id, 'wfc_page_type_shortcut', true );
         if( $short_cut != 'none' ){
             switch( $short_cut ){
                 case 'Page':
@@ -138,17 +142,15 @@
                     $a                               = get_post_meta( $page_id, 'wfc_page_existing_pdfs', true );
                     $short_cut_destination_permalink = wp_get_attachment_url( $a );
                     break;
-
                 default:
-                    $short_cut_destination_permalink = get_permalink($page_id);
+                    $short_cut_destination_permalink = get_permalink( $page_id );
                     break;
             }
             return $short_cut_destination_permalink;
-        }
-        else
+        } else{
             return get_permalink( $page_id );
+        }
     }
-
 
     /**
      * a_to_z shortcode function

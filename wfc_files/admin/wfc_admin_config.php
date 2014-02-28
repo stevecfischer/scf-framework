@@ -5,7 +5,6 @@
      * @author Steve (6/11/2012)
      * @since 2.2
      */
-
     require_once(WFC_ADM.'/wfc_admin_class.php');
     /**
      * Require each parts of the framework
@@ -28,14 +27,12 @@
     require_once(WFC_ADM.'/wfc_fastbackup_class.php'); //Fast backup
     require_once(WFC_PLUGINS.'/dragndrop/index.php'); //Drag&drop admin plugin
     require_once(WFC_ADM.'/wfc_dashboard_checklist.php'); // SMTP Class
-
     /**
      * WFC Walker for navigation menus.  Created to support the shortcut functionality
      *
      * @since 2.0
      */
     require_once(WFC_ADM.'/wfc_nav_walker.php');
-
     /**
      * Includes WFC Shortcodes
      *
@@ -51,7 +48,6 @@
     require_once(WFC_WIDGETS.'/wfc_custom_nav/wfc_custom_nav.php');
     require_once(WFC_WIDGETS.'/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
     require_once(WFC_WIDGETS.'/wfc_spotlight/wfc_spotlight.php');
-
     /*
      * @sftodo: move all functions into wfc admin class. or if there is somewhere better send there.
      */

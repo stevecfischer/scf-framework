@@ -1,4 +1,5 @@
 <?php
+
     /**
      * Class to contact github API
      * Allows you to easly fecth infos from a github repo
@@ -73,9 +74,9 @@
          * @param string $url url to query
          */
         private function _request( $url ){
-            $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
-            $context  = stream_context_create($options);
-            $contents           = @ file_get_contents( $url ,false, $context);
+            $options            = array('http' => array('user_agent' => $_SERVER['HTTP_USER_AGENT']));
+            $context            = stream_context_create( $options );
+            $contents           = @ file_get_contents( $url, false, $context );
             $this->responseCode = (false === $contents) ? 400 : 200;
             $this->responseText = $contents;
         }

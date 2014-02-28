@@ -57,16 +57,16 @@
                     register_post_type(
                         strtolower( $var['cpt'] ),
                         array(
-                             'labels'        => $cpt_labels,
-                             'public'        => true,
-                             'menu_position' => 5,
-                             'has_archive'   => strtolower( $var['cpt'] ),
-                             'rewrite'       => array(
-                                 'slug'       => strtolower( $var['cpt'] ),
-                                 'with_front' => false
-                             ),
-                             'hierarchical'  => true,
-                             'supports'      => $var['supports']
+                            'labels'        => $cpt_labels,
+                            'public'        => true,
+                            'menu_position' => 5,
+                            'has_archive'   => strtolower( $var['cpt'] ),
+                            'rewrite'       => array(
+                                'slug'       => strtolower( $var['cpt'] ),
+                                'with_front' => false
+                            ),
+                            'hierarchical'  => true,
+                            'supports'      => $var['supports']
                         )
                     );
                 }
@@ -74,7 +74,7 @@
                     foreach( $var['tax'] as $single_tax ){
                         $set_taxonomy_label = !empty($single_tax['menu_name']) ? $single_tax['menu_name'] : $single_tax['tax_label'];
                         $tax_labels = array(
-                            'name'              => _x($set_taxonomy_label, 'taxonomy general name' ),
+                            'name' => _x( $set_taxonomy_label, 'taxonomy general name' ),
                             'singular_name'     => _x( $single_tax['tax_label'], 'taxonomy singular name' ),
                             'search_items'      => __( 'Search '.$set_taxonomy_label ),
                             'all_items'         => __( 'All '.$set_taxonomy_label ),
@@ -90,13 +90,13 @@
                         $obj_type = isset($var['object_type']) ? $var['object_type'] : strtolower( $var['cpt'] );
                         register_taxonomy(
                             strtolower( $single_tax['tax_label'] ), $obj_type, array(
-                                                                                    'hierarchical' => true,
-                                                                                    'labels'       => $tax_labels,
-                                                                                    'show_ui'      => true,
-                                                                                    'public'       => true,
-                                                                                    'query_var'    => true,
-                                                                                    'rewrite'      => true,
-                                                                               ) );
+                            'hierarchical' => true,
+                            'labels'       => $tax_labels,
+                            'show_ui'      => true,
+                            'public'       => true,
+                            'query_var'    => true,
+                            'rewrite'      => true,
+                        ) );
                     }
                 }
             }

@@ -1,4 +1,5 @@
 <?php
+
     /**
      * Class to manage all admin functions.
      *
@@ -13,17 +14,20 @@
         public $active_cpts = array();
 
         public function Wfc_Admin_Class(){
-            if($_GET['wfc_update_settings'] == "update") $this->wfc_update_settings();
+            if( $_GET['wfc_update_settings'] == "update" ){
+                $this->wfc_update_settings();
+            }
             $this->wfc_shortcode_widget();
             $this->get_active_cpts();
             add_action( 'admin_head', array(&$this, 'wfc_framework_variables') );
-            add_action( 'widgets_init',array(&$this,  'wfc_manage_widgets' ));
+            add_action( 'widgets_init', array(&$this, 'wfc_manage_sidebar_widgets') );
             add_action( 'the_content', array(&$this, 'wfc_auto_content') );
             add_shortcode( 'wfcimg', array(&$this, 'wfc_img_uri_deprecated') );
             add_shortcode( 'wfc_img_uri', array(&$this, 'wfc_img_uri') );
             add_action( 'wfc_footer', array(&$this, 'wfc_framework_variables') );
             add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
+            add_action( 'wp_dashboard_setup', array(&$this, 'wfc_manage_dashboard_widgets') );
             add_filter( 'manage_campaign_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_filter( 'manage_news_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_filter( 'manage_homepageboxes_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
@@ -40,7 +44,6 @@
                 &$this,
                 'wfc_display_post_thumbnail_column'
             ), 5, 2 );
-
             /* @sftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             //add_action( 'init', array(&$this, 'wfc_init_cpt') );
@@ -52,12 +55,14 @@
          * @global string $wfc_version
          * @since 5.2
          */
-        public static function wfc_grab_version() {
-            $_dir=__DIR__.'/../../';
-            $d=scandir($_dir);
-            $version=0;
-            foreach ($d as $e) if(substr($e,0,4)=='Ver_' && substr($e,-4)=='.wfc') {
-                $version=substr($e,4,-4);
+        public static function wfc_grab_version(){
+            $_dir    = __DIR__.'/../../';
+            $d       = scandir( $_dir );
+            $version = 0;
+            foreach( $d as $e ){
+                if( substr( $e, 0, 4 ) == 'Ver_' && substr( $e, -4 ) == '.wfc' ){
+                    $version = substr( $e, 4, -4 );
+                }
             }
             return $version;
         }
@@ -194,8 +199,10 @@
         }
 
         public function wfc_init_cpt(){
-            if(empty($this->active_cpts)) return;
-            foreach($this->active_cpts as $cpt){
+            if( empty($this->active_cpts) ){
+                return;
+            }
+            foreach( $this->active_cpts as $cpt ){
                 $module_args = array(
                     'cpt'       => $cpt /* CPT Name */,
                     'menu_name' => $cpt /* Overide the name above */,
@@ -228,7 +235,7 @@
          *
          * @return string uri to theme image folder
          */
-        public function wfc_img_uri_deprecated($deprecated = ''){
+        public function wfc_img_uri_deprecated( $deprecated = '' ){
             global $wfc_admin;
             if( empty($deprecated) ){
                 $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.4', 'Current shortcode to use: WFC_IMG_URI' );
@@ -254,13 +261,15 @@
          *
          * @package scf-framework
          * @author Steve (12/10/2012)
+         *
          * @param string $content content before
+         *
          * @return string $content content after
          */
         public function wfc_auto_content( $content ){
             if( is_page() ){
-                $wfc_option = get_option('wfc_default_content');
-                if( $content =='' && empty($wfc_option) ){
+                $wfc_option = get_option( 'wfc_default_content' );
+                if( $content == '' && empty($wfc_option) ){
                     $content = '<h1>HTML Ipsum Presents</h1>
 <p>Aenectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.
 <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci,
@@ -319,25 +328,37 @@
              * comment_moderation -boolean
              */
             $wfc_settings_array = array(
-                'comment_registration' => 1,
-                'require_name_email' => 1,
-                'default_comment_status' => 1,
-                'comment_moderation' => 1,
-                'timezone_string' => "America/New_York",
-                'blogdescription' => "",
+                'comment_registration'    => 1,
+                'require_name_email'      => 1,
+                'default_comment_status'  => 1,
+                'comment_moderation'      => 1,
+                'timezone_string'         => "America/New_York",
+                'blogdescription'         => "",
                 'image_default_link_type' => "none"
             );
             foreach( $wfc_settings_array as $setting_i => $setting_v ){
-                update_option($setting_i,$setting_v);
+                update_option( $setting_i, $setting_v );
             }
             header( "Location: admin.php?page=wfc_theme_customizer.php&settings_updated=true" );
         }
 
-        public function wfc_manage_widgets(){
+        public function wfc_manage_sidebar_widgets(){
             $disable_widgets = get_option( 'wfc_disabled_widgets' );
-            if(!is_array($disable_widgets)) return;
+            if( !is_array( $disable_widgets ) ){
+                return;
+            }
             foreach( $disable_widgets as $disable ){
                 unregister_widget( $disable );
+            }
+        }
+
+        public function wfc_manage_dashboard_widgets(){
+            $disable_widgets = get_option( 'wfc_dashboard_disabled_widgets' );
+            if( !is_array( $disable_widgets ) ){
+                return;
+            }
+            foreach( $disable_widgets as $disable ){
+                remove_meta_box( $disable, 'dashboard', 'side' );
             }
         }
     }
@@ -348,6 +369,5 @@
      * @since 5.1
      */
     $GLOBALS['wfc_admin'] = new Wfc_Admin_Class();
-
     // @sftodo: not the best but it will work for now.
-    $wfc_version=WFC_Admin_Class::wfc_grab_version();
+    $wfc_version = WFC_Admin_Class::wfc_grab_version();

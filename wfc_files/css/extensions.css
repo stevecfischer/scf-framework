@@ -6,86 +6,86 @@
 
 /* GENERAL */
 clear-both{
-    clear :both;
+    clear:both;
 }
 
 /*A-Z Index*/
 #wfc-atoz{
-    width :100%;
-    float :left;
+    width:100%;
+    float:left;
 }
 #az_tabs{
-    position   :absolute;
-    margin-top :1px;
-    padding    :0px;
+    position:absolute;
+    margin-top:1px;
+    padding:0px;
 }
 ul#az_tabs li{
-    list-style :none;
-    background :url(../images/tab_flexible_off_left.gif) no-repeat scroll left top transparent;
-    float      :left;
-    font-size  :15px;
-    margin     :0;
-    padding    :14px 0 0;
-    position   :relative;
-    height     :34px;
+    list-style:none;
+    background:url(../images/tab_flexible_off_left.gif) no-repeat scroll left top transparent;
+    float:left;
+    font-size:15px;
+    margin:0;
+    padding:14px 0 0;
+    position:relative;
+    height:34px;
 }
 ul#az_tabs li a{
-    background      :url(../images/tab_flexible_off_right.gif) no-repeat scroll right top transparent;
-    cursor          :pointer;
-    padding         :14px 11px 0;
-    text-decoration :none;
+    background:url(../images/tab_flexible_off_right.gif) no-repeat scroll right top transparent;
+    cursor:pointer;
+    padding:14px 11px 0;
+    text-decoration:none;
 }
 ul#az_tabs li.current{
-    background :url(../images/tab_flexible_on_left.gif) no-repeat scroll left top transparent;
-    padding    :14px 0 0;
-    cursor     :default;
+    background:url(../images/tab_flexible_on_left.gif) no-repeat scroll left top transparent;
+    padding:14px 0 0;
+    cursor:default;
 }
 ul#az_tabs li.current a{
-    background :url(../images/tab_flexible_on_right.gif) no-repeat scroll right top transparent;
-    padding    :14px 20px 0 23px;
-    cursor     :default;
+    background:url(../images/tab_flexible_on_right.gif) no-repeat scroll right top transparent;
+    padding:14px 20px 0 23px;
+    cursor:default;
 }
 #atoz{
-    clear   :both;
-    padding :15px 0 0;
-    width   :100%;
+    clear:both;
+    padding:15px 0 0;
+    width:100%;
 }
 #atoz ul{
-    padding :0px;
-    margin  :0;
+    padding:0px;
+    margin:0;
 }
 #atoz li{
-    list-style :none;
-    float      :left;
-    margin     :0;
-    width      :430px;
+    list-style:none;
+    float:left;
+    margin:0;
+    width:430px;
 }
 #atoz li a{
-    text-decoration :none;
+    text-decoration:none;
 }
 #atoz li a:hover{
-    text-decoration :underline;
+    text-decoration:underline;
 }
 ul.active{
-    display    :block;
-    visibility :visible;
+    display:block;
+    visibility:visible;
 }
 ul.inactive{
-    display :none;
+    display:none;
 }
 #az_tabs-wrapper{
-    clear   :both;
-    padding :0px 0 34px;
+    clear:both;
+    padding:0px 0 34px;
 }
 .left-col, .right-col{
-    float :left;
-    width :40%;
+    float:left;
+    width:40%;
 }
 
 /*
 **  OLD BROWSER GROWL
 */
 #wfc-old-browser{
-    width            :100%;
-    background-color :#c1c1c1;
+    width:100%;
+    background-color:#C1C1C1;
 }

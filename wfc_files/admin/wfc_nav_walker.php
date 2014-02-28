@@ -1,4 +1,5 @@
 <?php
+
     /**
      *
      * @package scf-framework
@@ -34,7 +35,6 @@
             $css_class =
                 implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
             $short_cut = get_post_meta( $page->ID, 'wfc_page_type_shortcut', true );
-
             if( $short_cut != 'none' ){
                 switch( $short_cut ){
                     case 'Page':

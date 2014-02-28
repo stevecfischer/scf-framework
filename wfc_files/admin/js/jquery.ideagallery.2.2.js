@@ -124,21 +124,21 @@
             $($thumb).addClass('selected');
             if (dir == 'left') {
                 $scfFrame.animate(
-                    {left:'-=' + adjustedImageSize},
-                    {duration:slideSpeed, easing:frameEasing, complete:function () {
+                    {left: '-=' + adjustedImageSize},
+                    {duration: slideSpeed, easing: frameEasing, complete: function () {
                         $(this).empty().delay(300).css('left', adjustedImageSize).animate(
-                            {left:0},
-                            {duration:slideSpeed, easing:frameEasing})
+                            {left: 0},
+                            {duration: slideSpeed, easing: frameEasing})
                             .append('<a href="#"><img data-large="' + largesrc + '" data-full="' + fullsrc + '" data-description="' + title + '" src="' + largesrc + '" /></a>');
                     }
                     });
             } else {
                 $scfFrame.animate(
-                    {left:'+=' + adjustedImageSize},
-                    {duration:slideSpeed, easing:frameEasing, complete:function () {
+                    {left: '+=' + adjustedImageSize},
+                    {duration: slideSpeed, easing: frameEasing, complete: function () {
                         $(this).empty().delay(300).css('left', -adjustedImageSize).animate(
-                            {left:0},
-                            {duration:slideSpeed, easing:frameEasing})
+                            {left: 0},
+                            {duration: slideSpeed, easing: frameEasing})
                             .append('<a href="#"><img data-large="' + largesrc + '" data-full="' + fullsrc + '" data-description="' + title + '" src="' + largesrc + '" /></a>');
                     }
                     });
@@ -175,7 +175,7 @@
             if (currentPage == 1 && dir == 'left') {
                 $moveMe = $thumbGalleryWidth * -( pages - 1);
                 $('#thumbs').filter(':not(li:animated)').animate({
-                    left:$moveMe + 'px'
+                    left: $moveMe + 'px'
                 }, 500, function () {
                     currentPage = pages;
                 });
@@ -184,7 +184,7 @@
             if (currentPage == pages && dir == 'right') {
                 $moveMe = $thumbGalleryWidth * -( pages - 1);
                 $('#thumbs').filter(':not(li:animated)').animate({
-                    left:'0px'
+                    left: '0px'
                 }, 500, function () {
                     currentPage = 1;
                 });
@@ -200,8 +200,8 @@
                 --currentPage;
             }
             $('#thumbs').filter(':not(li:animated)').animate(
-                {left:'+=' + $moveMe},
-                {duration:500, easing:thumbEasing}
+                {left: '+=' + $moveMe},
+                {duration: 500, easing: thumbEasing}
             );
             _pagination(currentPage);
         }
