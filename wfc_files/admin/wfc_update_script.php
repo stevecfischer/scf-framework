@@ -691,7 +691,11 @@
 
     function write_to_file( $my_file = 'scf_capture_inset.csv', $data, $mode = "w+" ){
         $handle = fopen( $my_file, $mode ) or die('Cannot open file:  '.$my_file);
-        fwrite( $handle, $data );
+        if( is_array( $data ) ){
+            fwrite( $handle, print_r( $data ) );
+        } else{
+            fwrite( $handle, $data );
+        }
         fclose( $handle );
     }
 
@@ -723,6 +727,7 @@
                 }
             }
         }
+        write_to_file( "listoffiles", $files );
         return $files;
     }
 
