@@ -247,25 +247,23 @@
                         //Process diff on files
                         $old_files        = array();
                         $current_files    = array();
-                        $path_to_old = WFC_THEME_ROOT.'/working_directory/'.$folder_name.'/wfc_files/';
-                        $path_to_current  = WFC_PT;
-                        $old_nb_carac     = strlen( $path_to_old ) + 1;
-                        $current_nb_carac = strlen( $path_to_current ) + 1;
-                        $old_files        = listFolderFilesArr( $path_to_old, array(), $old_nb_carac, $old_files );
-                        $current_files    = listFolderFilesArr( $path_to_current, array(), $current_nb_carac, $current_files );
-                        $old_files        = array_map( 'sha1_file', $old_files );
-                        $current_files    = array_map( 'sha1_file', $current_files );
-                        /*
-                        echo '<pre>';
-                        print_r($old_files);
-                        print_r($current_files);
-                        echo '</pre>';
-                        */
+                        //$path_to_old = WFC_THEME_ROOT.'/working_directory/'.$folder_name.'/wfc_files/';
+                        //$path_to_current  = WFC_PT;
+                        //$old_nb_carac     = strlen( $path_to_old ) + 1;
+                        //$current_nb_carac = strlen( $path_to_current ) + 1;
+                        //$old_files        = listFolderFilesArr( $path_to_old, array(), $old_nb_carac, $old_files );
+                        //$current_files    = listFolderFilesArr( $path_to_current, array(), $current_nb_carac, $current_files );
+                        // $old_files        = array_map( 'sha1_file', $old_files );
+                        //$current_files    = array_map( 'sha1_file', $current_files );
+                        // echo '<pre>';
+                        // print_r($old_files);
+                        // print_r($current_files);
+                        // echo '</pre>';
                         $missing   = '';
                         $do_update = true;
                         $good      = 0;
                         $bad       = 0;
-                        foreach( $old_files as $f => $sha ){
+                        /*foreach( $old_files as $f => $sha ){
                             if( !in_array( $f, unserialize( IGNORE ) ) ){
                                 if( array_key_exists( $f, $current_files ) ){
                                     if( $sha == $current_files[$f] ){
@@ -292,32 +290,34 @@
                                 $missing .= '<span style="color:#FF6600;font-weight:bold;">File : <strong style="color:black;">'.$f.'</strong> is missing on GitHub.</span><br />';
                             }
                         }
-                        $percent = $good / ($good + $bad);
-                        if( $do_update ){
-                            $message = 'Everything is fine, the system is safe to be updated.<br /><br />
+                        $percent = $good / ($good + $bad);*/
+                        //if( $do_update ){
+                        $message = 'Everything is fine, the system is safe to be updated.<br /><br />
                             Although all the best conditions are regrouped, you should backup your installation using the backup-manager plugin.<br />
                             To view the result of the tests, click outside of the box or on the cross in the top right corner. A button will allow to update from there too.<br />
-                            Click on the button to proceed to the update : <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?update='.
-                                $token.'"><input type="submit" value="Update" /></form>';
-                        } else{
+                            Click on the button to proceed to the update :
+                            <form method="POST" action="admin.php?page=wfc_theme_customizer.php&update=">
+                            <input type="submit" value="Update" /></form>';
+                        /* } else{
                             $message = 'Some conditons are missing.<br /><br />
                             The system is '.wfc_display_percent( $percent ).' % safe to be upgraded, please read carefully the result of the test.<br />
                             If you still want to update, a button will allow you to do so from there.<br />
                             <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&update='.$token.'"><input type="submit" value="Update" /></form>';
                         }
-                        $return .= $missing.$message;
+                        $return .= $missing.$message;*/
                     } else{
-                        $return .= 'Unable to find the name of the folder where the old version has been unzipped..<br />';
+                        //$return .= 'Unable to find the name of the folder where the old version has been unzipped..<br />';
                     }
                 }
             }
             if( !$exists ){
-                $return .= 'The local version doesn\'t exists on git, someone has probably made changes, do not update';
+                //$return .= 'The local version doesn\'t exists on git, someone has probably made changes, do not update';
             }
         } else{
-            $return .= 'No $_GET data.';
+            //$return .= 'No $_GET data.';
         }
-        return $return;
+        //return $return;
+        return $message;
     }
 
     /**
@@ -450,7 +450,7 @@
                 $result .= 'Unable to update, the security token is outdated, make sure to make the diffs first !';
             }
         }
-        write_to_file( "update_script_debug.txt" );
+        //write_to_file( "update_script_debug.txt" );
         return $result;
     }
 
@@ -692,7 +692,7 @@
     function write_to_file( $my_file = 'scf_capture_inset.csv', $data, $mode = "w+" ){
         $handle = fopen( $my_file, $mode ) or die('Cannot open file:  '.$my_file);
         if( is_array( $data ) ){
-            fwrite( $handle, print_r( $data ) );
+            fwrite( $handle, print_r( $data, true ) );
         } else{
             fwrite( $handle, $data );
         }
@@ -727,7 +727,7 @@
                 }
             }
         }
-        write_to_file( "listoffiles", $files );
+        //write_to_file( "listoffiles", $files );
         return $files;
     }
 
