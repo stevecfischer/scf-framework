@@ -24,7 +24,7 @@
             <input type="hidden" name="checklist_section" value="Developer Checklist"/>
 
             <?php $checklist->render_checklist_array( $checklist->wfc_chklist_plugin_array, 'wfc_plugin_check' ); ?>
-            <?php //$checklist->render_checklist_array( $checklist->wfc_chklist_option_array, 'wfc_option_check' ); ?>
+            <?php $checklist->render_checklist_array( $checklist->wfc_chklist_option_array, 'wfc_option_check' ); ?>
             <?php $checklist->render_checklist_array( $checklist->wfc_chklist_pages_array, 'wfc_page_check' ); ?>
             <?php $checklist->render_checklist_array( $checklist->wfc_chklist_files_array, 'wfc_file_check' ); ?>
             <?php //$checklist->render_checklist_array( $checklist->wfc_chklist_scrap_array, 'wfc_scrap_check' ); ?>
