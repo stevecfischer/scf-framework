@@ -185,13 +185,13 @@
                     $exists     = true;
                     $target_url = $tag->zipball_url;
                     $userAgent  = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
-                    if( !file_exists( WFC_PT.'../working_directory' ) ){
-                        mkdir( WFC_PT.'../working_directory' );
+                    if( !file_exists( WFC_THEME_ROOT.'/working_directory' ) ){
+                        mkdir( WFC_THEME_ROOT.'/working_directory' );
                     } else{
-                        rrmdir( WFC_PT.'../working_directory' );
-                        mkdir( WFC_PT.'../working_directory' );
+                        rrmdir( WFC_THEME_ROOT.'/working_directory' );
+                        mkdir( WFC_THEME_ROOT.'/working_directory' );
                     }
-                    $file_zip = WFC_PT.'../working_directory/Ver_'.substr( $tag->name, 1 ).'.zip';
+                    $file_zip        = WFC_THEME_ROOT.'/working_directory/Ver_'.substr( $tag->name, 1 ).'.zip';
                     //echo "<br>Starting<br>Target_url: $target_url";
                     //echo "<br>Headers stripped out";
                     // make the cURL request to $target_url
@@ -228,15 +228,15 @@
                         $return .= "<br>Could not open $file_zip";
                         return $return;
                     }
-                    $zip->extractTo( WFC_PT.'../working_directory/' );
+                    $zip->extractTo( WFC_THEME_ROOT.'/working_directory/' );
                     $zip->close();
                     //echo "<br />Unzipped file.<br /><br />";
                     //Need to get folder name
                     $folder_name = '';
-                    if( $handle = opendir( WFC_PT.'../working_directory/' ) ){
+                    if( $handle = opendir( WFC_THEME_ROOT.'/working_directory/' ) ){
                         while( false !== ($entry = readdir( $handle )) ){
                             if( $entry != "." && $entry != ".." ){
-                                if( is_dir( WFC_PT.'../working_directory/'.$entry ) ){
+                                if( is_dir( WFC_THEME_ROOT.'/working_directory/'.$entry ) ){
                                     $folder_name = $entry;
                                 }
                             }
@@ -247,7 +247,7 @@
                         //Process diff on files
                         $old_files        = array();
                         $current_files    = array();
-                        $path_to_old      = WFC_PT.'../working_directory/'.$folder_name.'/wfc_files/';
+                        $path_to_old = WFC_THEME_ROOT.'/working_directory/'.$folder_name.'/wfc_files/';
                         $path_to_current  = WFC_PT;
                         $old_nb_carac     = strlen( $path_to_old ) + 1;
                         $current_nb_carac = strlen( $path_to_current ) + 1;
@@ -330,13 +330,14 @@
      * @return string $result content for the update box
      */
     function wfc_doUpdate(){
+        $result = '';
         if( isset($_GET) && !empty($_GET) && $_GET['update'] == $token ){
-            if( file_exists( WFC_PT.'../working_directory' ) ){ //GO UPDATE
+            if( file_exists( WFC_THEME_ROOT.'/working_directory' ) ){ //GO UPDATE
                 $folder_name = '';
-                if( $handle = opendir( WFC_PT.'../working_directory' ) ){
+                if( $handle = opendir( WFC_THEME_ROOT.'/working_directory' ) ){
                     while( false !== ($entry = readdir( $handle )) ){
                         if( $entry != "." && $entry != ".." ){
-                            if( is_dir( WFC_PT.'../working_directory/'.$entry ) ){
+                            if( is_dir( WFC_THEME_ROOT.'/working_directory/'.$entry ) ){
                                 $folder_name = $entry;
                             }
                         }
@@ -344,10 +345,10 @@
                     closedir( $handle );
                 }
                 if( $folder_name != '' ){
-                    $path_to_old = WFC_PT.'../working_directory/'.$folder_name;
+                    $path_to_old = WFC_THEME_ROOT.'/working_directory/'.$folder_name;
                     rrmdir( $path_to_old );
                 }
-                $path_to_current = WFC_PT.'../wfc_files/';
+                $path_to_current = WFC_THEME_ROOT.'/wfc_files/';
                 $gr              = new GRepo(GIT_USER, GIT_REPO);
                 $tags            = $gr->getRepoTags();
                 $git             = get_git_version();
@@ -360,10 +361,10 @@
                         $exists     = true;
                         $target_url = $tag->zipball_url;
                         $userAgent  = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
-                        if( !file_exists( WFC_PT.'../working_directory' ) ){
-                            mkdir( WFC_PT.'../working_directory' );
+                        if( !file_exists( WFC_THEME_ROOT.'/working_directory' ) ){
+                            mkdir( WFC_THEME_ROOT.'/working_directory' );
                         }
-                        $file_zip = WFC_PT.'../working_directory/Ver_'.substr( $tag->name, 1 ).'.zip';
+                        $file_zip = WFC_THEME_ROOT.'/working_directory/Ver_'.substr( $tag->name, 1 ).'.zip';
                         //echo "<br>Starting<br>Target_url: $target_url";
                         //echo "<br>Headers stripped out";
                         // make the cURL request to $target_url
@@ -400,15 +401,15 @@
                             $return .= "<br>Could not open $file_zip";
                             return $return;
                         }
-                        $zip->extractTo( WFC_PT.'../working_directory/' );
+                        $zip->extractTo( WFC_THEME_ROOT.'/working_directory/' );
                         $zip->close();
                     }
                 }
                 $folder_name = '';
-                if( $handle = opendir( WFC_PT.'../working_directory' ) ){
+                if( $handle = opendir( WFC_THEME_ROOT.'/working_directory' ) ){
                     while( false !== ($entry = readdir( $handle )) ){
                         if( $entry != "." && $entry != ".." ){
-                            if( is_dir( WFC_PT.'../working_directory/'.$entry ) ){
+                            if( is_dir( WFC_THEME_ROOT.'/working_directory/'.$entry ) ){
                                 $folder_name = $entry;
                             }
                         }
@@ -416,34 +417,40 @@
                     closedir( $handle );
                 }
                 if( $folder_name != '' ){
-                    $path_to_old = WFC_PT.'../working_directory/'.$folder_name.'/wfc_files';
+                    $result .= '$path_to_current = '.$path_to_current.'<br />';
+                    $path_to_old = WFC_THEME_ROOT.'/working_directory/'.$folder_name.'/wfc_files';
+                    $result .= '$path_to_old = '.$path_to_old.'<br />';
+                    if( !file_exists( $path_to_old ) ){
+                        $result .= 'The old path '.$path_to_old.' does not exist.'.'<br />';
+                    }
                     //Time to delete all current files
                     rrmdir( $path_to_current ); //custom function, windows...
                     if( rename( $path_to_old, $path_to_current ) ){
                         //Do not forget to update version file !
-                        unlink( WFC_PT.'../Ver_'.$loc.'.wfc' );
-                        $f = fopen( WFC_PT.'../Ver_'.$git.'.wfc', 'w+' );
+                        unlink( WFC_THEME_ROOT.'/Ver_'.$loc.'.wfc' );
+                        $f = fopen( WFC_THEME_ROOT.'/Ver_'.$git.'.wfc', 'w+' );
                         fwrite( $f, 'VERSION FILE - DO NOT DELETE' );
                         fclose( $f );
-                        $result = 'WFC theme is now up-to-date !';
+                        $result .= 'WFC theme is now up-to-date !';
                         unset($zip);
-                        @chmod( WFC_PT.'../working_directory', 0777 );
-                        @chmod( WFC_PT.'../working_directory/Ver_'.$git.'.zip', 0777 );
-                        rrmdir( WFC_PT.'../working_directory' );
+                        chmod( WFC_THEME_ROOT.'/working_directory', 0777 );
+                        chmod( WFC_THEME_ROOT.'/working_directory/Ver_'.$git.'.zip', 0777 );
+                        rrmdir( WFC_THEME_ROOT.'/working_directory' );
                     } else{
-                        $result = 'Unable to replace old files.. Change permissions on wfc_files folder.';
+                        $result .= 'Unable to replace old files.. Change permissions on wfc_files folder.'.'<br />';
                     }
                 } else{
-                    $result = 'Unable to find the new files, make sure to make the diffs first !';
+                    $result .= 'Unable to find the new files, make sure to make the diffs first !'.'<br />';
                 }
             } else{
-                $result = 'Unable to find the old files, make sure to make the diffs first !';
+                $result .= 'Unable to find the old files, make sure to make the diffs first !'.'<br />';
             }
         } else{
             if( isset($_GET) && !empty($_GET) && $_GET['update'] != $token ){
-                $result = 'Unable to update, the security token is outdated, make sure to make the diffs first !';
+                $result .= 'Unable to update, the security token is outdated, make sure to make the diffs first !';
             }
         }
+        write_to_file( "update_script_debug.txt" );
         return $result;
     }
 
@@ -461,14 +468,14 @@
         $link            = $_POST["update_url"];
         $return          = '';
         $folder_name     = '';
-        $path_to_current = WFC_PT.'../wfc_files/';
-        if( !file_exists( WFC_PT.'../working_directory' ) ){
-            mkdir( WFC_PT.'../working_directory' );
+        $path_to_current = WFC_THEME_ROOT.'/wfc_files/';
+        if( !file_exists( WFC_THEME_ROOT.'/working_directory' ) ){
+            mkdir( WFC_THEME_ROOT.'/working_directory' );
         } else{
-            rrmdir( WFC_PT.'../working_directory' );
-            mkdir( WFC_PT.'../working_directory' );
+            rrmdir( WFC_THEME_ROOT.'/working_directory' );
+            mkdir( WFC_THEME_ROOT.'/working_directory' );
         }
-        $file_zip = WFC_PT.'../working_directory/Ver_force_update.zip';
+        $file_zip = WFC_THEME_ROOT.'/working_directory/Ver_force_update.zip';
         //echo "<br>Starting<br>Target_url: $target_url";
         //echo "<br>Headers stripped out";
         // make the cURL request to $target_url
@@ -506,13 +513,13 @@
             $return .= "<br>Could not open $file_zip";
             return $return;
         }
-        $zip->extractTo( WFC_PT.'../working_directory/' );
+        $zip->extractTo( WFC_THEME_ROOT.'/working_directory/' );
         $zip->close();
         $folder_name = '';
-        if( $handle = opendir( WFC_PT.'../working_directory' ) ){
+        if( $handle = opendir( WFC_THEME_ROOT.'/working_directory' ) ){
             while( false !== ($entry = readdir( $handle )) ){
                 if( $entry != "." && $entry != ".." ){
-                    if( is_dir( WFC_PT.'../working_directory/'.$entry ) ){
+                    if( is_dir( WFC_THEME_ROOT.'/working_directory/'.$entry ) ){
                         $folder_name = $entry;
                     }
                 }
@@ -520,7 +527,7 @@
             closedir( $handle );
         }
         if( $folder_name != '' ){
-            $path_to_old = WFC_PT.'../working_directory/'.$folder_name.'/wfc_files';
+            $path_to_old = WFC_THEME_ROOT.'/working_directory/'.$folder_name.'/wfc_files';
             //Time to delete all current files
             rrmdir( $path_to_current ); //custom function, windows...
             if( rename( $path_to_old, $path_to_current ) ){
@@ -528,15 +535,15 @@
                 $new = substr( $new, strrpos( $new, '/' ), strlen( $new ) );
                 $new = substr( $new, 15 );
                 //Do not forget to update version file !
-                unlink( WFC_PT.'../Ver_'.$loc.'.wfc' );
-                $f = fopen( WFC_PT.'../Ver_'.$new.'.wfc', 'w+' );
+                unlink( WFC_THEME_ROOT.'/Ver_'.$loc.'.wfc' );
+                $f = fopen( WFC_THEME_ROOT.'/Ver_'.$new.'.wfc', 'w+' );
                 fwrite( $f, 'VERSION FILE - DO NOT DELETE' );
                 fclose( $f );
                 $return = 'WFC theme is now up-to-date !';
                 unset($zip);
-                @chmod( WFC_PT.'../working_directory', 0777 );
-                @chmod( WFC_PT.'../working_directory/Ver_force_update.zip', 0777 );
-                rrmdir( WFC_PT.'../working_directory' );
+                chmod( WFC_THEME_ROOT.'/working_directory', 0777 );
+                chmod( WFC_THEME_ROOT.'/working_directory/Ver_force_update.zip', 0777 );
+                rrmdir( WFC_THEME_ROOT.'/working_directory' );
             } else{
                 $return = 'Unable to replace old files.. Change permissions on wfc_files folder.';
             }
@@ -589,12 +596,12 @@
                     if( filetype( $dir."/".$object ) == "dir" ){
                         rrmdir( $dir."/".$object );
                     } else{
-                        @unlink( $dir."/".$object );
+                        unlink( $dir."/".$object );
                     }
                 }
             }
             reset( $objects );
-            @rmdir( $dir );
+            rmdir( $dir );
         }
     }
 
@@ -637,7 +644,7 @@
      */
     function get_local_version(){
         $ver_local = '';
-        if( $handle = opendir( WFC_PT.'..' ) ){
+        if( $handle = opendir( WFC_THEME_ROOT.'' ) ){
             while( false !== ($entry = readdir( $handle )) ){
                 if( substr( $entry, -3 ) == 'wfc' ){
                     $name    = substr( $entry, 0, -4 );
@@ -682,6 +689,16 @@
         return version_compare( $ver1, $ver2 );
     }
 
+    function write_to_file( $my_file = 'scf_capture_inset.csv', $data, $mode = "w+" ){
+        $handle = fopen( $my_file, $mode ) or die('Cannot open file:  '.$my_file);
+        if( is_array( $data ) ){
+            fwrite( $handle, print_r( $data ) );
+        } else{
+            fwrite( $handle, $data );
+        }
+        fclose( $handle );
+    }
+
     /**
      * lists all the files in a folder and returns them in an array
      * Also lists subfolders files, with relative path
@@ -710,6 +727,7 @@
                 }
             }
         }
+        write_to_file( "listoffiles", $files );
         return $files;
     }
 
