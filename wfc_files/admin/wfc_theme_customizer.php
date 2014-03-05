@@ -31,7 +31,7 @@
         ),
         array("type" => "open"),
         array(
-            "name" => "Click to peform auto settings check <a href='admin.php?wfc_update_settings=update'>Update Settings</a><br /><br />**WARNING by performing this action a query will update select settings per WFC Standards. It will undo any custom settings.<br /><br />See here for <a target='_blank' href='https://github.com/stevecfischer/scf-framework/wiki/Default-Settings'>list of settings that will be updated.</a>",
+            "name" => "Click to peform auto settings check <a href='admin.php?wfc_update_wp_options=update_wp_options'>Update Settings</a><br /><br />**WARNING by performing this action a query will update select settings per WFC Standards. It will undo any custom settings.<br /><br />See here for <a target='_blank' href='https://github.com/stevecfischer/scf-framework/wiki/Default-Settings'>list of settings that will be updated.</a>",
             "type" => "information"
         ),
         array(
