@@ -14,7 +14,7 @@
         public $active_cpts = array();
 
         public function Wfc_Admin_Class(){
-            if( $_GET['wfc_update_wp_options'] == "update_wp_options" ){
+            if( isset($_GET) && isset($_GET['wfc_update_wp_options']) && $_GET['wfc_update_wp_options'] == "update_wp_options" ){
                 $this->wfc_update_wp_options();
             }
             $this->wfc_shortcode_widget();
