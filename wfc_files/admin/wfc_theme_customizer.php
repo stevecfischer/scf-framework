@@ -31,7 +31,7 @@
         ),
         array("type" => "open"),
         array(
-            "name" => "Click to peform auto settings check <a href='admin.php?wfc_update_wp_options=update_wp_options'>Update Settings</a><br /><br />**WARNING by performing this action a query will update select settings per WFC Standards. It will undo any custom settings.<br /><br />See here for <a target='_blank' href='https://github.com/stevecfischer/scf-framework/wiki/Default-Settings'>list of settings that will be updated.</a>",
+            "name" => "(**BETA**)<br />Click to peform auto settings check <a href='admin.php?wfc_update_wp_options=update_wp_options'>Update Settings</a><br /><br />**WARNING by performing this action a query will update select settings per WFC Standards. It will undo any custom settings.<br /><br />See here for <a target='_blank' href='https://github.com/stevecfischer/scf-framework/wiki/Default-Settings'>list of settings that will be updated.</a>",
             "type" => "information"
         ),
         array(
@@ -52,7 +52,7 @@
         ),
         array(
             "name"    => "WFC Sidebar Widgets",
-            "desc"    => "Select which widgets to disable",
+            "desc" => "(**BETA**) Select which widgets to disable. (**BETA**)",
             "id"      => $shortname."disabled_widgets",
             "type"    => "checkbox",
             "options" => array(
@@ -63,16 +63,16 @@
         ),
         array(
             "name"    => "WFC Dashboard Widgets",
-            "desc"    => "Select which dashboard widgets to disable",
+            "desc"    => "(**BETA**) Select which dashboard widgets to disable. (**BETA**)",
             "id"      => $shortname."dashboard_disabled_widgets",
             "type"    => "checkbox",
             "options" => array(
-                "dashboard_right_now"     => "At a Glance",
-                "dashboard_activity"      => "Activity",
-                "dashboard_primary"       => "WordPress News",
-                "dashboard_quick_press"   => "Quick Draft",
-                "wfc_develop_checklist"   => "WFC Developer Checklist (**BETA**)",
-                "wfc_developer_dashboard" => "WFC Developer Dashboard",
+                "dashboard_right_now-normal"     => "At a Glance",
+                "dashboard_activity-normal"      => "Activity",
+                "dashboard_primary-side"         => "WordPress News",
+                "dashboard_quick_press-side"     => "Quick Draft",
+                "wfc_develop_checklist-normal"   => "WFC Checklist (**BETA**)",
+                "wfc_developer_dashboard-normal" => "WFC Dashboard",
             )
         ),
         array(

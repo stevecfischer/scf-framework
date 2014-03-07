@@ -358,7 +358,8 @@
                 return;
             }
             foreach( $disable_widgets as $disable ){
-                remove_meta_box( $disable, 'dashboard', 'side' );
+                $arr = explode( "-", $disable );
+                remove_meta_box( $arr[0], 'dashboard', $arr[1] );
             }
         }
     }

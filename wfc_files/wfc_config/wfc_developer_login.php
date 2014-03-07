@@ -138,7 +138,7 @@
      * @since 3.0
      */
     function Wfc_Developer_Dashboard_Widget(){
-        wp_add_dashboard_widget( "Wfc_Developer_Dashboard", __( "WFC Dashboard Widget" ), "wfc_developer_dashboard" );
+        wp_add_dashboard_widget( "wfc_developer_dashboard", __( "WFC Dashboard Widget" ), "wfc_developer_dashboard" );
     }
 
     /**
