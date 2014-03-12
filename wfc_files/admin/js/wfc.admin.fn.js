@@ -47,6 +47,57 @@
         });
     };
 })(jQuery);
+jQuery(function ($) {
+    // plus one button text repeater fields cmb's
+    $('.wfc-meta-field-grid').on('click', '.wfc-plus-one', function () {
+        var newRow = $('.wfc-text-repeater-row:last')
+            .clone()
+            .find("input")
+            .val("")
+            .end();
+        $(newRow).appendTo('.wfc-meta-field-grid');
+    });
+    function removeMinus(numRows, minusButton) {
+        if (numRows == 1) {
+            $('.wfc-minus-one:first').remove();
+        }
+    }
+
+    var undoSet = false;
+
+    function setUndo() {
+        var tempUndo = $('.wfc-meta-field-grid').clone();
+        $('<span class="blink_me wfc-undo">Undo</span>')
+            .appendTo(".wfc-input-text_repeater .wfc-meta-label")
+            .fadeIn("slow");
+        $('.wfc-undo').on('click', function () {
+            $('.wfc-meta-field-grid').html(tempUndo.html());
+            resetUndo();
+        });
+    }
+
+    function resetUndo() {
+        $('.blink_me.wfc-undo').remove();
+        undoSet = false;
+    }
+
+    $('.wfc-meta-field-grid').on('click', '.wfc-minus-one', function () {
+        /*
+         @scftodo: this is too buggy to release
+         if(undoSet == false){
+         setUndo();
+         undoSet = true;
+         }*/
+        var scfThis = $(this);
+        var wfcTextRepeaterRows = $('.wfc-text-repeater-row');
+        if (wfcTextRepeaterRows.length <= 1) {
+            return;
+        }
+        $.when($(this).closest('.wfc-text-repeater-row').remove()).then(
+            removeMinus(wfcTextRepeaterRows.length - 1, scfThis)
+        );
+    });
+});
 /**
  *
  * @package scf-framework
@@ -79,4 +130,5 @@ jQuery(function ($) {
     $('#develop_checklist,  #seo_checklist').find($('.good, .bad')).each(function () {
         $('input', this).hide();
     });
+    $('.wfc-color-picker').wpColorPicker();
 });

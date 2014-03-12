@@ -130,6 +130,19 @@
         ),
         array("type" => "close"),
         array(
+            "name" => "Blog Settings",
+            "type" => "section"
+        ),
+        array("type" => "open"),
+        array(
+            "name" => "Title Font Color",
+            "desc" => "Pick Color of Font",
+            "id"   => $shortname."blog_title_font_color",
+            "type" => "colorpicker",
+            "std"  => ""
+        ),
+        array("type" => "close"),
+        array(
             "name" => "Mail Settings (**RC 1)",
             "type" => "section"
         ),
@@ -190,34 +203,45 @@
         ),
         array("type" => "close")
     );
+    function wfc_save_options( $data, $refresh = 0 ){
+        global $options;
+        foreach( $options as $option ){
+            if( isset($data[$option['id']]) ){
+                //array_walk_recursive( $data[$option] , 'tie_clean_options');
+                update_option( $option['id'], $data[$option['id']] );
+            } else{
+                delete_option( $option['id'] );
+            }
+        }
+    }
+
     function Wfc_Add_Panel(){
         global $themename, $shortname, $options;
         $themename1 = !empty($themename) ? $themename : "Theme Settings";
-        if( isset($_GET['wfc_smtp_action']) && $_GET['wfc_smtp_action'] == "sendtest" ){
-            new wfc_email();
-        }
         if( isset($_GET['page']) && $_GET['page'] == basename( __FILE__ ) ){
+            if( isset($_GET['wfc_smtp_action']) && $_GET['wfc_smtp_action'] == "sendtest" ){
+                new wfc_email();
+            }
+            if( isset($_POST['action']) && $_POST['action'] == "wfc_action_import_settings" ){
+                if( !empty($_POST['wfc_import_settings']) ){
+                    $refresh = 2;
+                    $data    = unserialize( base64_decode( $_POST['wfc_import_settings'] ) );
+                    wfc_save_options( $data, $refresh );
+                }
+            }
             if( isset($_REQUEST['action']) && 'save' == $_REQUEST['action'] ){
-                foreach( $options as $value ){
-                    update_option( $value['id'], $_REQUEST[$value['id']] );
-                }
-                foreach( $options as $value ){
-                    if( isset($_REQUEST[$value['id']]) ){
-                        update_option( $value['id'], $_REQUEST[$value['id']] );
-                    } else{
-                        delete_option( $value['id'] );
-                    }
-                }
+                $data    = $_POST;
+                $refresh = 2;
+                wfc_save_options( $data, $refresh );
                 header( "Location: admin.php?page=wfc_theme_customizer.php&saved=true" );
                 die;
-            } else{
-                if( isset($_GET['action']) && 'reset' == $_GET['action'] ){
-                    foreach( $options as $value ){
-                        delete_option( $value['id'] );
-                    }
-                    header( "Location: admin.php?page=wfc_theme_customizer.php&reset=true" );
-                    die;
+            }
+            if( isset($_GET['action']) && 'reset' == $_GET['action'] ){
+                foreach( $options as $value ){
+                    delete_option( $value['id'] );
                 }
+                header( "Location: admin.php?page=wfc_theme_customizer.php&reset=true" );
+                die;
             }
         }
         add_menu_page( $themename1, $themename1, 'administrator', basename( __FILE__ ), 'Wfc_Panel' );
@@ -312,6 +336,16 @@
                                     echo 'selected="selected"';
                                 } ?>><?php echo $option; ?></option><?php } ?>
                         </select>
+                        <small><?php echo $value['desc']; ?></small>
+                        <div class="clearfix"></div>
+                    </div>
+                    <?php
+                    break;
+                case "colorpicker":
+                    ?>
+                    <div class="rm_input rm_text">
+                        <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
+                        <input type="text" value="<?php echo get_option( $value['id'] ); ?>" class="wfc-color-picker" name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>"/>
                         <small><?php echo $value['desc']; ?></small>
                         <div class="clearfix"></div>
                     </div>
@@ -480,6 +514,46 @@
                         wfc_DisplayMonitor( $monitor );
                         wfc_print_api_limit();
                     ?>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="rm_section">
+            <div class="rm_title"><h3>
+                    <img src="<?php echo WFC_ADM_IMG_URI; ?>/trans.png" class="inactive" alt="">Export / Import
+                </h3>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="rm_options">
+                <div class="rm_input">
+                    <form method="post">
+                        <?php
+                            $current_options = array();
+                            foreach( $options as $option ){
+                                if( isset($option['id']) && get_option( $option['id'] ) ){
+                                    $current_options[$option['id']] = get_option( $option['id'] );
+                                }
+                            }
+                        ?>
+                        <div class="wfc-item">
+                            <h3>Export</h3>
+                            <div class="option-item">
+                                <textarea style="width:100%" rows="7"><?php echo $currentsettings = base64_encode( serialize( $current_options ) ); ?></textarea>
+                            </div>
+                        </div>
+                        <div class="wfc-item">
+                            <h3>Import</h3>
+                            <div class="option-item">
+                                <textarea id="wfc_import" name="wfc_import_settings" style="width:100%" rows="7"></textarea>
+                            </div>
+                        </div>
+                        <div class="wfc-item">
+                            <input type="hidden" name="action" value="wfc_action_import_settings"/>
+                            <input type="submit" name="wfc_import_submit" value="Import Settings"/>
+                            ** Caution this will overwrite existing settings!! **
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
