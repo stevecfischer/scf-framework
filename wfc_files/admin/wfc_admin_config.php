@@ -61,7 +61,8 @@
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'jquery-ui-core' );
         wp_enqueue_script( 'jquery-ui-dialog' );
-        wp_register_script( 'jquery.wfc.fn', WFC_ADM_JS_URI.'/wfc.admin.fn.js', array('jquery') );
+        wp_enqueue_style( 'wp-color-picker' );
+        wp_register_script( 'jquery.wfc.fn', WFC_ADM_JS_URI.'/wfc.admin.fn.js', array('jquery', 'wp-color-picker') );
         wp_enqueue_script( 'jquery.wfc.fn' );
     }
 

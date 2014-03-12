@@ -14,7 +14,7 @@
         public $active_cpts = array();
 
         public function Wfc_Admin_Class(){
-            if( $_GET['wfc_update_wp_options'] == "update_wp_options" ){
+            if( isset($_GET) && isset($_GET['wfc_update_wp_options']) && $_GET['wfc_update_wp_options'] == "update_wp_options" ){
                 $this->wfc_update_wp_options();
             }
             $this->wfc_shortcode_widget();
@@ -358,7 +358,8 @@
                 return;
             }
             foreach( $disable_widgets as $disable ){
-                remove_meta_box( $disable, 'dashboard', 'side' );
+                $arr = explode( "-", $disable );
+                remove_meta_box( $arr[0], 'dashboard', $arr[1] );
             }
         }
     }
