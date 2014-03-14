@@ -35,7 +35,7 @@
      */
     // @sftodo: make this a site option.  remember to seperate theme logic from from framework logic
     define('AUTOLOAD_MINIFY', false); //Toggle if site minifies and compresses js|css
-    define('ENABLE_FULL_ACCESS', true);
+    define('ENABLE_FULL_ACCESS', false);
     /**
      * MAIN INCLUDE FILE
      *
