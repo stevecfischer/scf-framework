@@ -1,10 +1,37 @@
 <?php
+
     /**
      *
      * @package scf-framework
      * @author Steve
      * @date 7/20/13
      */
+    class Wfc_Haml
+    {
+
+        protected $haml;
+        protected $sass;
+
+        public function output_html( $html ){
+            $fp = fopen( WFC_BUILD_THEME.'/html-templates/test.php', "w" );
+            if( !empty($fp) ){
+                fwrite( $fp, $html );
+            }
+            fclose( $fp );
+        }
+
+        public function Wfc_Haml(){
+            require_once(WFC_UTILITY.'/phaml/haml/HamlParser.php');
+            require_once(WFC_UTILITY.'/phaml/sass/SassParser.php');
+            $haml = new HamlParser(array("format" => "html5", 'style' => 'nested', 'ugly' => 'compressed'));
+            $html = $haml->parse( WFC_BUILD_THEME.'/haml-templates/page.haml' );
+            $this->output_html( $html );
+            //$this->sass = new SassParser();
+        }
+    }
+
+    $build_theme = new Wfc_Haml;
+    //$build_theme->output_html();
     /*
      * @sftodo: We should really integrate this with post types, meta boxes. Ex user enters custom post type like staff in form field and this class will build required files.  like staff-archive.php, dept-taxonomy.php, staff-single.php etc etc.
      */
@@ -32,7 +59,7 @@
         global $themename, $shortname, $options;
         $i = 0;
         if( file_exists( WFC_PT.'../header.php' ) ){
-            die("Theme already built.  Go Fish.");
+            //die("Theme already built.  Go Fish.");
         }
         $header       = '
 <!DOCTYPE html>

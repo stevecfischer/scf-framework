@@ -52,7 +52,7 @@
         ),
         array(
             "name"    => "WFC Sidebar Widgets",
-            "desc" => "(**BETA**) Select which widgets to disable. (**BETA**)",
+            "desc"    => "(**BETA**) Select which widgets to disable. (**BETA**)",
             "id"      => $shortname."disabled_widgets",
             "type"    => "checkbox",
             "options" => array(
@@ -81,14 +81,16 @@
             "id"      => $shortname."admin_menu",
             "type"    => "checkbox",
             "options" => array(
+                "Comments",
+                "Activity Monitor",
                 "Theme Editor",
                 "Widgets",
                 "Menus",
-                "ai1ec Themes",
                 "Appearance",
                 "Settings",
                 "Posts",
                 "Plugins",
+                "Tools",
                 "Yoast SEO"
             )
         ),
@@ -99,6 +101,15 @@
             "type"    => "checkbox",
             "options" => array(
                 "Do not display default content"
+            )
+        ),
+        array(
+            "name"    => "Enable Commenting",
+            "desc"    => "Allow commenting",
+            "id"      => $shortname."enable_commenting",
+            "type"    => "checkbox",
+            "options" => array(
+                "Enable Commenting"
             )
         ),
         array(
