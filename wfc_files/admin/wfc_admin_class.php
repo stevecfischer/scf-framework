@@ -28,6 +28,7 @@
             add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'wp_dashboard_setup', array(&$this, 'wfc_manage_dashboard_widgets') );
+            add_action( 'admin_bar_menu', array($this, 'wfc_remove_adminbar_nodes'), 999 );
             add_action(
                 'manage_campaign_posts_custom_column', array(
                 &$this,
@@ -268,8 +269,32 @@
             return WFC_IMG_URI;
         }
 
+        /**
+         * enable all restricted elements - full admin menu, dashboard widgets, adminbar menu items, etc
+         *
+         * @since 5.4.6
+         *
+         *
+         * @return boolean
+         */
         public function wfc_full_access(){
             return ENABLE_FULL_ACCESS;
+        }
+
+        /**
+         * Whether the current user is wfc user
+         *
+         * @since 5.4.7
+         *
+         * @return bool True if user is wfc.
+         */
+        public function is_wfc(){
+            global $current_user;
+            if( $current_user->user_login == 'wfc' ){
+                return true;
+            } else{
+                return false;
+            }
         }
 
         /**
@@ -383,6 +408,21 @@
             foreach( $disable_widgets as $disable ){
                 $arr = explode( "-", $disable );
                 remove_meta_box( $arr[0], 'dashboard', $arr[1] );
+            }
+        }
+
+        public function wfc_remove_adminbar_nodes( $wp_admin_bar ){
+            if( $this->wfc_full_access() ){
+                return;
+            }
+            if( $this->is_wfc() === false ){
+                $wp_admin_bar->remove_node( 'wp-logo' );
+                $wp_admin_bar->remove_node( 'appearance' );
+                $wp_admin_bar->remove_node( 'themes' );
+                $wp_admin_bar->remove_node( 'customize' );
+                $wp_admin_bar->remove_node( 'widgets' );
+                $wp_admin_bar->remove_node( 'updates' );
+                $wp_admin_bar->remove_node( 'menus' );
             }
         }
     }

@@ -113,6 +113,15 @@
             )
         ),
         array(
+            "name"    => "Adminbar Visibility",
+            "desc"    => "Hide Adminbar",
+            "id"      => $shortname."adminbar_visibility",
+            "type"    => "checkbox",
+            "options" => array(
+                "Hide Adminbar"
+            )
+        ),
+        array(
             "name"    => "Autoload Assests",
             "desc"    => "Automatically enqueue all CSS and JS files (**BETA**)",
             "id"      => $shortname."autoload_assets",
