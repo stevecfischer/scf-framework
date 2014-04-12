@@ -5,12 +5,26 @@
      * @author Steve
      * @date 2/3/14
      */
-    /*------------------------------------------
-    ~~~~~~ development section ~~~~~~~
-    ------------------------------------------*/
-    if( $_GET['wfcchecklist'] == 'email' ){
-        wfc_email_checklist();
+    add_action( 'admin_init', 'wfc_dev_checklist', 1 );
+    function wfc_dev_checklist(){
+        if( !wfc_is_dev() ){
+            return false;
+        }
+        add_meta_box(
+            'wfc_develop_checklist',
+            'WFC Development Checklist',
+            'wfc_wfc_dev_display',
+            'dashboard', 'normal'
+        );
+        if( isset($_POST['dev_section']) ){
+            $option   = "wfc_dev_chklist";
+            $newvalue = $_POST;
+            if( !update_option( $option, $newvalue ) ){
+                die('could not update option');
+            }
+        }
     }
+
     function wfc_wfc_dev_display( $post ){
         $checklist       = new wfc_checklist();
         $dev_human_array = array(
@@ -37,36 +51,8 @@
                 <input class="wfc-dashboard-checkbox" type="checkbox" name="WFC_Logo"/>
                 <label>Did you add the WFC Logo to the WP Login Screen?</label><br/>
             </span>
-            <!--<div>
-                <span>
-                    <input type="submit" value="Submit"/>
-                </span>
-            </div>-->
         </form>
     <?php
-    }
-
-    /*------------------------------------------
-    ~~~~~~ seo section ~~~~~~~
-    ------------------------------------------*/
-    /*------------------------------------------
-~~~~~~ development section ~~~~~~~
-------------------------------------------*/
-    add_action( 'admin_init', 'wfc_dev_checklist', 1 );
-    function wfc_dev_checklist(){
-        add_meta_box(
-            'wfc_develop_checklist',
-            'WFC Development Checklist',
-            'wfc_wfc_dev_display',
-            'dashboard', 'normal'
-        );
-        if( isset($_POST['dev_section']) ){
-            $option   = "wfc_dev_chklist";
-            $newvalue = $_POST;
-            if( !update_option( $option, $newvalue ) ){
-                die('could not update option');
-            }
-        }
     }
 
     /**
@@ -81,8 +67,8 @@
             'gravityforms'             => 'Gravity Forms',
             'cms-tree-page-view'       => 'Page Tree View',
             'threewp-activity-monitor' => 'Activity Monitor',
-            'video-user-manuals' => 'Video User Manual',
-            'wordpress-seo'      => 'WordPress SEO'
+            'video-user-manuals'       => 'Video User Manual',
+            'wordpress-seo'            => 'WordPress SEO'
         );
         public $wfc_chklist_option_array = array(
             'blog_public'            => 'block search engines',
@@ -147,6 +133,7 @@
          * @param mixed $wfc_options
          */
         public function setWfcOptions(){
+            /** @var $wpdb wpdb */
             global $wpdb;
             $where_clause_str = '';
             foreach( $this->wfc_chklist_option_array as $option_k => $option_v ){

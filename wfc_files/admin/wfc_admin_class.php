@@ -19,20 +19,16 @@
             }
             $this->wfc_shortcode_widget();
             $this->get_active_cpts();
+            // actions
             add_action( 'admin_head', array(&$this, 'wfc_framework_variables') );
+            add_action( 'wp_head', array(&$this, 'wfc_fw_favicon') );
             add_action( 'widgets_init', array(&$this, 'wfc_manage_sidebar_widgets') );
             add_action( 'the_content', array(&$this, 'wfc_auto_content') );
-            add_shortcode( 'wfcimg', array(&$this, 'wfc_img_uri_deprecated') );
-            add_shortcode( 'wfc_img_uri', array(&$this, 'wfc_img_uri') );
             add_action( 'wfc_footer', array(&$this, 'wfc_framework_variables') );
             add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'wp_dashboard_setup', array(&$this, 'wfc_manage_dashboard_widgets') );
-            add_filter( 'manage_campaign_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
-            add_filter( 'manage_news_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
-            add_filter( 'manage_homepageboxes_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
-            add_filter( 'manage_subpagebanner_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
-            add_filter( 'manage_page_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
+            add_action( 'admin_bar_menu', array($this, 'wfc_remove_adminbar_nodes'), 999 );
             add_action(
                 'manage_campaign_posts_custom_column', array(
                 &$this,
@@ -44,6 +40,15 @@
                 &$this,
                 'wfc_display_post_thumbnail_column'
             ), 5, 2 );
+            // shortcode
+            add_shortcode( 'wfcimg', array(&$this, 'wfc_img_uri_deprecated') );
+            add_shortcode( 'wfc_img_uri', array(&$this, 'wfc_img_uri') );
+            // filters
+            add_filter( 'manage_campaign_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
+            add_filter( 'manage_news_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
+            add_filter( 'manage_homepageboxes_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
+            add_filter( 'manage_subpagebanner_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
+            add_filter( 'manage_page_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             /* @sftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             //add_action( 'init', array(&$this, 'wfc_init_cpt') );
@@ -85,7 +90,7 @@
          *
          * @return boolean active or not
          */
-        public function is_active_cpt( $cpt ){
+        public function wfc_is_active_cpt( $cpt ){
             if( !is_array( $this->active_cpts ) ){
                 return false;
             } elseif( in_array( $cpt, $this->active_cpts ) ){
@@ -123,6 +128,15 @@
                     echo the_post_thumbnail( 'thumbnail' );
                     break;
             }
+        }
+
+        /**
+         * Show favicon
+         *
+         * @since 1.1
+         */
+        public function wfc_fw_favicon(){
+            echo '<link rel="shortcut icon" href="'.WFC_URI.'/favicon.ico"/>'."\n";
         }
 
         public function _wfc_deprecated_argument( $function, $version, $message = NULL ){
@@ -256,6 +270,34 @@
         }
 
         /**
+         * enable all restricted elements - full admin menu, dashboard widgets, adminbar menu items, etc
+         *
+         * @since 5.4.6
+         *
+         *
+         * @return boolean
+         */
+        public function wfc_full_access(){
+            return ENABLE_FULL_ACCESS;
+        }
+
+        /**
+         * Whether the current user is wfc user
+         *
+         * @since 5.4.7
+         *
+         * @return bool True if user is wfc.
+         */
+        public function is_wfc(){
+            global $current_user;
+            if( $current_user->user_login == 'wfc' ){
+                return true;
+            } else{
+                return false;
+            }
+        }
+
+        /**
          * If a page has no content
          * Displays a default one
          *
@@ -343,6 +385,9 @@
         }
 
         public function wfc_manage_sidebar_widgets(){
+            if( $this->wfc_full_access() ){
+                return;
+            }
             $disable_widgets = get_option( 'wfc_disabled_widgets' );
             if( !is_array( $disable_widgets ) ){
                 return;
@@ -353,6 +398,9 @@
         }
 
         public function wfc_manage_dashboard_widgets(){
+            if( $this->wfc_full_access() ){
+                return;
+            }
             $disable_widgets = get_option( 'wfc_dashboard_disabled_widgets' );
             if( !is_array( $disable_widgets ) ){
                 return;
@@ -360,6 +408,21 @@
             foreach( $disable_widgets as $disable ){
                 $arr = explode( "-", $disable );
                 remove_meta_box( $arr[0], 'dashboard', $arr[1] );
+            }
+        }
+
+        public function wfc_remove_adminbar_nodes( $wp_admin_bar ){
+            if( $this->wfc_full_access() ){
+                return;
+            }
+            if( $this->is_wfc() === false ){
+                $wp_admin_bar->remove_node( 'wp-logo' );
+                $wp_admin_bar->remove_node( 'appearance' );
+                $wp_admin_bar->remove_node( 'themes' );
+                $wp_admin_bar->remove_node( 'customize' );
+                $wp_admin_bar->remove_node( 'widgets' );
+                $wp_admin_bar->remove_node( 'updates' );
+                $wp_admin_bar->remove_node( 'menus' );
             }
         }
     }

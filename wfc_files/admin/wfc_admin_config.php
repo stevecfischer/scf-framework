@@ -21,7 +21,7 @@
     require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Site Options Panel
     require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Beta not ready for release
     require_once(WFC_ADM.'/wfc_update_script.php'); //Update from github
-    require_once(WFC_THEME_FUNCTIONS.'/build_theme.php'); //Auto theme builder
+    require_once(WFC_THEME_FUNCTIONS.'/build-theme/build_theme.php'); //Auto theme builder
     require_once(WFC_THEME_FUNCTIONS.'/wfc_autoload_script_class.php'); //Auto theme builder
     require_once(WFC_ADM.'/wfc_admin_hooks.php'); //Auto theme builder
     require_once(WFC_ADM.'/wfc_fastbackup_class.php'); //Fast backup
@@ -175,13 +175,17 @@
     function wfc_remove_menu_items(){
         global $current_user;
         if( $current_user->user_login != 'wfc' ){
-            remove_submenu_page( 'index.php', 'ThreeWP_Activity_Monitor' );
-            remove_submenu_page( 'index.php', 'update-core.php' );
-            remove_menu_page( 'tools.php' );
-            remove_menu_page( 'options-general.php' );
-            remove_menu_page( 'edit-comments.php' );
             if( getAdminMenu( "Plugins" ) ){
                 remove_menu_page( 'plugins.php' );
+            }
+            if( getAdminMenu( "Settings" ) ){
+                remove_menu_page( 'options-general.php' );
+            }
+            if( getAdminMenu( "Comments" ) ){
+                remove_menu_page( 'edit-comments.php' );
+            }
+            if( getAdminMenu( "Tools" ) ){
+                remove_menu_page( 'tools.php' );
             }
             if( getAdminMenu( "Yoast SEO" ) ){
                 remove_menu_page( 'wpseo_dashboard' );
@@ -201,8 +205,8 @@
             if( getAdminMenu( "Menus" ) ){
                 remove_submenu_page( 'themes.php', 'nav-menus.php' );
             }
-            if( getAdminMenu( "ai1ec Themes" ) ){
-                remove_submenu_page( 'themes.php', 'all-in-one-event-calendar-themes' );
+            if( getAdminMenu( "Activity Monitor" ) ){
+                remove_submenu_page( 'index.php', 'ThreeWP_Activity_Monitor' );
             }
         }
     }
@@ -258,11 +262,12 @@
      * @return boolean active or not
      */
     function getActiveCPT( $cpt, $deprecated = '' ){
+        /** @var $wfc_admin Wfc_Admin_Class */
         global $wfc_admin;
         if( empty($deprecated) ){
-            $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.1', 'Current method to use: $wfc_admin->is_active_cpt($cpt)' );
+            $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.1', 'Current method to use: $wfc_admin->wfc_is_active_cpt($cpt)' );
         }
-        return $wfc_admin->is_active_cpt( $cpt );
+        return $wfc_admin->wfc_is_active_cpt( $cpt );
     }
 
     /**

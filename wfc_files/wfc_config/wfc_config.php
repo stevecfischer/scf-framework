@@ -13,6 +13,7 @@
     define('WFC_THEME_ROOT', realpath( __DIR__.'/../../' ));
     define('WFC_CONFIG', WFC_PT.'/wfc_config');
     define('WFC_THEME_FUNCTIONS', WFC_PT.'/theme_functions');
+    define('WFC_BUILD_THEME', WFC_THEME_FUNCTIONS.'/build-theme');
     define('WFC_WIDGETS', WFC_PT.'/widgets');
     define('WFC_SHORTCODE', WFC_PT.'/admin/shortcode');
     define('WFC_URI', get_template_directory_uri());
@@ -34,6 +35,7 @@
      */
     // @sftodo: make this a site option.  remember to seperate theme logic from from framework logic
     define('AUTOLOAD_MINIFY', false); //Toggle if site minifies and compresses js|css
+    define('ENABLE_FULL_ACCESS', false);
     /**
      * MAIN INCLUDE FILE
      *
