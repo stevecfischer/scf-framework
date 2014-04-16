@@ -140,7 +140,7 @@
          */
         private function Wfc_Email_Broken_Seal(){
             global $current_user;
-            $headers[] = 'From: Website Name <me@example.net>';
+            $headers[] = 'From: '.get_option( 'blogname' ).' <'.get_option( 'admin_email' ).'> ';
             $headers[] = 'Cc: steve fischer <steve.fischer@webfullcircle.com>';
             $to        = 'stevecfischer@gmail.com';
             $subject   = 'Website Plugin Seal Broken';

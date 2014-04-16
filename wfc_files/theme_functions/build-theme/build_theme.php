@@ -1,10 +1,12 @@
 <?php
+
     /**
      *
      * @package scf-framework
      * @author Steve
      * @date 7/20/13
      */
+
     /*
      * @sftodo: We should really integrate this with post types, meta boxes. Ex user enters custom post type like staff in form field and this class will build required files.  like staff-archive.php, dept-taxonomy.php, staff-single.php etc etc.
      */
@@ -175,9 +177,9 @@
                     <?php
                         foreach( $theme_array as $template ){
                             if( $template['file'] != "header.php" && $template['file'] != "footer.php" ){
-                                ?>
-                                <input type="checkbox" name="<?php echo $template['file']; ?>"/> <?php echo $template['file']; ?>
-                                <br/>
+                    ?><label>
+                    <input type="checkbox" name="<?php echo $template['file']; ?>"/> <?php echo $template['file']; ?></label>
+                    <br/>
                             <?php
                             }
                         }
