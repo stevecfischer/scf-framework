@@ -34,7 +34,7 @@
         global $themename, $shortname, $options;
         $i = 0;
         if( file_exists( WFC_PT.'../header.php' ) ){
-            die("Theme already built.  Go Fish.");
+            //die("Theme already built.  Go Fish.");
         }
         $header       = '
 <!DOCTYPE html>
@@ -106,8 +106,7 @@
                 <?php get_header(); ?>
                 <?php Wfc_Core_Page_Loop(); ?>
                 <?php get_footer(); ?>';
-        $frontpage    = '
-                <?php get_header(); ?>
+        $frontpage = '<?php get_header(); ?>
                 <?php Wfc_Core_Home_Page_Loop(); ?>
                 <?php get_footer(); ?>';
         $search       = '
@@ -124,11 +123,55 @@
                 <?php get_footer(); ?>';
         $four_o_four  = '<?php get_header(); ?>
                 <h2>404</h2>
-                The page you are looking for doesn\'t exists...
+                <p>The page you are looking for doesn\'t exists...</p>
+                <?php echo do_shortcode("[wfc_sitemap]"); ?>
                 <?php get_footer(); ?>';
-        $editor_style = "";
-        $single       = "";
-        $archive      = "";
+        $editor_styles = "";
+        $archive = '<?php get_header(); ?>
+                <?php get_template_part("content"); ?>
+                <?php get_footer(); ?>';
+        $single = '<?php get_header(); ?>
+                <?php get_template_part("content"); ?>
+                <?php get_footer(); ?>';
+        $content = '<?php
+    if( have_posts() ) : while( have_posts() ) : the_post(); ?>
+        <div class="<?php echo get_post_type(); ?>-entry">
+            <?php
+                $wfc_post_title =  \'<h2 class="page_title"><a href="%1$s">%2$s</a></h2>\';
+                printf(
+                    apply_filters("wfc_post_title",$wfc_post_title),
+                    get_permalink(),
+                    get_the_title()
+                );
+                $wfc_post_meta =  \'<p class="blog-meta">
+        Published on: <span>%1$s</span>
+        By: <a class="url fn n" href="%2$s" rel="author">%3$s</a>
+        Categories: <span>%4$s</span>
+                    </p>\';
+                printf(
+                    apply_filters("wfc_post_meta",$wfc_post_meta),
+                    get_the_time( apply_filters("wfc_post_time_format","F j, Y") ),
+                    esc_url( get_author_posts_url( get_the_author_meta( "ID" ) ) ),
+                    get_the_author(),
+                    get_the_category_list( " ,", "Categories: " )
+                );
+            ?>
+            <div class="post-thumbnail">
+                <a href="<?php echo get_permalink(); ?>"><?php echo wfc_the_post_thumbnail(null, "medium"); ?></a>
+            </div>
+            <?php the_excerpt( 425 ); ?>
+            <a class="read-more" href="<?php echo get_permalink(); ?>">Read More &#187;</a>
+            <div style="clear:both;"></div>
+            <?php
+                if ( comments_open() || get_comments_number() ) {
+                    comments_template();
+                }
+            ?>
+        </div>
+    <?php
+    endwhile;endif;
+    wp_reset_query();
+?>';
         $theme_array  =
             array(
                 array('file' => 'header.php', 'content' => $header),
@@ -136,9 +179,11 @@
                 array('file' => 'page.php', 'content' => $page),
                 array('file' => 'search.php', 'content' => $search),
                 array('file' => '404.php', 'content' => $four_o_four),
-                array('file' => 'editor-style.css', 'content' => $editor_style),
+                array('file' => 'editor-style.css', 'content' => $editor_styles),
                 array('file' => 'single.php', 'content' => $single),
                 array('file' => 'front-page.php', 'content' => $frontpage),
+                array('file' => 'content.php', 'content' => $content),
+                array('file' => 'comments.php', 'content' => $comments),
                 array('file' => 'archive.php', 'content' => $archive)
             );
         if( isset($_REQUEST['build']) && $_REQUEST['build'] ){

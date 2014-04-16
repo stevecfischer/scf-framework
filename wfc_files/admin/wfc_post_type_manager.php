@@ -27,7 +27,8 @@
             if( isset($obj['meta_box']) ){
                 $new_meta_box = new wfc_meta_box_class($obj);
             }
-            $this->add_cpt_to_admin_menu();
+            add_action( 'init', array(&$this, 'add_cpt_to_admin_menu') );
+            //$this->add_cpt_to_admin_menu();
         }
 
         /**
@@ -54,6 +55,7 @@
                         'parent_item_colon'  => '',
                         'menu_name'          => !empty($var['menu_name']) ? $var['menu_name'] : $var ['cpt']
                     );
+                    $supports = apply_filters( "wfc_post_type_support", $var['supports'] );
                     register_post_type(
                         strtolower( $var['cpt'] ),
                         array(
@@ -66,7 +68,7 @@
                                 'with_front' => false
                             ),
                             'hierarchical'  => true,
-                            'supports'      => $var['supports']
+                            'supports' => $supports
                         )
                     );
                 }

@@ -33,7 +33,7 @@
         return false;
     }
 
-    if( !$wfc_admin->wfc_full_access() ){
+    if( !$wfc_admin->wfc_full_access() || get_option( 'wfc_enable_commenting' )[0] != "Enable Commenting" ){
         add_filter( 'comments_number', 'wfc_close_comments' );
         add_filter( 'comments_open', 'wfc_close_comments' );
     }

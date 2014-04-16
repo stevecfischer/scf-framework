@@ -39,26 +39,27 @@
     EXAMPLE OF A CUSTOM POST TYPE WITH CUSTOM META BOX OPTIONS
     ===============================
     */
-    $campaign_meta_boxes_args = array(
-        'cpt'       => 'Campaign' /* CPT Name */,
-        'menu_name' => 'Campaign' /* Overide the name above */,
+    $theme_cpt_args = array(
+        'cpt'       => 'Theme Custom Post Type' /* CPT Name */,
+        'menu_name' => 'Theme Custom Post Type' /* Overide the name above */,
+        'supports'  => array(
+            'title',
+            'page-attributes',
+            'thumbnail',
+            'editor'
+        ),
         'meta_box'  => array(
-            'title'     => 'Campaign Meta Info',
+            'title' => 'Theme Custom Post Type Meta Info',
             'new_boxes' => array(
                 array(
                     'field_title' => 'Link to URL: ',
                     'type_of_box' => 'text',
                     'desc'        => 'Ex. http://www.google.com/', /* optional */
-                ),
-                array(
-                    'field_title' => 'Read More Button: ',
-                    'type_of_box' => 'text',
-                    'desc'        => 'Ex. Learn More, See More, Read More', /* optional */
                 )
             )
         ),
     );
-    $campaign_meta_boxes = new wfc_meta_box_class($campaign_meta_boxes_args);
+    $theme_cpt      = new wfcfw( $theme_cpt_args );
     /**
      * AUTO ENQUEUE ALL JS FILES THAT ARE IN THE JS FOLDER.  TO EXCLUDE A FILE ADD `EXCL` TO THE FILENAME
      *
