@@ -21,14 +21,14 @@
             $this->get_active_cpts();
             // actions
             add_action( 'admin_head', array(&$this, 'wfc_framework_variables') );
-            add_action( 'wp_head', array(&$this, 'wfc_fw_favicon') );
-            add_action( 'widgets_init', array(&$this, 'wfc_manage_sidebar_widgets') );
+            add_action( 'admin_bar_menu', array($this, 'wfc_remove_adminbar_nodes'), 999 );
+            add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
+            add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
             add_action( 'the_content', array(&$this, 'wfc_auto_content') );
             add_action( 'wfc_footer', array(&$this, 'wfc_framework_variables') );
-            add_action( 'load-page-new.php', array(&$this, 'wfc_custom_help_page') );
-            add_action( 'load-page.php', array(&$this, 'wfc_custom_help_page') );
+            add_action( 'widgets_init', array(&$this, 'wfc_manage_sidebar_widgets') );
             add_action( 'wp_dashboard_setup', array(&$this, 'wfc_manage_dashboard_widgets') );
-            add_action( 'admin_bar_menu', array($this, 'wfc_remove_adminbar_nodes'), 999 );
+            add_action( 'wp_head', array(&$this, 'wfc_fw_favicon') );
             add_action(
                 'manage_campaign_posts_custom_column', array(
                 &$this,
@@ -52,6 +52,7 @@
             /* @sftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             //add_action( 'init', array(&$this, 'wfc_init_cpt') );
+            add_editor_style( WFC_URI.'/editor-styles.css' );
         }
 
         /**
