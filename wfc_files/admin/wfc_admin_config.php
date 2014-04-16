@@ -49,7 +49,7 @@
     require_once(WFC_WIDGETS.'/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
     require_once(WFC_WIDGETS.'/wfc_spotlight/wfc_spotlight.php');
     /*
-     * @sftodo: move all functions into wfc admin class. or if there is somewhere better send there.
+     * @scftodo: move all functions into wfc admin class. or if there is somewhere better send there.
      */
     /**
      * Includes JS into WP head

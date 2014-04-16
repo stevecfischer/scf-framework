@@ -8,7 +8,7 @@
      */
 
     /*
-     * @sftodo: We should really integrate this with post types, meta boxes. Ex user enters custom post type like staff in form field and this class will build required files.  like staff-archive.php, dept-taxonomy.php, staff-single.php etc etc.
+     * @scftodo: We should really integrate this with post types, meta boxes. Ex user enters custom post type like staff in form field and this class will build required files.  like staff-archive.php, dept-taxonomy.php, staff-single.php etc etc.
      */
     $themename = get_bloginfo( 'name' );
     $shortname = "wfc_";

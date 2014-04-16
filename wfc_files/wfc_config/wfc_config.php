@@ -33,7 +33,7 @@
      * @author Steve (12/2/2013)
      * @since 5.3.2
      */
-    // @sftodo: make this a site option.  remember to seperate theme logic from from framework logic
+    // @scftodo: make this a site option.  remember to seperate theme logic from from framework logic
     define('AUTOLOAD_MINIFY', false); //Toggle if site minifies and compresses js|css
     define('ENABLE_FULL_ACCESS', false);
     /**

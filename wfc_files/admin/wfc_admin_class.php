@@ -49,7 +49,7 @@
             add_filter( 'manage_homepageboxes_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_filter( 'manage_subpagebanner_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
             add_filter( 'manage_page_posts_columns', array(&$this, 'wfc_add_post_thumbnail_column'), 5 );
-            /* @sftodo: working on moving cpt registering to here from wfc_theme_customizer. */
+            /* @scftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             //add_action( 'init', array(&$this, 'wfc_init_cpt') );
             add_editor_style( WFC_URI.'/editor-styles.css' );
@@ -434,5 +434,5 @@
      * @since 5.1
      */
     $GLOBALS['wfc_admin'] = new Wfc_Admin_Class();
-    // @sftodo: not the best but it will work for now.
+    // @scftodo: not the best but it will work for now.
     $wfc_version = WFC_Admin_Class::wfc_grab_version();
