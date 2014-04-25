@@ -12,10 +12,10 @@
         'active_plugins', //List of active plugins
         'template' //Active theme
     );
-    $themename = get_bloginfo( 'name' );
-    $shortname = "wfc_";
-    $categories = get_categories( 'hide_empty=0&orderby=name' );
-    $wp_cats = array();
+    $themename    = get_bloginfo( 'name' );
+    $shortname    = "wfc_";
+    $categories   = get_categories( 'hide_empty=0&orderby=name' );
+    $wp_cats      = array();
     foreach( $categories as $category_list ){
         $wp_cats[$category_list->cat_ID] = $category_list->cat_name;
     }
@@ -95,6 +95,17 @@
             )
         ),
         array(
+            "name"    => "Plugin Update Flags",
+            "desc"    => "Select how to manage update flags",
+            "id"      => $shortname."plugin_update_flags",
+            "type"    => "checkbox",
+            "options" => array(
+                "plugin_update_flags-prevent-updating"  => "Disable ability for non-wfc users to update plugins",
+                "plugin_update_flags-plugin-disclaimer" => "Enable WFC Plugin Disclaimer for non-wfc users",
+                "plugin_update_flags-hide-update"       => "Hide update count from admin menu for non-wfc user",
+            )
+        ),
+        array(
             "name"    => "WFC Default Content",
             "desc"    => "Display default content in empty pages",
             "id"      => $shortname."default_content",
@@ -147,19 +158,6 @@
         array(
             "name" => "Reset Theme Options <a href='admin.php?page=wfc_theme_customizer.php&action=reset'>RESET THEME OPTIONS</a>",
             "type" => "information"
-        ),
-        array("type" => "close"),
-        array(
-            "name" => "Blog Settings",
-            "type" => "section"
-        ),
-        array("type" => "open"),
-        array(
-            "name" => "Title Font Color",
-            "desc" => "Pick Color of Font",
-            "id"   => $shortname."blog_title_font_color",
-            "type" => "colorpicker",
-            "std"  => ""
         ),
         array("type" => "close"),
         array(
@@ -424,7 +422,7 @@
                     foreach( $save_options as $opt ){
                         $options_values[$opt] = get_option( $opt );
                     }
-                    $fb = new FastBackup(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                    $fb = new wfc_fastbackup_class( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
                     if( isset($_GET['download_db']) ){
                         if( !$fb->downloadDB( bloginfo( 'name' ).date( 'd-m-Y_H-i-s' ) ) ){
                             echo $fb->getErrors();
@@ -526,13 +524,7 @@
             <div class="rm_options">
                 <div class="rm_input">
                     <?php
-                        $monitor = new Monitor();
-                        $monitor->StartTimer();
                         wfc_manage_update();
-                        $monitor->StopTimer();
-                        echo '<br />';
-                        wfc_DisplayMonitor( $monitor );
-                        wfc_print_api_limit();
                     ?>
                 </div>
             </div>
@@ -600,8 +592,8 @@
     }
 
     /* Example of all Custom Metabox Options */
-    if( getActiveCPT( "EXAMPLE_CPT" ) ){
-        $campaign_module_args     = array(
+    if( $wfc_admin->wfc_is_active_cpt( "EXAMPLE_CPT" ) ){
+        $example_module_args     = array(
             'cpt'       => 'Example' /* CPT Name */,
             'menu_name' => 'Example Menu Overide' /* Overide the name above */,
             'supports'  => array(
@@ -611,8 +603,8 @@
                 'editor'
             ) /* specify which metaboxes you want displayed. See Codex for more info*/,
         );
-        $campaign_module          = new wfcfw($campaign_module_args);
-        $campaign_meta_boxes_args = array(
+        $example_module          = new wfcfw( $example_module_args );
+        $example_meta_boxes_args = array(
             'cpt'      => 'example' /* CPT Name */,
             'meta_box' => array(
                 'title'     => 'Test all Meta Box Options',
@@ -668,9 +660,9 @@
                 )
             ),
         );
-        $campaign_meta_boxes      = new wfc_meta_box_class($campaign_meta_boxes_args);
+        $example_meta_boxes      = new wfc_meta_box_class( $example_meta_boxes_args );
     }
-    if( getActiveCPT( "CAMPAIGN_CPT" ) ){
+    if( $wfc_admin->wfc_is_active_cpt( "CAMPAIGN_CPT" ) ){
         $campaign_module_args = array(
             'cpt'       => 'Campaign' /* CPT Name */,
             'menu_name' => 'Campaign' /* Overide the name above */,
@@ -681,9 +673,9 @@
                 'editor'
             ) /* specify which metaboxes you want displayed. See Codex for more info*/,
         );
-        $campaign_module      = new wfcfw($campaign_module_args);
+        $campaign_module      = new wfcfw( $campaign_module_args );
     }
-    if( getActiveCPT( "SUBPAGE_BANNER_CPT" ) ){
+    if( $wfc_admin->wfc_is_active_cpt( "SUBPAGE_BANNER_CPT" ) ){
         $subpage_banner_args = array(
             'cpt'       => 'Subpage Banner' /* CPT Name */,
             'menu_name' => 'Subpage Banner' /* Overide the name above */,
@@ -694,9 +686,9 @@
                 'editor'
             ) /* specify which metaboxes you want displayed. See Codex for more info*/,
         );
-        $subpage_banner      = new wfcfw($subpage_banner_args);
+        $subpage_banner      = new wfcfw( $subpage_banner_args );
     }
-    if( getActiveCPT( "NEWS_CPT" ) ){
+    if( $wfc_admin->wfc_is_active_cpt( "NEWS_CPT" ) ){
         $news_cpt_args = array(
             'cpt'       => 'News' /* CPT Name */,
             'menu_name' => 'News' /* Overide the name above */,
@@ -707,9 +699,9 @@
                 'editor'
             ) /* specify which metaboxes you want displayed. See Codex for more info*/,
         );
-        $news_cpt      = new wfcfw($news_cpt_args);
+        $news_cpt      = new wfcfw( $news_cpt_args );
     }
-    if( getActiveCPT( "HOME_BOXES_CPT" ) ){
+    if( $wfc_admin->wfc_is_active_cpt( "HOME_BOXES_CPT" ) ){
         $home_boxes_module_args = array(
             'cpt'       => 'Home Page Boxes' /* CPT Name */,
             'menu_name' => 'Home Page Boxes' /* Overide the name above */,
@@ -720,9 +712,9 @@
                 'editor'
             ) /* specify which metaboxes you want displayed. See Codex for more info*/,
         );
-        $home_boxes_module      = new wfcfw($home_boxes_module_args);
+        $home_boxes_module      = new wfcfw( $home_boxes_module_args );
     }
-    if( getActiveCPT( "TESTIMONIAL_CPT" ) ){
+    if( $wfc_admin->wfc_is_active_cpt( "TESTIMONIAL_CPT" ) ){
         $testimonial_args = array(
             'cpt'       => 'Testimonial' /* CPT Name */,
             'menu_name' => 'Testimonial' /* Overide the name above */,
@@ -733,5 +725,5 @@
                 'editor'
             ) /* specify which metaboxes you want displayed. See Codex for more info*/,
         );
-        $testimonial      = new wfcfw($testimonial_args);
+        $testimonial      = new wfcfw( $testimonial_args );
     }

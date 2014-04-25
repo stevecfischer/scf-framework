@@ -16,7 +16,7 @@
     require_once(WFC_ADM.'/wfc_smtp.php'); // SMTP Class
     require_once(WFC_ADM.'/wfc_global_config.php'); //Global hooks/functions
     require_once(WFC_CONFIG.'/wfc_security.php'); //Setup Framework Security
-    require_once(WFC_ADM.'/wfc_expanded_menu_manager.php'); //CPT / Tax / Metabox Class
+    require_once(WFC_ADM.'/wfc_shortcut_manager.php'); //CPT / Tax / Metabox Class
     require_once(WFC_ADM.'/wfc_browser_check.php'); //Alerts Old Browsers
     require_once(WFC_ADM.'/wfc_theme_customizer.php'); //Site Options Panel
     require_once(WFC_ADM.'/wfc_restricted_access_alert.php'); //Beta not ready for release
@@ -49,7 +49,7 @@
     require_once(WFC_WIDGETS.'/wfc_custom_recent_posts/wfc_custom_recent_posts.php');
     require_once(WFC_WIDGETS.'/wfc_spotlight/wfc_spotlight.php');
     /*
-     * @sftodo: move all functions into wfc admin class. or if there is somewhere better send there.
+     * @scftodo: move all functions into wfc admin class. or if there is somewhere better send there.
      */
     /**
      * Includes JS into WP head
@@ -152,15 +152,35 @@
     }
 
     /**
-     * Removes plugin update warnings
+     * Removes plugin update notifications from plugin list view
      *
      * @since 2.3
      */
-    add_filter( 'admin_init', 'wfc_remove_plugin_update_warning' );
-    function wfc_remove_plugin_update_warning(){
-        if( !wfc_is_dev() ){
-            remove_action( 'load-update-core.php', 'wp_update_plugins' );
-            add_filter( 'pre_site_transient_update_plugins', create_function( '$a', "return null;" ) );
+    add_filter( 'admin_init', 'wfc_remove_plugin_update_notification' );
+    function wfc_remove_plugin_update_notification(){
+        $plugin_flag_options = get_option( 'wfc_plugin_update_flags' );
+        if( is_array( $plugin_flag_options ) && array_search( 'plugin_update_flags-prevent-updating', $plugin_flag_options ) !== false ){
+            if( !wfc_is_dev() ){
+                remove_action( 'load-update-core.php', 'wp_update_plugins' );
+                add_filter( 'pre_site_transient_update_plugins', create_function( '$a', "return null;" ) );
+            }
+        }
+    }
+
+    /**
+     * Remove plugin update count from admin menu
+     *
+     * @since 5.5
+     */
+    add_action( 'admin_menu', 'wfc_remove_plugin_update_count' );
+    function wfc_remove_plugin_update_count(){
+        $plugin_flag_options = get_option( 'wfc_plugin_update_flags' );
+        if( is_array( $plugin_flag_options ) && array_search( 'plugin_update_flags-hide-update', $plugin_flag_options ) !== false ){
+            if( !wfc_is_dev() ){
+                global $menu, $submenu;
+                $menu[65][0]                 = 'Plugins';
+                $submenu['index.php'][10][0] = 'Updates';
+            }
         }
     }
 
@@ -262,7 +282,7 @@
      * @return boolean active or not
      */
     function getActiveCPT( $cpt, $deprecated = '' ){
-        /** @var $wfc_admin Wfc_Admin_Class */
+        /** @var $wfc_admin wfc_admin_class */
         global $wfc_admin;
         if( empty($deprecated) ){
             $wfc_admin->_wfc_deprecated_argument( __FUNCTION__, '5.1', 'Current method to use: $wfc_admin->wfc_is_active_cpt($cpt)' );

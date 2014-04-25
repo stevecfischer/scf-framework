@@ -96,7 +96,7 @@
      * @return function the function launched to display the content
      */
     function wfc_manage_update(){
-        broken_github();
+        //broken_github();
         if( isset($_GET['force_update']) && $_GET['force_update'] == true && !empty($_POST["update_url"]) ){
             echo wfc_force_update();
         } else{
@@ -122,11 +122,11 @@
      * @since 1.1
      */
     function wfc_check_update(){
-        $gr  = new GRepo(GIT_USER, GIT_REPO);
+        $gr  = new wfc_git_repo( GIT_USER, GIT_REPO );
         $loc = get_local_version();
         $git = get_git_version();
-        echo 'Git : '.$git.' - <a href="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_refresh">Refresh</a>';
-        echo '<br />Local : '.$loc.'<br />';
+        //echo 'Git : '.$git.' - <a href="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&force_refresh">Refresh</a>';
+        //echo '<br />Local : '.$loc.'<br />';
         if( !$git ){
             echo 'A version file is missing on git, need to stop there.';
         } else{
@@ -137,12 +137,11 @@
                 if( $mostRecent == 0 ){
                     echo 'Both same version, we are fine !';
                 } else{
-                    if( $mostRecent > -1 ){
-                        echo 'Local has a higher version, someone has probably made changes, do not update.';
-                    } else{
-                        echo 'An update is available : <strong>Version '.$git.'</strong><br />
-        <form method="POST" action ="'.$_SERVER['PHP_SELF'].'?page=wfc_theme_customizer.php&check_diffs=true"><input type="submit" value="Check diffs" /></form>';
-                    }
+                    //echo 'Local has a higher version, someone has probably made changes, do not update.<br />';
+                    echo ' '.($loc > $git ? 'A <strong>downgrade</strong>' : 'An <strong>update</strong>').' is available : <strong>Version '.$git.'</strong><br />
+        <form method="POST" action="admin.php?page=wfc_theme_customizer.php&update='.
+                        $token.'">
+                                <input type="submit" value="Update" /></form>';
                 }
             }
         }
@@ -171,7 +170,7 @@
      */
     function wfc_check_diffs(){
         if( isset($_GET['check_diffs']) && $_GET['check_diffs'] == true ){
-            $gr = new GRepo(GIT_USER, GIT_REPO);
+            $gr = new wfc_git_repo( GIT_USER, GIT_REPO );
             //Time to check if the server files are all the same as last version !
             //First, download the version of the server on git
             $tags   = $gr->getRepoTags();
@@ -191,7 +190,7 @@
                         rrmdir( WFC_THEME_ROOT.'/working_directory' );
                         mkdir( WFC_THEME_ROOT.'/working_directory' );
                     }
-                    $file_zip        = WFC_THEME_ROOT.'/working_directory/Ver_'.substr( $tag->name, 1 ).'.zip';
+                    $file_zip = WFC_THEME_ROOT.'/working_directory/Ver_'.substr( $tag->name, 1 ).'.zip';
                     //echo "<br>Starting<br>Target_url: $target_url";
                     //echo "<br>Headers stripped out";
                     // make the cURL request to $target_url
@@ -245,9 +244,9 @@
                     }
                     if( $folder_name != '' ){
                         //Process diff on files
-                        $old_files        = array();
-                        $current_files    = array();
-                        $path_to_old = WFC_THEME_ROOT.'/working_directory/'.$folder_name.'/wfc_files/';
+                        $old_files       = array();
+                        $current_files   = array();
+                        $path_to_old     = WFC_THEME_ROOT.'/working_directory/'.$folder_name.'/wfc_files/';
                         $path_to_current = WFC_PT;
                         //                        $old_nb_carac     = strlen( $path_to_old ) + 1;
                         //                        $current_nb_carac = strlen( $path_to_current ) + 1;
@@ -352,7 +351,7 @@
                     rrmdir( $path_to_old );
                 }
                 $path_to_current = WFC_THEME_ROOT.'/wfc_files/';
-                $gr              = new GRepo(GIT_USER, GIT_REPO);
+                $gr              = new wfc_git_repo( GIT_USER, GIT_REPO );
                 $tags            = $gr->getRepoTags();
                 $git             = get_git_version();
                 $loc             = get_local_version();
@@ -616,7 +615,7 @@
      */
     function get_git_version(){
         if( empty($_COOKIE['git_version']) || isset($_GET['force_refresh']) ){
-            $gr      = new GRepo(GIT_USER, GIT_REPO);
+            $gr      = new wfc_git_repo( GIT_USER, GIT_REPO );
             $ver_git = '';
             $all     = $gr->getRepoContents( '' );
             foreach( $all as $f ){

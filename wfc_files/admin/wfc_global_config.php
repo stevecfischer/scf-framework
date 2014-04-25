@@ -6,7 +6,7 @@
      * @author Steve (6/11/2012)
      * @since 2.2
      */
-    /** @var $wfc_admin Wfc_Admin_Class */
+    /** @var $wfc_admin wfc_admin_class */
     /**
      * Disable RSS feeds
      *
@@ -33,7 +33,7 @@
         return false;
     }
 
-    if( !$wfc_admin->wfc_full_access() ){
+    if( !$wfc_admin->wfc_full_access() || get_option( 'wfc_enable_commenting' )[0] != "Enable Commenting" ){
         add_filter( 'comments_number', 'wfc_close_comments' );
         add_filter( 'comments_open', 'wfc_close_comments' );
     }

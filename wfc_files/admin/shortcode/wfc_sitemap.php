@@ -81,7 +81,7 @@
                     'exclude'  => $exclude_pages,
                     'title_li' => '',
                     'echo'     => 0,
-                    'walker'   => new Wfc_Sitemap_Walker
+                    'walker' => new wfc_sitemap_walker
                 );
                 $children    = wp_list_pages( $args );
                 if( !$children ){
@@ -101,7 +101,7 @@
                     'exclude'  => $exclude_pages,
                     'title_li' => '',
                     'echo'     => 0,
-                    'walker'   => new Wfc_Sitemap_Walker
+                    'walker' => new wfc_sitemap_walker
                 );
                 $children    = wp_list_pages( $args );
                 if( $children ){
@@ -136,7 +136,7 @@
      *
      * @return string $html $output + additional html
      */
-    class Wfc_Sitemap_Walker
+    class wfc_sitemap_walker
         extends Walker_page
     {
         function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ){
