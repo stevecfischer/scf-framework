@@ -6,7 +6,7 @@
      * @author Steve (6/11/2012)
      * @since 2.2
      */
-    /** @var $wfc_admin Wfc_Admin_Class */
+    /** @var $wfc_admin wfc_admin_class */
     /**
      * Disable RSS feeds
      *

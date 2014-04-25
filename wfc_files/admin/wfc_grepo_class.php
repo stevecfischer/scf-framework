@@ -9,7 +9,7 @@
      * @version 1.2
      * @since 5.2
      */
-    class GRepo
+    class wfc_git_repo
     {
         /**
          * Definitions

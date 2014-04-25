@@ -12,7 +12,7 @@
      */
     ob_start();
 
-    class FastBackup
+    class wfc_fastbackup_class
     {
         protected
             $hostname,
@@ -51,7 +51,7 @@
                 if( class_exists( 'PDO' ) ){
                     $dsn = 'mysql:dbname='.$this->database.';host='.$this->hostname;
                     try{
-                        $this->db = new PDO($dsn, $this->user, $this->password);
+                        $this->db = new PDO( $dsn, $this->user, $this->password );
                         return true;
                     } catch( PDOException $e ){
                         $this->errors[] = 'Unable to connect to the database, PDO error :'.$e->getMessage();

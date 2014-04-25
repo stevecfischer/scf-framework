@@ -7,7 +7,7 @@
      * @date 12/23/13
      * @version 5.2
      */
-    class Wfc_Custom_Nav_Walker
+    class wfc_custom_nav_walker
         extends Walker_page
     {
         function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ){

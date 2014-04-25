@@ -17,9 +17,9 @@
      * Initiate plugin.
      */
     global $drag_drop_featured_image;
-    $drag_drop_featured_image = new WP_Drag_Drop_Featured_Image;
+    $drag_drop_featured_image = new wp_drag_drop_featured_image;
 
-    class WP_Drag_Drop_Featured_Image
+    class wp_drag_drop_featured_image
     {
 
         /**
@@ -127,11 +127,11 @@
                     // Localize JavaScript:
                     wp_localize_script(
                         'dgd_uploaderScript', 'dgd_strings', array(
-                        'panel' => array(
-                            'title'  => __( 'Set featured image' ),
-                            'button' => __( 'Set featured image' )
-                        )
-                    ) );
+                            'panel' => array(
+                                'title'  => __( 'Set featured image' ),
+                                'button' => __( 'Set featured image' )
+                            )
+                        ) );
                 }
             }
             // Plugin options screen:
@@ -154,9 +154,9 @@
             $required_capability = $this->selected_user_capability || 'manage_options';
             add_options_page(
                 __( 'Options for Drag & Drop Featured Image', $this->plugin_locale ), __( 'Featured Image', $this->plugin_locale ), $required_capability, $this->plugin_options_slug, array(
-                &$this,
-                'render_options_page'
-            ) );
+                    &$this,
+                    'render_options_page'
+                ) );
         }
 
         // Render options page:
@@ -367,9 +367,9 @@
             $file   = $_FILES['async-upload'];
             $status = wp_handle_upload(
                 $file, array(
-                'test_form' => true,
-                'action'    => 'dgd_upload_featured_image'
-            ) );
+                    'test_form' => true,
+                    'action'    => 'dgd_upload_featured_image'
+                ) );
             // Fetch post ID:
             $post_id = $_POST['postID'];
             // Insert uploaded file as attachment:

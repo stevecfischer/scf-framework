@@ -3,6 +3,7 @@
      * Creates a disclamer with JS to prevent user modifications
      * in the plugins page
      *
+     *
      */
     function wfc_show_disclaimer(){
         ?>
@@ -25,13 +26,13 @@
      * Add a seal on the plugins page
      * It can be broke by the user and it sends an email to WFC
      */
-    class Wfc_Plugin_Seal
+    class wfc_plugin_seal
     {
         /**
          * Constructor
          * Initialize the plugin
          */
-        function Wfc_Plugin_Seal(){
+        function wfc_plugin_seal(){
             add_action( 'admin_init', array(&$this, 'Wfc_Admin_Init') );
             add_action( 'views_plugins', array(&$this, 'Wfc_Get_Seal_Form') );
             //add_filter( 'wp_mail', array( &$this, 'hijack_mail' ), 1 );
@@ -93,7 +94,7 @@
          * @param intger $user id of the user
          */
         public function Wfc_Update_Seal( $user ){
-            update_option( 'wfc_plugin_seal', $user->ID );
+            update_option( 'wfc_plugin_seal', maybe_serialize( array($user->ID, time()) ) );
         }
 
         /**
@@ -155,6 +156,9 @@
      * Instanciate the class to load the plugin into the framework
      * Only if user != wfc
      */
-    if( $current_user->user_login != 'wfc' ){
-        $WfcPluginSeal = new Wfc_Plugin_Seal();
+    $plugin_flag_options = get_option( 'wfc_plugin_update_flags' );
+    if( is_array( $plugin_flag_options ) && array_search( 'plugin_update_flags-plugin-disclaimer', $plugin_flag_options ) !== false ){
+        if( $current_user->user_login != 'wfc' ){
+            $WfcPluginSeal = new wfc_plugin_seal();
+        }
     }

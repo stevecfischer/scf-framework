@@ -6,14 +6,14 @@
      * @package scf-framework
      * @author Steve (11/01/2013)
      */
-    class Wfc_Admin_Class
+    class wfc_admin_class
     {
         /**
          * @var array $new_cpts
          */
         public $active_cpts = array();
 
-        public function Wfc_Admin_Class(){
+        public function wfc_admin_class(){
             if( isset($_GET) && isset($_GET['wfc_update_wp_options']) && $_GET['wfc_update_wp_options'] == "update_wp_options" ){
                 $this->wfc_update_wp_options();
             }
@@ -52,7 +52,6 @@
             /* @scftodo: working on moving cpt registering to here from wfc_theme_customizer. */
             //add_action( 'manage_page_posts_custom_column', array(&$this, 'wfc_display_post_thumbnail_column'), 5, 2 );
             //add_action( 'init', array(&$this, 'wfc_init_cpt') );
-            add_editor_style( WFC_URI.'/editor-styles.css' );
         }
 
         /**
@@ -140,6 +139,11 @@
             echo '<link rel="shortcut icon" href="'.WFC_URI.'/favicon.ico"/>'."\n";
         }
 
+        /**
+         * @param string $function
+         * @param string $version
+         * @param string null $message
+         */
         public function _wfc_deprecated_argument( $function, $version, $message = NULL ){
             do_action( 'wfc_deprecated_argument_run', $function, $message, $version );
             // Allow plugin to filter the output error trigger
@@ -163,19 +167,13 @@
         public function wfc_framework_variables(){
             /**
              * @name Framework Variables
-             *      this plugin allows js to use php definitions.
-             *      I created it to help with ajax, image, and file paths.
-             *      Issues almost always arise when working in between local, dev, and live
-             *      enviroments.
              *
-             *      Example:
              *      jQuery(function($){
              *          var wfcDefines = $('body').wfc_fw_variables();
              *          console.log(wfcDefines.define('wfc_theme_name'));
              *      });
              *
              * @version 0.1
-             *
              */
             ?>
             <script type="text/javascript">
@@ -433,6 +431,6 @@
      *
      * @since 5.1
      */
-    $GLOBALS['wfc_admin'] = new Wfc_Admin_Class();
+    $GLOBALS['wfc_admin'] = new wfc_admin_class();
     // @scftodo: not the best but it will work for now.
-    $wfc_version = WFC_Admin_Class::wfc_grab_version();
+    $wfc_version = wfc_admin_class::wfc_grab_version();

@@ -5,7 +5,7 @@
      * @package scf-framework
      * @author Steve (6/11/2012)
      */
-    class WFC_Widget_Recent_Posts
+    class wfc_widget_recent_posts
         extends WP_Widget
     {
 
@@ -19,15 +19,16 @@
             extract( $args );
             $wfc_title            = apply_filters(
                 'widget_title', empty($instance['title']) ? __( 'Recent Posts' ) :
-                $instance['title'], $instance, $this->id_base );
+                    $instance['title'], $instance, $this->id_base );
             $wfc_title_only       = $instance['title_only'];
             $wfc_number           = isset($instance['number']) ? absint( $instance['number'] ) : 5;
             $wfc_recent_post_type = isset($instance['post_type']) ? trim( $instance['post_type'] ) : 'news';
-            $r                    = new WP_Query(array(
-                'posts_per_page' => $wfc_number,
-                'post_status'    => 'publish',
-                'post_type'      => $wfc_recent_post_type
-            ));
+            $r                    = new WP_Query(
+                array(
+                    'posts_per_page' => $wfc_number,
+                    'post_status'    => 'publish',
+                    'post_type'      => $wfc_recent_post_type
+                ) );
             if( $r->have_posts() ) :
 
                 echo $before_widget;
@@ -99,7 +100,7 @@
                 <select class="widefat" id="<?php echo $this->get_field_id( 'post_type' ); ?>" name="<?php echo $this->get_field_name( 'post_type' ); ?>">
                     <option value="">All</option>
                     <?php
-                        $args = array(
+                        $args       = array(
                             'public'   => true,
                             '_builtin' => false
                         );

@@ -12,7 +12,7 @@
      * @subpackage wfc-admin
      * @since 5.2
      */
-    class shortcutManager
+    class wfc_shortcut_manager
     {
         /**
          * List of supported medias
@@ -57,7 +57,7 @@
                     )
                 )
             );
-            $query       = new WP_Query($args);
+            $query       = new WP_Query( $args );
             $exclude_arr = array();
             if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
                 $exclude_arr[] = get_the_ID();
@@ -93,7 +93,7 @@
                         'orderby'        => 'title',
                         'order'          => 'ASC'
                     );
-                    $query   = new WP_Query($args);
+                    $query   = new WP_Query( $args );
                     if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
                         $arr[get_the_ID()] = get_the_title();
                     endwhile;endif;
@@ -141,7 +141,7 @@
                         )
                     ),
                 );
-                $subpage_banner_meta_boxes      = new wfc_meta_box_class($subpage_banner_meta_boxes_args);
+                $subpage_banner_meta_boxes      = new wfc_meta_box_class( $subpage_banner_meta_boxes_args );
                 $page_shortcut_args             = array(
                     'cpt'      => 'page' /* CPT Name */,
                     'meta_box' => array(
@@ -201,7 +201,7 @@
                     )
                 );
             }
-            $page_shortcut            = new wfc_meta_box_class($page_shortcut_args);
+            $page_shortcut            = new wfc_meta_box_class( $page_shortcut_args );
             $attachment_shortcut_args = array(
                 'cpt'      => 'attachment' /* CPT Name */,
                 'meta_box' => array(
@@ -216,7 +216,7 @@
                     )
                 )
             );
-            $attachment_shortcut      = new wfc_meta_box_class($attachment_shortcut_args);
+            $attachment_shortcut      = new wfc_meta_box_class( $attachment_shortcut_args );
             return true;
         }
 
@@ -245,7 +245,7 @@
                     )
                 )
             );
-            $query          = new WP_Query($args);
+            $query          = new WP_Query( $args );
             $str_permalinks = '';
             $i              = 0;
             if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
@@ -290,7 +290,7 @@
                     )
                 )
             );
-            $query          = new WP_Query($args);
+            $query          = new WP_Query( $args );
             if( $query->have_posts() ) :  while( $query->have_posts() ) : $query->the_post();
                 $i++;
                 $str_permalinks .= get_the_title().'<br />';
@@ -444,4 +444,4 @@
         }
     }
 
-    $shortcuts = new shortcutManager();
+    $shortcuts = new wfc_shortcut_manager();

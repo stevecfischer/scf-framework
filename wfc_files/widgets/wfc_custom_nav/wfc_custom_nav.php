@@ -5,11 +5,11 @@
      * @package scf-framework
      * @author Steve (6/11/2012)
      */
-    class WFC_Custom_Nav_Widget
+    class wfc_custom_nav_widget
         extends WP_Widget
     {
 
-        function WFC_Custom_Nav_Widget(){
+        function wfc_custom_nav_widget(){
             $widget_ops =
                 array('classname' => 'wfc_custom_nav', 'description' => __( "WFC Custom Sidebar Navigation" ));
             $this->WP_Widget( 'wfc_custom_nav', __( 'WFC Custom Navigation' ), $widget_ops );
@@ -51,7 +51,7 @@
                     'depth'    => $thedepth,
                     'child_of' => $top_page,
                     'exclude'  => $exclude_list,
-                    'walker'   => new Wfc_Custom_Nav_Walker
+                    'walker'   => new wfc_custom_nav_walker
                 ) );
             $wfc_custom_nav['after_menu'] = '</ul>';
             $wfc_menu                     = apply_filters( 'wfc_before_menu', $wfc_custom_nav );
