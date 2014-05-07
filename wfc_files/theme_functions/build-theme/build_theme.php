@@ -6,7 +6,6 @@
      * @author Steve
      * @date 7/20/13
      */
-
     /*
      * @scftodo: We should really integrate this with post types, meta boxes. Ex user enters custom post type like staff in form field and this class will build required files.  like staff-archive.php, dept-taxonomy.php, staff-single.php etc etc.
      */
@@ -36,7 +35,7 @@
         if( file_exists( WFC_PT.'../header.php' ) ){
             //die("Theme already built.  Go Fish.");
         }
-        $header       = '
+        $header      = '
 <!DOCTYPE html>
 <!--
  __      __     _____   ______
@@ -85,7 +84,7 @@
     "theme_location"  => ""
 );
     wp_nav_menu( $wfc_main_nav_args );?>';
-        $footer       = '
+        $footer      = '
 <footer>
     <div id="wfc-footer-links">
         <p>Copyright 2014 All Rights Reserved. Website Design by
@@ -102,14 +101,14 @@
 <?php wfc_footer(); ?>
 </body>
 </html>';
-        $page         = '
+        $page        = '
                 <?php get_header(); ?>
                 <?php Wfc_Core_Page_Loop(); ?>
                 <?php get_footer(); ?>';
-        $frontpage = '<?php get_header(); ?>
+        $frontpage   = '<?php get_header(); ?>
                 <?php Wfc_Core_Home_Page_Loop(); ?>
                 <?php get_footer(); ?>';
-        $search       = '
+        $search      = '
                 <?php get_header(); ?>
                 <h2><?php printf( \'Search Results for: %s\',get_search_query() ); ?></h2>
                 <?php
@@ -121,19 +120,19 @@
                         echo \'<p>No results.</p>\';
                     endif;?>
                 <?php get_footer(); ?>';
-        $four_o_four  = '<?php get_header(); ?>
+        $four_o_four = '<?php get_header(); ?>
                 <h2>404</h2>
                 <p>The page you are looking for doesn\'t exists...</p>
                 <?php echo do_shortcode("[wfc_sitemap]"); ?>
                 <?php get_footer(); ?>';
         $editor_styles = "";
-        $archive = '<?php get_header(); ?>
+        $archive     = '<?php get_header(); ?>
                 <?php get_template_part("content"); ?>
                 <?php get_footer(); ?>';
-        $single = '<?php get_header(); ?>
+        $single      = '<?php get_header(); ?>
                 <?php get_template_part("content"); ?>
                 <?php get_footer(); ?>';
-        $content = '<?php
+        $content     = '<?php
     if( have_posts() ) : while( have_posts() ) : the_post(); ?>
         <div class="<?php echo get_post_type(); ?>-entry">
             <?php
@@ -172,7 +171,53 @@
     endwhile;endif;
     wp_reset_query();
 ?>';
-        $theme_array  =
+        $comments    = '<div id=\"comments\" class=\"comments-area\">
+
+    <?php if ( have_comments() ) : ?>
+
+    <h2 class=\"comments-title\">
+        <?php
+            printf( _n( \'One thought on &ldquo;%2\$s&rdquo;\', \'%1\$s thoughts on &ldquo;%2\$s&rdquo;\', get_comments_number(), \'twentyfourteen\' ),
+                number_format_i18n( get_comments_number() ), get_the_title() );
+        ?>
+    </h2>
+
+    <?php if ( get_comment_pages_count() > 1 && get_option( \'page_comments\' ) ) : ?>
+    <nav id=\"comment-nav-above\" class=\"navigation comment-navigation\" role=\"navigation\">
+        <h1 class=\"screen-reader-text\"><?php _e( \'Comment navigation\', \'twentyfourteen\' ); ?></h1>
+        <div class=\"nav-previous\"><?php previous_comments_link( __( \'&larr; Older Comments\', \'twentyfourteen\' ) ); ?></div>
+        <div class=\"nav-next\"><?php next_comments_link( __( \'Newer Comments &rarr;\', \'twentyfourteen\' ) ); ?></div>
+    </nav><!-- #comment-nav-above -->
+    <?php endif; // Check for comment navigation. ?>
+
+    <ol class=\"comment-list\">
+        <?php
+            wp_list_comments( array(
+                \'style\'      => \'ol\',
+                \'short_ping\' => true,
+                \'avatar_size\'=> 34,
+            ) );
+        ?>
+    </ol><!-- .comment-list -->
+
+    <?php if ( get_comment_pages_count() > 1 && get_option( \'page_comments\' ) ) : ?>
+    <nav id=\"comment-nav-below\" class=\"navigation comment-navigation\" role=\"navigation\">
+        <h1 class=\"screen-reader-text\"><?php _e( \'Comment navigation\', \'twentyfourteen\' ); ?></h1>
+        <div class=\"nav-previous\"><?php previous_comments_link( __( \'&larr; Older Comments\', \'twentyfourteen\' ) ); ?></div>
+        <div class=\"nav-next\"><?php next_comments_link( __( \'Newer Comments &rarr;\', \'twentyfourteen\' ) ); ?></div>
+    </nav><!-- #comment-nav-below -->
+    <?php endif; // Check for comment navigation. ?>
+
+    <?php if ( ! comments_open() ) : ?>
+    <p class=\"no-comments\"><?php _e( \'Comments are closed.\', \'twentyfourteen\' ); ?></p>
+    <?php endif; ?>
+
+    <?php endif; // have_comments() ?>
+
+    <?php comment_form(); ?>
+
+</div>';
+        $theme_array =
             array(
                 array('file' => 'header.php', 'content' => $header),
                 array('file' => 'footer.php', 'content' => $footer),
@@ -195,15 +240,28 @@
             $_REQUEST['footer.php'] = true;
             foreach( $theme_array as $page ){
                 if( isset($_REQUEST[$page['file']]) ){
-                    echo WFC_PT.'../'.$page['file'].' - Created<br />';
-                    $fp = fopen( WFC_PT.'../'.$page['file'], "w" );
+                    echo WFC_THEME_ROOT.'/'.$page['file'].' - Created<br />';
+                    $fp = fopen( WFC_THEME_ROOT.'/'.$page['file'], "w" );
                     fwrite( $fp, $page['content'] );
                     fclose( $fp );
                 }
             }
-            rename( WFC_PT.'/images', WFC_PT.'/../images' );
-            rename( WFC_PT.'/css', WFC_PT.'/../css' );
-            rename( WFC_PT.'/js', WFC_PT.'/../js' );
+            if( !file_exists( WFC_THEME_ROOT.'/images' ) ){
+                rename( WFC_PT.'/images', WFC_THEME_ROOT.'/images' );
+                echo WFC_THEME_ROOT.'/images - Created<br />';
+            }
+            if( !file_exists( WFC_THEME_ROOT.'/css' ) ){
+                rename( WFC_PT.'/css', WFC_THEME_ROOT.'/css' );
+                echo WFC_THEME_ROOT.'/css - Created<br />';
+            }
+            if( !file_exists( WFC_THEME_ROOT.'/js' ) ){
+                rename( WFC_PT.'/js', WFC_THEME_ROOT.'/js' );
+                echo WFC_THEME_ROOT.'/js - Created<br />';
+            }
+            if( !file_exists( WFC_THEME_ROOT.'/fonts' ) ){
+                rename( WFC_PT.'/fonts', WFC_THEME_ROOT.'/fonts' );
+                echo WFC_THEME_ROOT.'/fonts - Created<br />';
+            }
             echo 'Theme built successfully.';
         } else{
             ?>
@@ -216,15 +274,16 @@
                     images/ <br/>
                     css/ <br/>
                     js/ <br/>
+                    fonts/ <br/>
                     <br/>
                     <!-- Required since we check if header.php exists to know if we need to build out the theme -->
                     You can choose to build the following files or not:<br/>
                     <?php
                         foreach( $theme_array as $template ){
                             if( $template['file'] != "header.php" && $template['file'] != "footer.php" ){
-                    ?><label>
-                    <input type="checkbox" name="<?php echo $template['file']; ?>"/> <?php echo $template['file']; ?></label>
-                    <br/>
+                                ?><label>
+                                <input type="checkbox" name="<?php echo $template['file']; ?>"/> <?php echo $template['file']; ?></label>
+                                <br/>
                             <?php
                             }
                         }

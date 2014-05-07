@@ -84,7 +84,8 @@
         public $wfc_chklist_files_array = array(
             'favicon.ico'             => "favicon.ico",
             '404.php'                 => "404.php",
-            'template-full-width.php' => 'template-full-width.php'
+            'template-full-width.php' => 'template-full-width.php',
+            'editor-styles.css'       => 'editor-styles.css'
         );
         public $wfc_chklist_scrap_array = array();
 
